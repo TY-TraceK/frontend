@@ -1,0 +1,169 @@
+/* font */
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-1Thin.woff2")
+    format("woff2");
+  font-weight: 100;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-2ExtraLight.woff2")
+    format("woff2");
+  font-weight: 200;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-3Light.woff2")
+    format("woff2");
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-4Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-5Medium.woff2")
+    format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-6SemiBold.woff2")
+    format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2")
+    format("woff2");
+  font-weight: 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Paperozi";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-9Black.woff2")
+    format("woff2");
+  font-weight: 900;
+  font-display: swap;
+}
+
+/* tokens */
+
+:root {
+  /* color global --다크모드에서도 동일하게 적용되는 컬러-- */
+  --gl-text-black: #282d36;
+  --gl-text-white: #f3f5f7;
+
+  --gl-border-map: #fff;
+  --gl-border-default: #e2e8f033;
+
+  --gl-interact-subtle: #deeaff;
+
+  /* color */
+  --brand: #1d69f5;
+
+  --bg-canvas: #f5f8fc;
+  --bg-elevated: #fff; /* bg-elevated는 light 모드 한정 shadow와 함께 */
+
+  --text-default: #282d36;
+  --text-sub: #656b73;
+  --text-inverse: #f3f5f7;
+  --text-accent: #1d69f5;
+  --text-disabled: #c0c7d5;
+  --text-icon: #b3bbc4;
+
+  --divider-default: #e2e8f0;
+
+  --interact-active: #1d69f5;
+  --interact-hover: #0953db;
+  --interact-pressed: #003dad;
+  --interact-subtle: #deeaff;
+  --interact-subtle-hover: #c4d2e9;
+  --interact-disabled: #e9eef5;
+
+  /* typography */
+  --font-family: "Paperozi", sans-serif;
+
+  --font-size-display: 2rem; /* 32px */
+  --font-size-title: 1.5rem; /* 24px */
+  --font-size-heading: 1.25rem; /* 20px */
+  --font-size-body: 1rem; /* 16px */
+  --font-size-caption: 0.875rem; /* 14px */
+  --font-size-label: 0.75rem; /* 12px */
+
+  /* spacing */
+  --spacing-4: 0.25rem;
+  --spacing-8: 0.5rem;
+  --spacing-16: 1rem;
+  --spacing-24: 1.5rem;
+  --spacing-32: 2rem;
+  --spacing-40: 2.5rem;
+  --spacing-48: 3rem;
+
+  /* radius */
+  /* Radius */
+  --radius-2: 0.125rem;
+  --radius-8: 0.5rem;
+  --radius-12: 0.75rem;
+  --radius-16: 1rem;
+  --radius-24: 1.5rem;
+  --radius-32: 2rem;
+
+  /* shadow */
+  --shadow-card: 0 0 8px 0 #aaaaaa20;
+  --shadow-input-active: 0 0 8px 0 #1d69f529;
+  --shadow-map: 0 0 6px 0 #0000001a;
+  --shadow-pressed: inset 3px 3px 3px 0 #00000024;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* dark */
+    /* color */
+    --brand: #006eff;
+
+    --bg-canvas: #1b232d;
+    --bg-elevated: #2f3338; /* bg-elevated는 light 모드 한정 shadow와 함께 */
+
+    --text-default: #f3f5f7;
+    --text-sub: #d2d5d9;
+    --text-inverse: #282d36;
+    --text-accent: #5598ff;
+    --text-disabled: #6a6f79;
+    --text-icon: #656b73;
+
+    --divider-default: #2c333c;
+
+    --interact-active: #006eff;
+    --interact-hover: #0953db;
+    --interact-pressed: #003dad;
+    --interact-subtle: #4f5c71;
+    --interact-subtle-hover: #354257;
+    --interact-disabled: #42454a;
+  }
+}
