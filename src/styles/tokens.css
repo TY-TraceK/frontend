@@ -168,7 +168,7 @@
 
   /* shadow */
   --shadow-card: 0 0 8px 0 #aaaaaa20;
-  --shadow-input-active: 0 0 8px 0 #1d69f529;
+  --shadow-input-active: 0 0 8px 0 #1d69f56c;
   --shadow-map: 0 0 6px 0 #0000001a;
   --shadow-pressed: inset 3px 3px 3px 0 #00000024;
 }
