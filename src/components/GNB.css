@@ -5,7 +5,8 @@ nav {
   width: 100%;
   z-index: 99;
   background-color: var(--bg-elevated);
-  border: solid 1px var(--divider-default);
+  box-shadow: var(--shadow-card);
+  border-top: solid 1px var(--divider-default);
 
   .container {
     margin: 0 auto;
@@ -20,8 +21,10 @@ nav {
       .menu {
         display: flex;
         flex-direction: column;
+        gap: 4px;
         color: var(--text-icon);
         align-items: center;
+        font-size: var(--font-size-caption);
 
         &.current {
           color: var(--interact-active);
