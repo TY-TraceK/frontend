@@ -106,6 +106,37 @@
   --interact-subtle-hover: #c4d2e9;
   --interact-disabled: #e9eef5;
 
+  /* location */
+  --loc-attraction: #4f5add;
+  --loc-culture: #2ba71a;
+  --loc-event: #db5f39;
+  --loc-filming: #7e50e8;
+  --loc-restaurant: #fa626a;
+  --loc-cafe: #55b0db;
+  --loc-accommodation: #af45ed;
+  --loc-shopping: #ed4ab1;
+  --loc-other: #72899e;
+
+  --loc-attraction-pressed: #3f49b5;
+  --loc-culture-pressed: #1b860c;
+  --loc-event-pressed: #d24317;
+  --loc-filming-pressed: #561ae2;
+  --loc-restaurant-pressed: #d03941;
+  --loc-cafe-pressed: #2687b4;
+  --loc-accommodation-pressed: #8824c3;
+  --loc-shopping-pressed: #ca278e;
+  --loc-other-pressed: #476682;
+
+  /* Semantic */
+  --sem-success: #16a34a;
+  --sem-warning: #d97706;
+  --sem-error: #dc2626;
+
+  /* Feature */
+  --feat-heart: #f93737;
+  --feat-star: #f59e0b;
+  --feat-bookmark: #0b98de;
+
   /* typography */
   --font-family: "Paperozi", sans-serif;
 
@@ -119,6 +150,7 @@
   /* spacing */
   --spacing-4: 0.25rem;
   --spacing-8: 0.5rem;
+  --spacing-12: 0.75rem;
   --spacing-16: 1rem;
   --spacing-24: 1.5rem;
   --spacing-32: 2rem;
