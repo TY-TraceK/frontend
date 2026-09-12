@@ -4,9 +4,55 @@
  */
 
 /* layout */
+* {
+  transition: 0.3s ease-in-out;
+}
+
+body {
+  color: var(--text-default);
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: 300;
+  line-height: 1.2;
+  background-color: var(--bg-canvas);
+}
+
+#root {
+  max-width: 540px;
+  margin: 0 auto;
+}
+.container {
+  padding: 0 16px;
+}
 
 /* font settings */
+h2 {
+  font-size: var(--font-size-heading);
+  font-weight: 500;
+}
 
+h3 {
+  font-size: var(--font-size-heading);
+  font-weight: 500;
+}
+.accent-text {
+  color: var(--text-accent);
+}
+
+.emphasis {
+  font-weight: 500;
+}
+/* icon */
+/* phosphor */
+.icon svg {
+  width: 24px;
+  height: 24px;
+  color: inherit;
+}
+
+.bookmark {
+  color: var(--feat-bookmark);
+}
 /* utility */
 /* position */
 .relative {
