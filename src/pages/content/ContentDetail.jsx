@@ -134,13 +134,28 @@ function ContentDetail() {
           <div className="filter">필터 위치</div>
           <div className="contents-count">NNN 건</div>
           <ul className="card-list">
-            {/* MEMO: 컴포넌트로 빼두었으며, 해당 컴포넌트는
-            아티스트 홈 > 여행지, 아티스트 홈 > 미디어 탭 > 특정 미디어 여행지, 미디어 홈 > 여행지 탭에서
-            description만 차이를 두고 활용됩니다.  */}
-            <PlaceCard />
-            {/* MEMO: 컴포넌트로 빼두었으며, 해당 컴포넌트는
-            아티스트 홈 > 미디어 탭 에서 두 가지 경우로 활용됩니다. */}
-            <MediaCard />
+            <PlaceCard
+              tag="부산광역시"
+              title="송도해수욕장"
+              verifyCount={127}
+              description="런닝맨"
+            />
+            {/* 고정 예능일 때 */}
+            <MediaCard tag="예능" title="런닝맨" showShortcut="true" />
+            {/* 게스트 예능일 때 */}
+            <MediaCard
+              tag="예능"
+              title="구해줘! 홈즈"
+              showDescription="true"
+              description="여행지 6곳"
+            />
+            {/* 미디어 탭에서 특정 미디어 상세 페이지일 때 */}
+            <PlaceCard
+              tag="부산광역시"
+              title="송도해수욕장"
+              verifyCount={127}
+              description="126회 최지우 vs 런닝맨"
+            />
           </ul>
         </section>
       </div>
