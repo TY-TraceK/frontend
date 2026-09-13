@@ -3,6 +3,7 @@ import "./Card.css";
 import { HouseIcon } from "@phosphor-icons/react";
 
 function MediaCard({
+  className = "",
   tag,
   title,
   description,
@@ -10,7 +11,7 @@ function MediaCard({
   showDescription = true,
 }) {
   return (
-    <li className="item media">
+    <li className={`item media ${className}`}>
       <Link>
         {/* MEMO: 예능 고정 출연진일 때, 미디어 홈으로 바로가기 */}
         <div className="image">

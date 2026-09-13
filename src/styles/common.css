@@ -48,6 +48,9 @@ h3 {
 }
 /* icon */
 /* phosphor */
+.icon {
+  color: var(--text-sub);
+}
 .icon svg {
   font-size: var(--font-size-title);
   color: inherit;
@@ -136,17 +139,37 @@ h3 {
 }
 
 /* input setting */
-input[type="text"],
-input[type="search"] {
-  padding: 8px 16px;
+.search-input {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  background-color: var(--bg-elevated);
   border-radius: var(--radius-32);
-  color: var(--text-sub);
-  outline: none;
-  border: none;
   box-shadow: var(--shadow-card);
 
-  &:focus {
+  &:focus-within {
     box-shadow: var(--shadow-input-active);
+  }
+
+  input[type="text"],
+  input[type="search"] {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text-sub);
+
+    &::placeholder {
+      color: var(--text-sub);
+    }
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
 }
 
@@ -239,4 +262,12 @@ input[type="search"] {
 /* image */
 .image img {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* deco */
+hr {
+  border: 0;
+  border-top: 1px solid var(--divider-default);
 }
