@@ -3,6 +3,7 @@ import Home from "./pages/Home/Home";
 import Place from "./pages/Place/Place";
 import Header from "./components/Header";
 import GNB from "./components/GNB";
+import ContentDetail from "./pages/content/ContentDetail";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/place" element={<Place />} />
+        <Route path="/content/detail" element={<ContentDetail />} />
       </Routes>
       <GNB />
     </>
