@@ -268,8 +268,7 @@
               font-size: var(--font-size-caption);
 
               svg {
-                width: 20px;
-                height: 20px;
+                font-size: var(--font-size-heading);
               }
             }
           }

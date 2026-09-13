@@ -25,6 +25,10 @@ body {
   padding: 0 16px;
 }
 
+main {
+  margin: 80px 0 100px;
+}
+
 /* font settings */
 h2 {
   font-size: var(--font-size-heading);
@@ -45,13 +49,16 @@ h3 {
 /* icon */
 /* phosphor */
 .icon svg {
-  width: 24px;
-  height: 24px;
+  font-size: var(--font-size-title);
   color: inherit;
 }
 
 .bookmark {
   color: var(--feat-bookmark);
+}
+
+.heart {
+  color: var(--feat-heart);
 }
 /* utility */
 /* position */
@@ -130,6 +137,9 @@ input[type="search"] {
   padding: 8px 16px;
   border-radius: var(--radius-32);
   color: var(--text-sub);
+  outline: none;
+  border: none;
+  box-shadow: var(--shadow-card);
 
   &:focus {
     box-shadow: var(--shadow-input-active);
@@ -172,4 +182,9 @@ input[type="search"] {
       background-color: var(--interact-hover);
     }
   }
+}
+
+/* image */
+.image img {
+  width: 100%;
 }
