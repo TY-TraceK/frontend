@@ -119,6 +119,31 @@
   }
 
   .related-contents {
+    .media-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-16);
+
+      .media-title {
+        font-size: var(--font-size-heading);
+        font-weight: 500;
+      }
+
+      .shortcut {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        padding: 3px 10px;
+        background-color: var(--bg-elevated);
+        box-shadow: var(--shadow-card);
+        border-radius: var(--radius-16);
+
+        .icon svg {
+          font-size: var(--font-size-heading);
+        }
+      }
+    }
     .contents-count {
       text-align: right;
       margin-bottom: var(--spacing-24);

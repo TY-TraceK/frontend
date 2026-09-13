@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import {
   CaretRightIcon,
+  HouseIcon,
   PlayCircleIcon,
   SignpostIcon,
   StarIcon,
@@ -115,6 +116,19 @@ function ContentDetail() {
             {/* MEMO: 미디어 홈에서는 탭이 아예 안 보입니다. */}
             <div className="tab location selected">여행지</div>
             <div className="tab media">미디어</div>
+          </div>
+          {/* MEMO:
+            고정 출연진인 경우 media-meta를 hidden 처리합니다.
+            고정 출연진이 아닌 경우 특정 미디어 상세에서만 노출합니다.
+          */}
+          <div className="media-meta">
+            <h4 className="media-title ellipsis-1">미디어 제목</h4>
+            <Link className="shortcut">
+              <span className="icon">
+                <HouseIcon />
+              </span>
+              <span>미디어 제목 홈</span>
+            </Link>
           </div>
           {/* filter components 작업 예정 */}
           <div className="filter">필터 위치</div>

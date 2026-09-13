@@ -6,6 +6,7 @@ function MediaCard() {
   return (
     <li className="item media">
       <Link>
+        {/* MEMO: 예능 고정 출연진일 때, 미디어 홈으로 바로가기 */}
         <div className="image">
           <img src="https://picsum.photos/id/410/400/600" alt="" />
         </div>
@@ -13,7 +14,7 @@ function MediaCard() {
           <span className="media-type tag">예능</span>
           <div className="title-row">
             <h3 className="ellipsis-1">미디어 이름</h3>
-            {/* MEMO: 하단 shortcut은 고정 출연진일 때만 노출 */}
+            {/* MEMO: 하단 shortcut은 예능 고정 출연진일 때만 노출 */}
             <div className="shortcut accent-text">
               <span className="icon">
                 <HouseIcon />
