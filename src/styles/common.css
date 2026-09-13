@@ -60,6 +60,10 @@ h3 {
 .heart {
   color: var(--feat-heart);
 }
+
+.star {
+  color: var(--feat-star);
+}
 /* utility */
 /* position */
 .relative {
@@ -180,6 +184,36 @@ input[type="search"] {
     box-shadow: var(--shadow-pressed);
     &:hover {
       background-color: var(--interact-hover);
+    }
+  }
+}
+
+/* tags */
+/* MEMO: 추후 css 정리 시, Home.css에서 justify-content 값 제외하고 삭제 + gap 값 0*/
+.tabs {
+  display: flex;
+  gap: var(--spacing-8);
+  margin-bottom: var(--spacing-16);
+
+  .tab {
+    padding: 6px 20px;
+    background-color: var(--interact-subtle);
+    border-radius: var(--radius-16);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--interact-subtle-hover);
+    }
+
+    &.selected {
+      font-weight: 400;
+      color: var(--gl-text-white);
+      background-color: var(--interact-active);
+      box-shadow: var(--shadow-pressed);
+
+      &:hover {
+        background-color: var(--interact-hover);
+      }
     }
   }
 }
