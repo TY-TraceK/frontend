@@ -1,0 +1,55 @@
+.verify-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  max-width: 540px;
+  height: 100vh;
+  margin: 0 auto;
+  background-color: var(--bg-canvas);
+  z-index: 999;
+
+  .step-1 {
+    .map {
+      background-color: #d9d9d9;
+      aspect-ratio: 1/1;
+    }
+
+    .container {
+      h2 {
+        margin: var(--spacing-24) 0 var(--spacing-16);
+      }
+    }
+  }
+
+  .actions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0 16px 20px;
+    display: flex;
+    gap: var(--spacing-8);
+    button {
+      flex: 1;
+      padding: 13px 0;
+      border-radius: var(--radius-16);
+
+      &.neutral {
+        background-color: var(--interact-subtle);
+        color: var(--text-sub);
+      }
+
+      &.active {
+        background-color: var(--interact-active);
+        color: var(--gl-text-white);
+      }
+
+      &.disabled {
+        background-color: var(--interact-disabled);
+        color: var(--text-disabled);
+      }
+    }
+  }
+}

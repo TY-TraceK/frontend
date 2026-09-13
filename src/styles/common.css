@@ -188,6 +188,24 @@ input[type="search"] {
   }
 }
 
+.verify-fab {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--font-size-title);
+  color: var(--gl-text-white);
+  position: fixed;
+  bottom: 80px;
+  right: max(16px, calc((100vw - 540px) / 2 + 16px));
+  width: 56px;
+  aspect-ratio: 1/1;
+  background-color: var(--interact-active);
+  border-radius: 50%;
+  box-shadow: var(--shadow-card);
+  z-index: 99;
+  transition: none;
+}
+
 /* tags */
 /* MEMO: 추후 css 정리 시, Home.css에서 justify-content 값 제외하고 삭제 + gap 값 0*/
 .tabs {
