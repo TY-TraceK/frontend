@@ -3,9 +3,13 @@ import { TokenStorage } from '@/api/tokenStorage.js';
 
 const AuthService = {
   async loginWithKakao(code) {
-    const response = await apiClient.post(
-      `/auth/KAKAO?code=${encodeURIComponent(code)}`
-    );
+    const currentOrigin = window.location.origin;
+    const redirectUri = `${currentOrigin}/auth/kakao/callback`; // 프론트엔드의 실제 카카오 콜백 페이지 경로
+
+    const response = await apiClient.post(`/auth/KAKAO`, {
+      code: code,
+      redirectUri: redirectUri,
+    });
 
     const result = response.data;
 
