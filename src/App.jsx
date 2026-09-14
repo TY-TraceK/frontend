@@ -3,6 +3,8 @@ import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 
 import Home from './pages/Home/Home';
 import Place from './pages/Place/Place';
+import ContentsHome from './pages/content/ContentsHome';
+import ContentsList from './pages/content/ContentsList';
 import ContentDetail from './pages/content/ContentDetail';
 import Ranking from './pages/Ranking/Ranking';
 import Search from './pages/Search/Search';
@@ -57,6 +59,10 @@ function App() {
         <Route path="/ranking" element={<Ranking />} />
 
         <Route path="/search" element={<Search />} />
+
+        {/* 로그인 후 접근 가능한 페이지이나, 퍼블리싱 용이성을 위해 하단에 배치 */}
+        <Route path="/contents" element={<ContentsHome />} />
+        <Route path="/contents/list" element={<ContentsList />} />
 
         {/* 로그인 후 접근 가능한 페이지 */}
         <Route element={<ProtectedRoute />}></Route>
