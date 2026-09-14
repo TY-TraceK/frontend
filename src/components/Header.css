@@ -11,7 +11,7 @@ header {
   padding: var(--spacing-16) 0;
 
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     inset: 0;
     backdrop-filter: blur(10px);
@@ -32,6 +32,7 @@ header {
     gap: var(--spacing-8);
 
     h1 {
+      flex-shrink: 0;
       background-color: var(--brand);
       width: 40px;
       line-height: 40px;
@@ -41,22 +42,8 @@ header {
       font-size: 24px;
       font-weight: 900;
     }
-
     .search {
-      display: flex;
-      align-items: center;
-      flex: 1;
-
-      .global-search {
-        width: 100%;
-      }
-
-      .icon {
-        position: absolute;
-        right: 8px;
-        bottom: 8px;
-        color: var(--text-sub);
-      }
+      width: 100%;
     }
   }
 }
