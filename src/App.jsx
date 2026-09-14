@@ -1,18 +1,19 @@
-import { useState } from "react";
-import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 
-import Home from "./pages/Home/Home";
-import Place from "./pages/Place/Place";
-import ContentDetail from "./pages/content/ContentDetail";
-import Header from "./components/Header";
-import GNB from "./components/GNB";
-import VerifyFab from "./components/VerifyFab";
-import VerifyModal from "./components/VerifyModal";
-import { KakaoCallback, Login } from "@/pages/Login";
-import TokenStorage from "@/api/tokenStorage.js";
+import Home from './pages/Home/Home';
+import Place from './pages/Place/Place';
+import ContentDetail from './pages/content/ContentDetail';
+import Ranking from './pages/Ranking/Ranking';
+import Header from './components/Header';
+import GNB from './components/GNB';
+import VerifyFab from './components/VerifyFab';
+import VerifyModal from './components/VerifyModal';
+import { KakaoCallback, Login } from '@/pages/Login';
+import TokenStorage from '@/api/tokenStorage.js';
 
 function ProtectedRoute() {
-  const isLoggedIn = !!localStorage.getItem("accessToken");
+  const isLoggedIn = !!localStorage.getItem('accessToken');
 
   if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
@@ -30,7 +31,7 @@ function App() {
 
   const handleVerifyClick = () => {
     if (!isLoggedIn) {
-      navigate("/login");
+      navigate('/login');
       return;
     }
 
@@ -51,6 +52,8 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/auth/kakao/callback" element={<KakaoCallback />} />
+
+        <Route path="/ranking" element={<Ranking />} />
 
         {/* 로그인 후 접근 가능한 페이지 */}
         <Route element={<ProtectedRoute />}></Route>

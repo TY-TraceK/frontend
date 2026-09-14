@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
-import { MagnifyingGlassIcon } from "@phosphor-icons/react";
-import "./Header.css";
+import { Link } from 'react-router-dom';
+import { MagnifyingGlassIcon } from '@phosphor-icons/react';
+import './Header.css';
 
 function Header() {
   return (
@@ -10,15 +10,13 @@ function Header() {
           {/* TODO: 로고 변경 */}
           <Link to="/">K</Link>
         </h1>
-        <section className="search relative">
-          <input
-            className="global-search"
-            type="text"
-            placeholder="검색어를 입력하세요."
-          />
-          <span className="icon">
-            <MagnifyingGlassIcon />
-          </span>
+        <section className="search">
+          <div className="search-input">
+            <input type="text" placeholder="검색어를 입력하세요." />
+            <button type="button" className="icon">
+              <MagnifyingGlassIcon />
+            </button>
+          </div>
         </section>
       </div>
     </header>

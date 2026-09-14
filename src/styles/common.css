@@ -39,7 +39,8 @@ h3 {
   font-size: var(--font-size-heading);
   font-weight: 500;
 }
-.accent-text {
+span.accent-text,
+p.accent-text {
   color: var(--text-accent);
 }
 
@@ -48,9 +49,7 @@ h3 {
 }
 /* icon */
 /* phosphor */
-.icon {
-  color: var(--text-sub);
-}
+
 .icon svg {
   font-size: var(--font-size-title);
   color: inherit;
@@ -125,7 +124,7 @@ h3 {
 /* etc */
 
 .clearfix::after {
-  content: "";
+  content: '';
   display: block;
   clear: both;
 }
@@ -151,8 +150,8 @@ h3 {
     box-shadow: var(--shadow-input-active);
   }
 
-  input[type="text"],
-  input[type="search"] {
+  input[type='text'],
+  input[type='search'] {
     flex: 1;
     min-width: 0;
     border: none;
