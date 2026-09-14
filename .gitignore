@@ -3,6 +3,7 @@
 .vscode/*
 !.vscode/extensions.json
 .idea
+.env
 
 # Logs
 logs
