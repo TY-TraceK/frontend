@@ -1,0 +1,103 @@
+.search {
+  .container {
+    section {
+      margin-bottom: var(--spacing-32);
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      h2 {
+        font-size: var(--font-size-title);
+        margin-bottom: var(--spacing-8);
+      }
+    }
+
+    .search-empty {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      height: calc(100vh - 150px);
+    }
+
+    .artist-area {
+      .list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-8);
+
+        .item {
+          background-color: var(--bg-elevated);
+          box-shadow: var(--shadow-card);
+          border-radius: var(--radius-24);
+          padding-bottom: var(--spacing-12);
+
+          .image {
+            margin: 12px;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+            overflow: hidden;
+          }
+
+          .name {
+            text-align: center;
+            padding: 0 var(--spacing-8);
+          }
+        }
+      }
+    }
+
+    .media-area,
+    .place-area {
+      .list {
+        background-color: var(--bg-elevated);
+        box-shadow: var(--shadow-card);
+        border-radius: var(--radius-32);
+        padding: var(--spacing-16);
+
+        .item {
+          border-bottom: solid 1px var(--divider-default);
+          padding: var(--spacing-8) 0;
+
+          &:first-child {
+            padding-top: 0;
+          }
+
+          &:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+          }
+
+          a {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-8);
+
+            .image {
+              width: 70px;
+              aspect-ratio: 1 /1;
+              border-radius: var(--radius-16);
+              overflow: hidden;
+            }
+
+            .tag {
+              background-color: var(--interact-subtle);
+              padding: 3px 12px;
+              border-radius: var(--radius-12);
+              font-size: var(--font-size-caption);
+              margin-bottom: var(--spacing-4);
+            }
+
+            .title {
+              font-size: var(--font-size-heading);
+              font-weight: 400;
+            }
+          }
+        }
+      }
+    }
+  }
+}

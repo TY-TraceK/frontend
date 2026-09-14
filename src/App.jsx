@@ -5,6 +5,7 @@ import Home from './pages/Home/Home';
 import Place from './pages/Place/Place';
 import ContentDetail from './pages/content/ContentDetail';
 import Ranking from './pages/Ranking/Ranking';
+import Search from './pages/Search/Search';
 import Header from './components/Header';
 import GNB from './components/GNB';
 import VerifyFab from './components/VerifyFab';
@@ -54,6 +55,8 @@ function App() {
         <Route path="/auth/kakao/callback" element={<KakaoCallback />} />
 
         <Route path="/ranking" element={<Ranking />} />
+
+        <Route path="/search" element={<Search />} />
 
         {/* 로그인 후 접근 가능한 페이지 */}
         <Route element={<ProtectedRoute />}></Route>
