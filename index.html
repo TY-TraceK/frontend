@@ -1,13 +1,37 @@
 <!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <!-- TODO: viewport-fit=cover 적용 및 safe-area 설정 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>최애의 발자취를 따라서, KRoute</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8"/>
+
+  <!-- TODO: viewport-fit=cover 적용 및 safe-area 설정 -->
+  <meta
+      content="width=device-width, initial-scale=1.0"
+      name="viewport"
+  />
+
+  <title>최애의 발자취를 따라서, KRoute</title>
+
+  <!-- Kakao JavaScript SDK -->
+  <script
+      crossorigin="anonymous"
+      integrity="sha384-OL+ylM/iuPLtW5U3XcvLSGhE8JzReKDank5InqlHGWPhb4140/yrBw0bg0y7+C9J"
+      src="https://t1.kakaocdn.net/kakao_js_sdk/2.8.1/kakao.min.js"
+  ></script>
+
+  <script>
+    if (!Kakao.isInitialized()) {
+      Kakao.init("%VITE_KAKAO_JS_KEY%");
+    }
+  </script>
+</head>
+
+<body>
+<div id="root"></div>
+
+<script
+    src="/src/main.jsx"
+    type="module"
+></script>
+</body>
 </html>
+```
