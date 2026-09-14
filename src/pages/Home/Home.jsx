@@ -1,17 +1,18 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
 import {
   BookmarkSimpleIcon,
   CaretRightIcon,
   MapPinIcon,
   MapPinSimpleAreaIcon,
-} from "@phosphor-icons/react";
-import "./Home.css";
+} from '@phosphor-icons/react';
+import './Home.css';
 
 function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const navigate = useNavigate();
 
   return (
     <main className="home">
@@ -20,7 +21,10 @@ function Home() {
         <section className="login-prompt">
           <p>
             {/* MEMO: 로그인 클릭 시, 로그인 페이지로 이동 */}
-            <span className="accent-text">로그인</span>하고
+            <span className="accent-text" onClick={() => navigate('/login')}>
+              로그인
+            </span>
+            하고
           </p>
           <p>좋아하는 콘텐츠를 저장해보세요!</p>
         </section>
@@ -90,7 +94,7 @@ function Home() {
           <div className="indicator">
             {/* MEMO: 03 위치에 슬라이드 값이 들어와야 하며, 최대 5개 희망 */}
             <span className="accent-text">
-              {String(activeIndex + 1).padStart(2, "0")}{" "}
+              {String(activeIndex + 1).padStart(2, '0')}{' '}
             </span>
             / 03
           </div>
