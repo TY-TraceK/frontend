@@ -6,8 +6,8 @@ header {
   max-width: 540px;
   height: 60px;
   margin: 0 auto;
-  z-index: 99;
   padding: var(--spacing-16) 0;
+  z-index: 99;
 
   &::before {
     content: '';
@@ -29,22 +29,7 @@ header {
     display: flex;
     align-items: center;
     gap: var(--spacing-8);
-
-    h1 {
-      flex-shrink: 0;
-      background-color: var(--brand);
-      width: 40px;
-      line-height: 40px;
-      text-align: center;
-      color: var(--gl-text-white);
-      border-radius: var(--radius-12);
-      font-size: 24px;
-      font-weight: 900;
-
-      a {
-        display: block;
-      }
-    }
+    margin: 0 var(--spacing-16);
 
     .icon {
       display: flex;
@@ -58,9 +43,29 @@ header {
       border-radius: 50%;
     }
 
-    .search {
-      width: 100%;
+    .logo {
+      flex-shrink: 0;
+      width: 40px;
+      line-height: 40px;
+      background-color: var(--brand);
+      border-radius: var(--radius-12);
+      color: var(--gl-text-white);
+      font-size: 24px;
+      font-weight: 900;
+      text-align: center;
 
+      a {
+        display: block;
+      }
+    }
+
+    .title {
+      flex-shrink: 0;
+      font-size: var(--font-size-title);
+      font-weight: 500;
+    }
+
+    .search {
       .search-input {
         display: flex;
         align-items: center;
@@ -78,6 +83,7 @@ header {
           outline: 0;
           background-color: transparent;
           color: var(--text-default);
+          font-size: var(--font-size-body);
 
           &::placeholder {
             color: var(--text-disabled);
@@ -93,27 +99,36 @@ header {
     }
   }
 
+  &.home {
+    .container {
+      .search {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+  }
+
   &.default {
     .container {
       position: relative;
-
-      h1 {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        width: max-content;
-        line-height: normal;
-        text-align: center;
-        background-color: transparent;
-        color: var(--text-default);
-        border-radius: 0;
-        font-size: var(--font-size-title);
-        font-weight: 600;
-      }
+      justify-content: space-between;
 
       .search {
-        width: auto;
-        margin-left: auto;
+        &.active {
+          position: absolute;
+          top: 0;
+          right: 0;
+          left: 48px;
+        }
+      }
+    }
+  }
+
+  &.expanded {
+    .container {
+      .search {
+        flex: 1;
+        min-width: 0;
       }
     }
   }

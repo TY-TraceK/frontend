@@ -51,6 +51,9 @@ function App() {
     '/contents': {
       title: '콘텐츠 홈',
     },
+    '/map': {
+      type: 'expanded',
+    },
     '/mypage': {
       type: 'mypage',
     },
