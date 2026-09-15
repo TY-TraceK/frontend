@@ -40,8 +40,24 @@ function App() {
 
   const isLoggedIn = !!TokenStorage.getAccessToken();
 
-  // 공통 Header를 사용하지 않는 페이지
-  const hideHeader = location.pathname === '/ranking';
+  const headerConfig = {
+    '/': {
+      type: 'home',
+    },
+    '/ranking': {
+      title: '실시간 순위 Top 10',
+    },
+    '/contents': {
+      title: '콘텐츠 홈',
+    },
+    '/mypage': {
+      type: 'mypage',
+    },
+  };
+
+  const header = headerConfig[location.pathname] ?? {
+    type: 'default',
+  };
 
   const handleVerifyClick = () => {
     if (!isLoggedIn) {
@@ -54,7 +70,7 @@ function App() {
 
   return (
     <>
-      {!hideHeader && <Header />}
+      <Header {...header} />
 
       <Routes>
         {/* 로그인 없이 접근 가능 */}

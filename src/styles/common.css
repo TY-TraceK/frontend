@@ -41,7 +41,8 @@ h3 {
 }
 span.accent-text,
 p.accent-text,
-a.accent-text {
+a.accent-text,
+div.accent-text {
   color: var(--text-accent);
 }
 
