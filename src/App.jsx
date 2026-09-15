@@ -14,6 +14,7 @@ import ContentsHome from './pages/content/ContentsHome';
 import ContentsList from './pages/content/ContentsList';
 import ContentDetail from './pages/content/ContentDetail';
 import Ranking from './pages/Ranking/Ranking';
+import Map from './pages/Map/Map';
 import Search from './pages/Search/Search';
 import Header from './components/Header';
 import GNB from './components/GNB';
@@ -81,6 +82,7 @@ function App() {
         <Route path="/auth/kakao/callback" element={<KakaoCallback />} />
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/map" element={<Map />} />
 
         {/* 로그인 후 접근 가능한 페이지이나, 퍼블리싱 용이성을 위해 하단에 배치 */}
         <Route path="/contents" element={<ContentsHome />} />
