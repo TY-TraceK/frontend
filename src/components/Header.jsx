@@ -82,6 +82,7 @@ function Header({ type = 'default', title }) {
           <button type="button" className="icon">
             <DotsThreeVerticalIcon />
           </button>
+          // TODO: 로그아웃, 회원 탈퇴, 고객센터
         )}
       </div>
     </header>
