@@ -7,8 +7,8 @@ const apiClient = axios.create({
   baseURL,
   timeout: 8000,
   headers: {
-    'Content-Type': 'application/json',
     Accept: 'application/json',
+    'ngrok-skip-browser-warning': 'true',
   },
   validateStatus: (status) => {
     return status < 600;
