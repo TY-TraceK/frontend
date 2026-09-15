@@ -14,6 +14,7 @@ import ContentsHome from './pages/content/ContentsHome';
 import ContentsList from './pages/content/ContentsList';
 import ContentDetail from './pages/content/ContentDetail';
 import Ranking from './pages/Ranking/Ranking';
+import Map from './pages/Map/Map';
 import Search from './pages/Search/Search';
 import Header from './components/Header';
 import GNB from './components/GNB';
@@ -40,8 +41,27 @@ function App() {
 
   const isLoggedIn = !!TokenStorage.getAccessToken();
 
-  // 공통 Header를 사용하지 않는 페이지
-  const hideHeader = location.pathname === '/ranking';
+  const headerConfig = {
+    '/': {
+      type: 'home',
+    },
+    '/ranking': {
+      title: '실시간 순위 Top 10',
+    },
+    '/contents': {
+      title: '콘텐츠 홈',
+    },
+    '/map': {
+      type: 'expanded',
+    },
+    '/mypage': {
+      type: 'mypage',
+    },
+  };
+
+  const header = headerConfig[location.pathname] ?? {
+    type: 'default',
+  };
 
   const handleVerifyClick = () => {
     if (!isLoggedIn) {
@@ -54,7 +74,7 @@ function App() {
 
   return (
     <>
-      {!hideHeader && <Header />}
+      <Header {...header} />
 
       <Routes>
         {/* 로그인 없이 접근 가능 */}
@@ -65,6 +85,7 @@ function App() {
         <Route path="/auth/kakao/callback" element={<KakaoCallback />} />
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/map" element={<Map />} />
 
         {/* 로그인 후 접근 가능한 페이지이나, 퍼블리싱 용이성을 위해 하단에 배치 */}
         <Route path="/contents" element={<ContentsHome />} />

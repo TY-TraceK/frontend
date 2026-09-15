@@ -3,12 +3,11 @@ header {
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
   max-width: 540px;
   height: 60px;
   margin: 0 auto;
-  z-index: 99;
   padding: var(--spacing-16) 0;
+  z-index: 99;
 
   &::before {
     content: '';
@@ -30,20 +29,121 @@ header {
     display: flex;
     align-items: center;
     gap: var(--spacing-8);
+    margin: 0 var(--spacing-16);
 
-    h1 {
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
-      background-color: var(--brand);
+      width: 40px;
+      aspect-ratio: 1 / 1;
+      background-color: var(--bg-elevated);
+      box-shadow: var(--shadow-card);
+      border-radius: 50%;
+    }
+
+    .logo {
+      flex-shrink: 0;
       width: 40px;
       line-height: 40px;
-      text-align: center;
-      color: var(--gl-text-white);
+      background-color: var(--brand);
       border-radius: var(--radius-12);
+      color: var(--gl-text-white);
       font-size: 24px;
       font-weight: 900;
+      text-align: center;
+
+      a {
+        display: block;
+      }
     }
+
+    .title {
+      flex-shrink: 0;
+      font-size: var(--font-size-title);
+      font-weight: 500;
+    }
+
     .search {
-      width: 100%;
+      .search-input {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 40px;
+        padding: 0 var(--spacing-8) 0 var(--spacing-16);
+        background-color: var(--bg-elevated);
+        border-radius: var(--radius-24);
+        box-shadow: var(--shadow-card);
+
+        input {
+          flex: 1;
+          min-width: 0;
+          border: 0;
+          outline: 0;
+          background-color: transparent;
+          color: var(--text-default);
+          font-size: var(--font-size-body);
+
+          &::placeholder {
+            color: var(--text-disabled);
+          }
+        }
+
+        .icon {
+          background-color: transparent;
+          box-shadow: none;
+          border-radius: 0;
+        }
+      }
+    }
+  }
+
+  &.home {
+    .container {
+      .search {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+  }
+
+  &.default {
+    .container {
+      position: relative;
+      justify-content: space-between;
+
+      .search {
+        &.active {
+          position: absolute;
+          top: 0;
+          right: 0;
+          left: 48px;
+        }
+      }
+    }
+  }
+
+  &.expanded {
+    .container {
+      .search {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+  }
+
+  &.mypage {
+    .container {
+      justify-content: space-between;
+
+      > .icon:first-child {
+        margin-right: auto;
+      }
+
+      > .icon:last-child {
+        margin-left: auto;
+      }
     }
   }
 }
