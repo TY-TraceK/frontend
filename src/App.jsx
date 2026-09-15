@@ -16,6 +16,7 @@ import ContentDetail from './pages/content/ContentDetail';
 import Ranking from './pages/Ranking/Ranking';
 import Map from './pages/Map/Map';
 import Search from './pages/Search/Search';
+import Archive from './pages/Archive/Archive';
 import Header from './components/Header';
 import GNB from './components/GNB';
 import VerifyFab from './components/VerifyFab';
@@ -41,6 +42,7 @@ function App() {
 
   const isLoggedIn = !!TokenStorage.getAccessToken();
 
+  // 페이지별 헤더 타입 (없을 경우 default)
   const headerConfig = {
     '/': {
       type: 'home',
@@ -90,6 +92,7 @@ function App() {
         {/* 로그인 후 접근 가능한 페이지이나, 퍼블리싱 용이성을 위해 하단에 배치 */}
         <Route path="/contents" element={<ContentsHome />} />
         <Route path="/contents/list" element={<ContentsList />} />
+        <Route path="/archive" element={<Archive />} />
 
         {/* 로그인 후 접근 가능한 페이지 */}
         <Route element={<ProtectedRoute />}></Route>

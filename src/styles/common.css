@@ -231,7 +231,7 @@ div.accent-text {
 }
 
 /* tags */
-/* MEMO: 추후 css 정리 시, Home.css에서 justify-content 값 제외하고 삭제 + gap 값 0*/
+/* TODO: 추후 css 정리 시, Home.css에서 justify-content 값 제외하고 삭제 + gap 값 0*/
 .tabs {
   display: flex;
   gap: var(--spacing-8);
