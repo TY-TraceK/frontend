@@ -13,7 +13,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import './Archive.css';
-import { PenIcon, PenLineIcon } from 'lucide-react';
 
 function Archive() {
   const [currentSlide, setCurrentSlide] = useState(1);
