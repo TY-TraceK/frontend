@@ -1,125 +1,351 @@
-import { Link } from 'react-router-dom';
-import './Ranking.css';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   CaretDownIcon,
+  CaretLeftIcon,
   CaretUpIcon,
+  MagnifyingGlassIcon,
   MapPinSimpleAreaIcon,
 } from '@phosphor-icons/react';
 
-import rank1 from '../../assets/ranking/rank-1.svg';
+import RankingService from '@/api/services/rankingService.js';
+
+import {
+  LOCATION_CATEGORY,
+  LOCATION_CATEGORY_OPTIONS,
+  RANKING_LIMIT,
+  RANKING_TYPE,
+  RANKING_TYPE_OPTIONS,
+} from '@/constants/rankingConstants.js';
+
+import rank1 from '@/assets/ranking/rank-1.svg';
+import rank2 from '@/assets/ranking/rank-2.svg';
+import rank3 from '@/assets/ranking/rank-3.svg';
+
+import './Ranking.css';
+
+const RANK_IMAGES = {
+  1: rank1,
+  2: rank2,
+  3: rank3,
+};
 
 function Ranking() {
+  const navigate = useNavigate();
+
+  const [rankingType, setRankingType] = useState(RANKING_TYPE.LOCATION.value);
+
+  const [selectedCategory, setSelectedCategory] = useState(
+    LOCATION_CATEGORY.ALL.value
+  );
+
+  const [selectedCity, setSelectedCity] = useState(null);
+
+  const [regionRankings, setRegionRankings] = useState([]);
+  const [locationRankings, setLocationRankings] = useState([]);
+
+  const [categoryExpanded, setCategoryExpanded] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // 지역 랭킹 조회
+  useEffect(() => {
+    const fetchRegionRankings = async () => {
+      try {
+        const data = await RankingService.getRegionRanking({
+          topN: RANKING_LIMIT,
+        });
+
+        const rankings = data.rankings ?? [];
+
+        setRegionRankings(rankings);
+
+        if (rankings.length > 0) {
+          setSelectedCity((prev) => prev ?? rankings[0].region);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchRegionRankings();
+  }, []);
+
+  // 여행지 랭킹 조회
+  useEffect(() => {
+    if (rankingType !== RANKING_TYPE.LOCATION.value) {
+      return;
+    }
+
+    const fetchLocationRankings = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const data = await RankingService.getLocationRanking({
+          city: selectedCity,
+          category: selectedCategory,
+          topN: RANKING_LIMIT,
+        });
+
+        setLocationRankings(data.rankings ?? []);
+      } catch (e) {
+        console.error(e);
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLocationRankings();
+  }, [rankingType, selectedCity, selectedCategory]);
+
+  const rankings = useMemo(() => {
+    if (rankingType === RANKING_TYPE.REGION.value) {
+      return regionRankings;
+    }
+
+    return locationRankings;
+  }, [rankingType, regionRankings, locationRankings]);
+
+  const topRankings = rankings.slice(0, 3);
+  const defaultRankings = rankings.slice(3);
+
+  const handleRegionRankingClick = (region) => {
+    setSelectedCity(region);
+    setRankingType(RANKING_TYPE.LOCATION.value);
+  };
+
   return (
     <main className="ranking">
       <div className="container">
+        {/* 랭킹 전용 헤더 */}
+        <header className="ranking-page-header">
+          <button
+            type="button"
+            className="header-button"
+            aria-label="뒤로가기"
+            onClick={() => navigate(-1)}
+          >
+            <CaretLeftIcon />
+          </button>
+
+          <h1>실시간 순위 Top {RANKING_LIMIT}</h1>
+
+          <button
+            type="button"
+            className="header-button"
+            aria-label="검색"
+            onClick={() => navigate('/search')}
+          >
+            <MagnifyingGlassIcon />
+          </button>
+        </header>
+
         <section className="ranking-filter">
-          <span className="filter">필터 위치: 부산광역시</span>
-
-          <div className="category-tabs">
-            <div className="category-list">
-              <button className="tab active">전체</button>
-              <button className="tab">관광지/명소</button>
-              <button className="tab">문화시설</button>
-              <button className="tab">축제/행사</button>
-              <button className="tab">촬영지</button>
-              <button className="tab">음식점</button>
-              <button className="tab">카페</button>
-              <button className="tab">숙박</button>
-              <button className="tab">쇼핑</button>
-              <button className="tab">기타</button>
-            </div>
-
-            <button className="toggle">
-              <span className="icon">
-                <CaretDownIcon />
-              </span>
-            </button>
+          {/* 지역 / 여행지 */}
+          <div className="ranking-type-tabs">
+            {RANKING_TYPE_OPTIONS.map((type) => (
+              <button
+                key={type.value}
+                type="button"
+                className={`tab ${rankingType === type.value ? 'active' : ''}`}
+                onClick={() => setRankingType(type.value)}
+              >
+                {type.label}
+              </button>
+            ))}
           </div>
+
+          {rankingType === RANKING_TYPE.LOCATION.value && (
+            <>
+              {/* 지역 */}
+              {regionRankings.length > 0 && (
+                <div className="region-filter">
+                  <select
+                    value={selectedCity ?? ''}
+                    onChange={(e) => setSelectedCity(e.target.value)}
+                  >
+                    {regionRankings.map((region) => (
+                      <option key={region.region} value={region.region}>
+                        {region.region}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* 카테고리 */}
+              <div
+                className={`category-tabs ${
+                  categoryExpanded ? 'expanded' : ''
+                }`}
+              >
+                <div className="category-list">
+                  {LOCATION_CATEGORY_OPTIONS.map((category) => (
+                    <button
+                      type="button"
+                      key={category.value}
+                      className={`tab ${
+                        selectedCategory === category.value ? 'active' : ''
+                      }`}
+                      onClick={() => setSelectedCategory(category.value)}
+                    >
+                      {category.label}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  className="toggle"
+                  aria-label={
+                    categoryExpanded ? '카테고리 접기' : '카테고리 펼치기'
+                  }
+                  onClick={() => setCategoryExpanded((prev) => !prev)}
+                >
+                  <span className="icon">
+                    {categoryExpanded ? <CaretUpIcon /> : <CaretDownIcon />}
+                  </span>
+                </button>
+              </div>
+            </>
+          )}
         </section>
+
         <section className="ranking-section">
-          {/* Top 3 */}
-          <ol className="list top3-list">
-            {/* 1위 */}
-            <li className="item rank-1">
-              <Link to="#">
-                <span className="rank">
-                  <img src={rank1} alt="1위" />
-                </span>
+          {loading && (
+            <div className="ranking-state">순위를 불러오는 중입니다.</div>
+          )}
 
-                <div className="image">
-                  <img src="https://picsum.photos/id/833/600/400" alt="" />
-                </div>
+          {!loading && error && (
+            <div className="ranking-state error">{error}</div>
+          )}
 
-                <div className="info">
-                  <div className="place">
-                    <span className="tag">부산광역시</span>
-                    <span className="title">송도해상케이블카</span>
-                  </div>
+          {!loading && !error && rankings.length === 0 && (
+            <div className="ranking-state">랭킹 데이터가 없습니다.</div>
+          )}
 
-                  <span className="verify-count accent-text">
-                    <span className="icon">
-                      <MapPinSimpleAreaIcon />
-                    </span>
-                    N,NNN건
-                  </span>
-                </div>
-              </Link>
-            </li>
-          </ol>
+          {!loading && !error && rankings.length > 0 && (
+            <>
+              {/* Top 3 */}
+              <ol className="list top3-list">
+                {topRankings.map((ranking) => (
+                  <RankingItem
+                    key={getRankingKey(rankingType, ranking)}
+                    ranking={ranking}
+                    rankingType={rankingType}
+                    top
+                    onRegionClick={handleRegionRankingClick}
+                  />
+                ))}
+              </ol>
 
-          {/* 4~10위 */}
-          <ol className="list default-list" start="4">
-            <li className="item">
-              <Link to="#">
-                <span className="rank">4</span>
-
-                <div className="image">
-                  <img src="https://picsum.photos/id/836/600/400" alt="" />
-                </div>
-
-                <div className="info">
-                  <div className="place">
-                    <span className="tag">부산광역시</span>
-                    <span className="title">송도해상케이블카</span>
-                  </div>
-
-                  <span className="verify-count accent-text">
-                    <span className="icon">
-                      <MapPinSimpleAreaIcon />
-                    </span>
-                    N,NNN건
-                  </span>
-                </div>
-              </Link>
-            </li>
-            <li className="item">
-              <Link to="#">
-                <span className="rank">4</span>
-
-                <div className="image">
-                  <img src="https://picsum.photos/id/836/600/400" alt="" />
-                </div>
-
-                <div className="info">
-                  <div className="place">
-                    <span className="tag">부산광역시</span>
-                    <span className="title">송도해상케이블카</span>
-                  </div>
-
-                  <span className="verify-count accent-text">
-                    <span className="icon">
-                      <MapPinSimpleAreaIcon />
-                    </span>
-                    N,NNN건
-                  </span>
-                </div>
-              </Link>
-            </li>
-          </ol>
+              {/* 4~10 */}
+              {defaultRankings.length > 0 && (
+                <ol className="list default-list">
+                  {defaultRankings.map((ranking) => (
+                    <RankingItem
+                      key={getRankingKey(rankingType, ranking)}
+                      ranking={ranking}
+                      rankingType={rankingType}
+                      onRegionClick={handleRegionRankingClick}
+                    />
+                  ))}
+                </ol>
+              )}
+            </>
+          )}
         </section>
       </div>
     </main>
   );
 }
+
+function RankingItem({ ranking, rankingType, top = false, onRegionClick }) {
+  const isRegion = rankingType === RANKING_TYPE.REGION.value;
+
+  const rank = ranking.rank;
+
+  const title = isRegion ? ranking.region : ranking.locationName;
+
+  const tag = isRegion ? null : ranking.cityName;
+
+  const count = ranking.totalVerificationCount;
+
+  const handleClick = (event) => {
+    if (!isRegion) {
+      return;
+    }
+
+    event.preventDefault();
+    onRegionClick?.(ranking.region);
+  };
+
+  return (
+    <li className={`item ${top && rank <= 3 ? `rank-${rank}` : ''}`}>
+      <Link
+        to={isRegion ? '#' : `/place?id=${ranking.locationId}`}
+        onClick={handleClick}
+      >
+        {/* 순위 */}
+        <span className="rank">
+          {top && RANK_IMAGES[rank] ? (
+            <img src={RANK_IMAGES[rank]} alt={`${rank}위`} />
+          ) : (
+            formatRank(rank)
+          )}
+        </span>
+
+        {/*
+          API에 이미지가 아직 없어도 이 영역은 반드시 유지.
+          기존 CSS가 이 구조를 기준으로 잡혀 있음.
+        */}
+        {!isRegion && (
+          <div className="image">
+            {ranking.imageUrl && <img src={ranking.imageUrl} alt={title} />}
+          </div>
+        )}
+
+        {/* 정보 */}
+        <div className="info">
+          <div className="place">
+            {tag && <span className="tag">{tag}</span>}
+
+            <span className="title">{title}</span>
+          </div>
+
+          <span className="verify-count accent-text">
+            <span className="icon">
+              <MapPinSimpleAreaIcon />
+            </span>
+            {formatCount(count)}건
+          </span>
+        </div>
+      </Link>
+    </li>
+  );
+}
+
+const getRankingKey = (rankingType, ranking) => {
+  if (rankingType === RANKING_TYPE.REGION.value) {
+    return ranking.region;
+  }
+
+  return ranking.locationId;
+};
+
+const formatRank = (rank) => {
+  if (rank == null) {
+    return '-';
+  }
+
+  return String(rank).padStart(2, '0');
+};
+
+const formatCount = (count) => {
+  return new Intl.NumberFormat('ko-KR').format(count ?? 0);
+};
 
 export default Ranking;

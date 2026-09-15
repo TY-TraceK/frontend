@@ -1,32 +1,141 @@
 .ranking {
+  padding-top: 0;
+  margin-top: 0;
+
   .container {
-    .ranking-filter {
+    padding-bottom: var(--spacing-24);
+
+    /* 랭킹 전용 헤더 */
+
+    .ranking-page-header {
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      align-items: center;
+
+      position: static; /* fixed / sticky 제거 */
+      width: 100%;
+
       margin-bottom: var(--spacing-24);
 
-      .filter {
-        margin-bottom: var(--spacing-8);
+      .header-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 40px;
+        height: 40px;
+
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+
+        background-color: var(--bg-elevated);
+        box-shadow: var(--shadow-card);
+
+        cursor: pointer;
+
+        svg {
+          width: 20px;
+          height: 20px;
+        }
       }
+
+      h1 {
+        margin: 0;
+
+        text-align: center;
+        font-size: var(--font-size-title);
+        font-weight: 600;
+      }
+    }
+
+    .ranking-filter {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-12);
+
+      margin-bottom: var(--spacing-24);
+
+      /* 지역 / 여행지 */
+
+      .ranking-type-tabs {
+        display: flex;
+        gap: var(--spacing-8);
+
+        .tab {
+          padding: 4px 12px;
+
+          border: 0;
+          border-radius: var(--radius-12);
+
+          background-color: var(--interact-subtle);
+          color: var(--text-sub);
+
+          white-space: nowrap;
+          cursor: pointer;
+
+          &.active {
+            color: var(--gl-text-white);
+            background-color: var(--interact-active);
+          }
+        }
+      }
+
+      /* 지역 선택 */
+
+      .region-filter {
+        select {
+          padding: 8px 16px;
+
+          border: 0;
+          outline: 0;
+          border-radius: var(--radius-24);
+
+          color: var(--text-default);
+          background-color: var(--bg-elevated);
+          box-shadow: var(--shadow-card);
+
+          font: inherit;
+
+          cursor: pointer;
+        }
+      }
+
+      /* 카테고리 */
 
       .category-tabs {
         display: flex;
         align-items: flex-start;
+
         position: relative;
 
         &::after {
           content: '';
+
           position: absolute;
           top: 0;
           right: 30px;
+
           width: 24px;
           height: 100%;
-          background: linear-gradient(to right, transparent, var(--bg-canvas));
+
+          background: linear-gradient(
+              to right,
+              transparent,
+              var(--bg-canvas)
+          );
+
           pointer-events: none;
         }
 
         .category-list {
           display: flex;
+          flex: 1;
+
           gap: var(--spacing-8);
+
           min-width: 0;
+
           overflow-x: auto;
           scrollbar-width: none;
 
@@ -37,32 +146,58 @@
 
         .tab {
           flex: 0 0 auto;
-          white-space: nowrap;
-          color: var(--text-sub);
-          background-color: var(--interact-subtle);
+
           padding: 4px 12px;
+
+          border: 0;
           border-radius: var(--radius-12);
 
+          color: var(--text-sub);
+          background-color: var(--interact-subtle);
+
+          white-space: nowrap;
+          cursor: pointer;
+
           &.active {
-            background-color: var(--interact-active);
             color: var(--gl-text-white);
+            background-color: var(--interact-active);
           }
         }
 
         .toggle {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
           flex-shrink: 0;
+
           width: 30px;
-          aspect-ratio: 1 / 1;
+          height: 30px;
+
+          padding: 0;
+
+          border: 0;
+          border-radius: 50%;
+
           background-color: var(--bg-elevated);
           box-shadow: var(--shadow-card);
-          border-radius: var(--radius-24);
+
           position: relative;
           z-index: 1;
+
+          cursor: pointer;
 
           .icon {
             display: flex;
             align-items: center;
             justify-content: center;
+
+            font-size: 12px;
+
+            svg {
+              width: 16px;
+              height: 16px;
+            }
           }
         }
 
@@ -80,76 +215,188 @@
     }
 
     .ranking-section {
+      .ranking-state {
+        padding: var(--spacing-24);
+
+        text-align: center;
+        color: var(--text-sub);
+
+        &.error {
+          color: var(--text-error);
+        }
+      }
+
       .list {
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+
         .item {
+          .item-content,
           a {
             display: flex;
             align-items: center;
+
+            width: 100%;
+
             gap: var(--spacing-12);
 
-            .rank {
+            color: inherit;
+            text-decoration: none;
+          }
+
+          /* 순위 */
+
+          .rank {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            width: 40px;
+
+            text-align: center;
+
+            font-size: var(--font-size-heading);
+            font-weight: 800;
+
+            img {
+              display: block;
+
               width: 40px;
-              text-align: center;
-              font-weight: 800;
-              font-size: var(--font-size-heading);
+              height: auto;
+            }
+          }
+
+          /* 관광지 이미지 */
+
+          .image {
+            flex-shrink: 0;
+
+            width: 100px;
+            height: 100px;
+
+            overflow: hidden;
+
+            border-radius: var(--radius-24);
+            background-color: #d9d9d9;
+
+            &.placeholder {
+              background-color: #d9d9d9;
             }
 
-            .image {
-              flex-shrink: 0;
-              width: 100px;
-              aspect-ratio: 1 / 1;
-              overflow: hidden;
-              border-radius: var(--radius-24);
+            img {
+              display: block;
 
-              img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-              }
+              width: 100%;
+              height: 100%;
+
+              object-fit: cover;
             }
+          }
 
-            .info {
-              flex: 1;
+          /* 관광지 정보 */
+
+          .info {
+            display: flex;
+            flex: 1;
+
+            align-items: center;
+            justify-content: space-between;
+
+            min-width: 0;
+
+            .place {
               display: flex;
-              flex-direction: row;
-              align-items: center;
-              justify-content: space-between;
+              flex-direction: column;
 
-              .place {
-                display: flex;
-                flex-direction: column;
-                gap: var(--spacing-4);
+              gap: var(--spacing-4);
 
-                .tag {
-                  width: fit-content;
-                  padding: 2px 10px;
-                  border-radius: var(--radius-12);
-                  font-size: var(--font-size-caption);
-                  background-color: var(--interact-subtle);
-                  color: var(--text-sub);
-                }
+              min-width: 0;
 
-                .title {
-                  font-size: var(--font-size-heading);
-                }
+              .tag {
+                width: fit-content;
+
+                padding: 2px 10px;
+
+                border-radius: var(--radius-12);
+
+                background-color: var(--interact-subtle);
+                color: var(--text-sub);
+
+                font-size: var(--font-size-caption);
+
+                white-space: nowrap;
               }
 
-              .verify-count {
+              .title {
+                overflow: hidden;
+
+                color: var(--gl-text-black);
+
+                font-size: var(--font-size-heading);
+                font-weight: 500;
+
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              }
+            }
+
+            .verify-count {
+              display: flex;
+              align-items: center;
+
+              gap: var(--spacing-4);
+
+              flex-shrink: 0;
+
+              color: var(--interact-active);
+
+              .icon {
                 display: flex;
                 align-items: center;
-                gap: var(--spacing-4);
+                justify-content: center;
+
+                svg {
+                  width: 20px;
+                  height: 20px;
+                }
+              }
+
+              .verify-label {
+                display: none;
               }
             }
           }
+
+          &.clickable {
+            cursor: pointer;
+          }
         }
 
+        /* =========================
+           1 ~ 3위
+           ========================= */
+
         &.top3-list {
+          display: flex;
+          flex-direction: column;
+
+          gap: var(--spacing-8);
+
+          margin-bottom: var(--spacing-8);
+
           .item {
+            padding: var(--spacing-16);
+
+            margin: 0;
+
+            border-radius: var(--radius-32);
+
             background-color: var(--bg-elevated);
             box-shadow: var(--shadow-card);
-            border-radius: var(--radius-32);
-            padding: var(--spacing-16);
-            margin-bottom: var(--spacing-8);
 
             &.rank-1 {
               background-color: #fef8e4;
@@ -163,32 +410,56 @@
               background-color: #ffeee5;
             }
 
+            .item-content,
             a {
-              .info {
-                flex-direction: column;
-                align-items: flex-start;
+              min-height: 100px;
+            }
+
+            .rank {
+              width: 40px;
+
+              img {
+                width: 40px;
+              }
+            }
+
+            .image {
+              width: 100px;
+              height: 100px;
+            }
+
+            .info {
+              flex-direction: column;
+
+              align-items: flex-start;
+              justify-content: center;
+
+              gap: var(--spacing-8);
+
+              .place {
                 gap: var(--spacing-8);
+              }
 
-                .place {
-                  gap: var(--spacing-8);
-
-                  .title {
-                    font-size: var(--font-size-heading);
-                    color: var(--gl-text-black);
-                    font-weight: 500;
-                  }
-                }
+              .verify-count {
+                justify-content: flex-start;
               }
             }
           }
         }
 
+        /* =========================
+           4 ~ 10위
+           ========================= */
+
         &.default-list {
+          padding: 0 var(--spacing-16);
+
+          overflow: hidden;
+
+          border-radius: var(--radius-32);
+
           background-color: var(--bg-elevated);
           box-shadow: var(--shadow-card);
-          border-radius: var(--radius-32);
-          padding: 0 var(--spacing-16);
-          overflow: hidden;
 
           .item {
             padding: var(--spacing-8) 0;
@@ -197,10 +468,42 @@
               border-bottom: 1px solid var(--divider-default);
             }
 
+            .item-content,
             a {
-              .image {
-                width: 60px;
-                border-radius: var(--spacing-16);
+              min-height: 60px;
+            }
+
+            .rank {
+              width: 40px;
+
+              font-size: var(--font-size-heading);
+              font-weight: 500;
+            }
+
+            .image {
+              width: 60px;
+              height: 60px;
+
+              border-radius: var(--spacing-16);
+            }
+
+            .info {
+              .place {
+                flex: 1;
+
+                gap: 2px;
+
+                .tag {
+                  padding: 1px 8px;
+                }
+
+                .title {
+                  font-size: var(--font-size-body);
+                }
+              }
+
+              .verify-count {
+                margin-left: var(--spacing-8);
               }
             }
           }

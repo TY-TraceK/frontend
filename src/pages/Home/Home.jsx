@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -8,11 +8,33 @@ import {
   MapPinIcon,
   MapPinSimpleAreaIcon,
 } from '@phosphor-icons/react';
+
+import RankingService from '@/api/services/rankingService.js';
+
 import './Home.css';
 
 function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [topRankings, setTopRankings] = useState([]);
+
   const navigate = useNavigate();
+
+  // 여행지 TOP 3 조회
+  useEffect(() => {
+    const fetchTopRankings = async () => {
+      try {
+        const data = await RankingService.getLocationRanking({
+          topN: 3,
+        });
+
+        setTopRankings((data.rankings ?? []).slice(0, 3));
+      } catch (error) {
+        console.error('TOP3 랭킹 조회 실패:', error);
+      }
+    };
+
+    fetchTopRankings();
+  }, []);
 
   return (
     <main className="home">
@@ -28,6 +50,7 @@ function Home() {
           </p>
           <p>좋아하는 콘텐츠를 저장해보세요!</p>
         </section>
+
         {/* MEMO: 로그인 후 변경 형태 - 해당 섹션 제외 비회원 모두 이용 가능*/}
         <section className="personalized-content">
           <div className="title">
@@ -48,6 +71,7 @@ function Home() {
             </Link>
           </div>
         </section>
+
         <section className="new-contents">
           <h2>새로운 콘텐츠를 통해 여행지를 찾아보세요!</h2>
 
@@ -66,11 +90,13 @@ function Home() {
                 <img src="https://picsum.photos/id/912/400/600" alt="" />
               </Link>
             </li>
+
             <li className="poster">
               <Link>
                 <img src="https://picsum.photos/id/508/400/600" alt="" />
               </Link>
             </li>
+
             <li className="poster">
               <Link>
                 <img src="https://picsum.photos/id/1015/400/600" alt="" />
@@ -78,6 +104,7 @@ function Home() {
             </li>
           </ul>
         </section>
+
         <section className="hero">
           <div className="header">
             <h2>오늘은 어디로 여행을 떠나볼까요?</h2>
@@ -207,6 +234,7 @@ function Home() {
             </Swiper>
           </div>
         </section>
+
         <section className="archive-banner">
           <Link>
             {/* MEMO: 클릭 시 아카이브 페이지로 이동 */}
@@ -221,76 +249,50 @@ function Home() {
             </span>
           </Link>
         </section>
+
+        {/* 여행지 실시간 TOP 3 */}
         <section className="location-ranking">
           <ul className="ranking-list">
-            <li className="ranking-card relative">
-              <Link>
-                {/* MEMO: 클릭 시, 여행지 상세 페이지로 이동 */}
-                <div className="image">
-                  <img src="https://picsum.photos/id/60/600/400" alt="" />
-                </div>
+            {topRankings.map((ranking) => (
+              <li key={ranking.locationId} className="ranking-card relative">
+                <Link to={`/place?id=${ranking.locationId}`}>
+                  <div className="image">
+                    {ranking.imageUrl && (
+                      <img src={ranking.imageUrl} alt={ranking.locationName} />
+                    )}
+                  </div>
 
-                <span className="number">1</span>
+                  <span className="number">{ranking.rank}</span>
 
-                <div className="info">
-                  <p className="location-name emphasis">송도해상케이블카</p>
-                  <p className="count">
-                    <span className="icon">
-                      <MapPinSimpleAreaIcon />
-                    </span>
-                    <span>2,419건</span>
-                  </p>
-                </div>
-              </Link>
-            </li>
+                  <div className="info">
+                    <p className="location-name emphasis">
+                      {ranking.locationName}
+                    </p>
 
-            <li className="ranking-card relative">
-              <Link>
-                <div className="image">
-                  <img src="https://picsum.photos/id/61/600/400" alt="" />
-                </div>
+                    <p className="count">
+                      <span className="icon">
+                        <MapPinSimpleAreaIcon />
+                      </span>
 
-                <span className="number">2</span>
-
-                <div className="info">
-                  <p className="location-name emphasis">송정해수욕장</p>
-                  <p className="count">
-                    <span className="icon">
-                      <MapPinSimpleAreaIcon />
-                    </span>
-                    <span>1,805건</span>
-                  </p>
-                </div>
-              </Link>
-            </li>
-
-            <li className="ranking-card relative">
-              <Link>
-                <div className="image">
-                  <img src="https://picsum.photos/id/62/600/400" alt="" />
-                </div>
-
-                <span className="number">3</span>
-
-                <div className="info">
-                  <p className="location-name emphasis">흰여울마을</p>
-                  <p className="count">
-                    <span className="icon">
-                      <MapPinSimpleAreaIcon />
-                    </span>
-                    <span>901건</span>
-                  </p>
-                </div>
-              </Link>
-            </li>
+                      <span>
+                        {new Intl.NumberFormat('ko-KR').format(
+                          ranking.totalVerificationCount ?? 0
+                        )}
+                        건
+                      </span>
+                    </p>
+                  </div>
+                </Link>
+              </li>
+            ))}
           </ul>
 
-          <Link className="ranking-link accent-text">
-            {/* MEMO: 여행지 실시간 순위 페이지로 이동 */}
+          <Link to="/ranking" className="ranking-link accent-text">
             여행지 실시간 순위 더보기
             <CaretRightIcon />
           </Link>
         </section>
+
         <section className="content-curator">
           {/* MEMO: 큐레이션 섹션 진행할 건지 논의 필요함. 잠시 보류해주세요. 감사합니다! */}
           <Link className="link">
