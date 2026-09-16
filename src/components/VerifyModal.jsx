@@ -81,11 +81,7 @@ function VerifyModal({ isOpen, onClose }) {
   const [isSearchFlow, setIsSearchFlow] = useState(false);
   const [selectedSearchArtist, setSelectedSearchArtist] = useState(null);
 
-  const [artistKeyword, setArtistKeyword] = useState('');
-  const [artistSearchResults, setArtistSearchResults] = useState([]);
-
   const [isLoading, setIsLoading] = useState(false);
-  const [isArtistSearchLoading, setIsArtistSearchLoading] = useState(false);
 
   const artists = selectedContent?.artists ?? [];
 
@@ -130,11 +126,6 @@ function VerifyModal({ isOpen, onClose }) {
     setIsArtistSearch(false);
     setIsSearchFlow(false);
     setSelectedSearchArtist(null);
-
-    setArtistKeyword('');
-    setArtistSearchResults([]);
-
-    setIsArtistSearchLoading(false);
   }, [isOpen]);
 
   useEffect(() => {
@@ -177,9 +168,6 @@ function VerifyModal({ isOpen, onClose }) {
     setIsArtistSearch(false);
     setIsSearchFlow(false);
     setSelectedSearchArtist(null);
-
-    setArtistKeyword('');
-    setArtistSearchResults([]);
   };
 
   const handleSelectContent = (content) => {
@@ -282,56 +270,9 @@ function VerifyModal({ isOpen, onClose }) {
     setIsArtistSearch(true);
     setIsSearchFlow(false);
 
-    setArtistKeyword('');
-    setArtistSearchResults([]);
-
     setSelectedSearchArtist(null);
     setSelectedContent(null);
     setSelectedArtists([]);
-  };
-
-  const handleSearchArtist = async () => {
-    const keyword = artistKeyword.trim();
-
-    if (!keyword) {
-      setArtistSearchResults([]);
-      setSelectedSearchArtist(null);
-
-      showWarningNotification('검색할 아티스트 이름을 입력해주세요.');
-
-      return;
-    }
-
-    try {
-      setIsArtistSearchLoading(true);
-
-      const result = await searchArtists({
-        keyword,
-        size: 20,
-      });
-
-      const searchedArtists = result?.artists ?? [];
-
-      setArtistSearchResults(searchedArtists);
-
-      setSelectedSearchArtist(null);
-      setSelectedContent(null);
-      setSelectedArtists([]);
-
-      if (searchedArtists.length === 0) {
-        showInfoNotification('검색된 아티스트가 없습니다.');
-      }
-    } catch (error) {
-      console.error('아티스트 검색 실패:', error);
-
-      setArtistSearchResults([]);
-
-      showErrorNotification(
-        getErrorMessage(error, '아티스트 검색에 실패했습니다.')
-      );
-    } finally {
-      setIsArtistSearchLoading(false);
-    }
   };
 
   const handleSelectSearchArtist = (artist) => {
@@ -351,22 +292,9 @@ function VerifyModal({ isOpen, onClose }) {
     setSelectedArtists([]);
   };
 
-  const handleArtistKeywordChange = (keyword) => {
-    setArtistKeyword(keyword);
-
-    if (selectedSearchArtist) {
-      setSelectedSearchArtist(null);
-      setSelectedContent(null);
-      setSelectedArtists([]);
-    }
-  };
-
   const handleCloseArtistSearch = () => {
     setIsArtistSearch(false);
     setIsSearchFlow(false);
-
-    setArtistKeyword('');
-    setArtistSearchResults([]);
 
     setSelectedSearchArtist(null);
     setSelectedContent(null);
@@ -541,7 +469,6 @@ function VerifyModal({ isOpen, onClose }) {
 
   const isNextDisabled =
     isLoading ||
-    isArtistSearchLoading ||
     (step === 2 && !selectedLocation) ||
     (step === 3 && !selectedContent) ||
     (step === 4 && selectedArtists.length === 0);
@@ -577,11 +504,6 @@ function VerifyModal({ isOpen, onClose }) {
           isArtistSearch={isArtistSearch}
           onOpenArtistSearch={handleOpenArtistSearch}
           onCloseArtistSearch={handleCloseArtistSearch}
-          artistKeyword={artistKeyword}
-          onArtistKeywordChange={handleArtistKeywordChange}
-          artistSearchResults={artistSearchResults}
-          isArtistSearchLoading={isArtistSearchLoading}
-          onSearchArtist={handleSearchArtist}
           selectedSearchArtist={selectedSearchArtist}
           onSelectSearchArtist={handleSelectSearchArtist}
           onResetSelectedSearchArtist={handleResetSelectedSearchArtist}
