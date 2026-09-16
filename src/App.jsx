@@ -11,7 +11,6 @@ import {
 import Home from './pages/Home/Home';
 import Place from './pages/Place/Place';
 import ContentsHome from './pages/content/ContentsHome';
-import ContentsList from './pages/content/ContentsList';
 import ContentDetail from './pages/content/ContentDetail';
 import Ranking from './pages/Ranking/Ranking';
 import Map from './pages/Map/Map';
@@ -22,6 +21,7 @@ import Header from './components/Header';
 import GNB from './components/GNB';
 import VerifyFab from './components/VerifyFab';
 import VerifyModal from './components/VerifyModal';
+import ListTemplate from './components/ListTemplate';
 import { KakaoCallback, Login } from '@/pages/Login';
 import TokenStorage from '@/api/tokenStorage.js';
 
@@ -60,6 +60,9 @@ function App() {
     '/profile': {
       type: 'mypage',
     },
+    '/list': {
+      title: '리스트 페이지 타이틀',
+    },
   };
 
   const header = headerConfig[location.pathname] ?? {
@@ -92,7 +95,7 @@ function App() {
 
         {/* 로그인 후 접근 가능한 페이지이나, 퍼블리싱 용이성을 위해 하단에 배치 */}
         <Route path="/contents" element={<ContentsHome />} />
-        <Route path="/contents/list" element={<ContentsList />} />
+        <Route path="/list" element={<ListTemplate />} />
         <Route path="/archive" element={<Archive />} />
         <Route path="/profile" element={<Profile />} />
 
