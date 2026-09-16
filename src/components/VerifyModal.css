@@ -37,6 +37,7 @@
 
     .container {
       padding: 0 16px;
+
       h2 {
         margin: var(--spacing-24) 0 var(--spacing-16);
       }
@@ -58,9 +59,17 @@
 
           .image {
             width: 50px;
-            aspect-ratio: 1/1;
+            aspect-ratio: 1 / 1;
+            flex-shrink: 0;
             overflow: hidden;
             border-radius: var(--radius-16);
+
+            img {
+              width: 100%;
+              height: 100%;
+              display: block;
+              object-fit: cover;
+            }
           }
         }
       }
@@ -69,7 +78,8 @@
         .item.selected {
           background-color: var(--interact-subtle);
 
-          a {
+          a,
+          button {
             .item-info {
               .tag {
                 background-color: var(--bg-elevated);
@@ -81,6 +91,11 @@
     }
   }
 
+  /*
+   * STEP 2
+   * 장소 선택
+   */
+
   .step-2 {
     .map {
       background-color: #d9d9d9;
@@ -88,11 +103,21 @@
     }
   }
 
+  /*
+   * STEP 3
+   * 콘텐츠 선택 / 아티스트 검색
+   */
+
   .step-3 {
     .container {
       height: 100%;
       display: flex;
       flex-direction: column;
+
+      /*
+       * "미디어가 생각 안 난다면,
+       * 아티스트로 찾아볼까요?"
+       */
 
       .artist-search-prompt {
         display: flex;
@@ -123,37 +148,81 @@
         }
       }
 
+      /*
+       * 검색창
+       */
+
       .artist-search {
-        margin: var(--spacing-16) 0;
-      }
+        margin: var(--spacing-16) 0 var(--spacing-8);
 
-      .media-selection-toggle {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-4);
-        margin-top: var(--spacing-16);
-        padding: 12px 0;
-        color: var(--text-sub);
-        font-size: var(--font-size-body);
-        margin-top: auto;
-
-        .icon {
+        .search-input {
+          width: 100%;
           display: flex;
+          align-items: center;
+          gap: var(--spacing-8);
+          padding: 8px 12px;
+          background-color: var(--bg-elevated);
+          border-radius: var(--radius-24);
+          box-shadow: var(--shadow-card);
+
+          input {
+            flex: 1;
+            min-width: 0;
+            padding: 4px 0;
+            border: 0;
+            outline: 0;
+            background-color: transparent;
+            color: var(--text-main);
+            font: inherit;
+
+            &::placeholder {
+              color: var(--text-sub);
+            }
+          }
+
+          button {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+          }
+
+          .icon {
+            display: flex;
+          }
         }
       }
+
+      /*
+       * 검색 결과
+       *
+       * 최지우 검색
+       * ↓
+       * 여러 최지우가 카드 형태로 표시되는 영역
+       */
+
       .artist-search-results {
         padding: 12px;
         background-color: var(--bg-elevated);
         border-radius: var(--radius-24);
         box-shadow: var(--shadow-card);
 
+        .artist-search-loading,
+        .empty-result {
+          padding: var(--spacing-16) 0;
+          text-align: center;
+          color: var(--text-sub);
+          font-size: var(--font-size-caption);
+        }
+
         .artist-list {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(4, minmax(0, 1fr));
           gap: var(--spacing-8);
 
           .artist {
+            min-width: 0;
             text-align: center;
 
             button {
@@ -162,23 +231,302 @@
               flex-direction: column;
               align-items: center;
               gap: var(--spacing-4);
+              background-color: transparent;
+            }
 
-              .image {
+            .image {
+              width: 100%;
+              aspect-ratio: 1 / 1;
+              overflow: hidden;
+              border-radius: var(--radius-24);
+
+              img {
                 width: 100%;
-                aspect-ratio: 1 / 1;
-                overflow: hidden;
-                border-radius: var(--radius-24);
+                height: 100%;
+                display: block;
+                object-fit: cover;
               }
             }
+
+            .name {
+              width: 100%;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
+
             .group {
-              font-size: var(--font-size-caption);
+              width: 100%;
               color: var(--text-sub);
+              font-size: var(--font-size-caption);
+            }
+
+            .ellipsis-2 {
+              display: -webkit-box;
+              overflow: hidden;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+              white-space: normal;
             }
           }
         }
       }
+
+      /*
+       * 검색 결과에서 아티스트 선택 후
+       *
+       * [최지우]
+       * ----------------
+       * 선택하신 아티스트와 장소에 해당하는 콘텐츠예요.
+       *
+       * [런닝맨]          선택
+       * [콘텐츠2]         선택
+       */
+
+      .artist-content-search-result {
+        padding: 12px;
+        background-color: var(--bg-elevated);
+        border-radius: var(--radius-24);
+        box-shadow: var(--shadow-card);
+
+        /*
+         * 선택한 아티스트
+         */
+
+        .selected-search-artist {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-8);
+          padding: 0;
+          text-align: left;
+          background-color: transparent;
+
+          .image {
+            width: 54px;
+            aspect-ratio: 1 / 1;
+            flex-shrink: 0;
+            overflow: hidden;
+            border-radius: var(--radius-16);
+
+            img {
+              width: 100%;
+              height: 100%;
+              display: block;
+              object-fit: cover;
+            }
+          }
+
+          .info {
+            min-width: 0;
+            flex: 1;
+
+            .name {
+              width: 100%;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              font-size: var(--font-size-body);
+              font-weight: 500;
+              color: var(--text-main);
+            }
+
+            .alias {
+              width: 100%;
+              margin-top: 2px;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              color: var(--text-sub);
+              font-size: var(--font-size-caption);
+            }
+          }
+        }
+
+        > hr {
+          margin: 12px 0;
+        }
+
+        /*
+         * 안내 문구
+         */
+
+        .artist-content-description {
+          margin-bottom: var(--spacing-8);
+          color: var(--text-sub);
+          font-size: var(--font-size-caption);
+        }
+
+        /*
+         * 콘텐츠 조회 로딩
+         */
+
+        .artist-content-loading {
+          min-height: 70px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--interact-subtle);
+            border-top-color: var(--text-main);
+            border-radius: 50%;
+            animation: verify-spin 0.8s linear infinite;
+          }
+        }
+
+        /*
+         * 아티스트 + 장소에 해당하는 콘텐츠 목록
+         */
+
+        .artist-content-list {
+          display: flex;
+          flex-direction: column;
+
+          li {
+            border-bottom: 1px solid var(--interact-subtle);
+
+            &:last-child {
+              border-bottom: 0;
+            }
+
+            > button {
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              gap: var(--spacing-8);
+              padding: 12px;
+              text-align: left;
+              background-color: transparent;
+              border-radius: var(--radius-24);
+            }
+
+            &.selected {
+              > button {
+                background-color: var(--interact-subtle);
+              }
+
+              .content-info {
+                .tag {
+                  background-color: var(--bg-elevated);
+                }
+              }
+            }
+
+            .content-main {
+              flex: 1;
+              min-width: 0;
+              display: flex;
+              align-items: center;
+              gap: var(--spacing-8);
+            }
+
+            .image {
+              width: 60px;
+              aspect-ratio: 1 / 1;
+              flex-shrink: 0;
+              overflow: hidden;
+              border-radius: var(--radius-16);
+
+              img {
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+              }
+            }
+
+            .content-info {
+              flex: 1;
+              min-width: 0;
+
+              .tag {
+                display: inline-block;
+                margin-bottom: var(--spacing-4);
+                padding: 2px 8px;
+                background-color: var(--interact-subtle);
+                border-radius: var(--radius-16);
+                color: var(--text-sub);
+                font-size: var(--font-size-caption);
+              }
+
+              .title {
+                width: 100%;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                color: var(--text-main);
+                font-size: var(--font-size-body);
+              }
+            }
+
+            .select-text {
+              flex-shrink: 0;
+              color: var(--text-sub);
+              font-size: var(--font-size-caption);
+
+              &.selected {
+                color: var(--interact-active);
+                font-weight: 500;
+              }
+            }
+          }
+        }
+
+        /*
+         * 해당 콘텐츠 없음
+         */
+
+        .empty-content-result {
+          padding: var(--spacing-24) 0;
+          text-align: center;
+          color: var(--text-sub);
+          font-size: var(--font-size-caption);
+        }
+      }
+
+      /*
+       * 일반 미디어 선택
+       */
+
+      .media-selection {
+        .card-list {
+          display: flex;
+          flex-direction: column;
+        }
+      }
+
+      /*
+       * 검색 화면 아래
+       * "방문 인증할 미디어 ▼"
+       */
+
+      .media-selection-toggle {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-4);
+        margin-top: auto;
+        padding: 12px 0;
+        color: var(--text-sub);
+        font-size: var(--font-size-body);
+        background-color: transparent;
+
+        .icon {
+          display: flex;
+        }
+      }
     }
   }
+
+  /*
+   * STEP 4
+   * 아티스트 복수 선택
+   */
+
   .step-4 {
     .artist-selection {
       h2 {
@@ -204,10 +552,15 @@
             gap: var(--spacing-4);
             color: var(--text-sub);
             font-size: var(--font-size-caption);
+            background-color: transparent;
 
             .icon {
               display: flex;
               font-size: var(--font-size-body);
+            }
+
+            &.selected {
+              color: var(--interact-active);
             }
           }
         }
@@ -220,10 +573,11 @@
 
         .artist-list {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(4, minmax(0, 1fr));
           gap: var(--spacing-12) var(--spacing-8);
 
           .artist {
+            min-width: 0;
             text-align: center;
 
             button {
@@ -232,12 +586,28 @@
               flex-direction: column;
               align-items: center;
               gap: var(--spacing-4);
+              background-color: transparent;
 
               .image {
+                position: relative;
                 width: 100%;
                 aspect-ratio: 1 / 1;
                 overflow: hidden;
                 border-radius: var(--radius-24);
+
+                img {
+                  width: 100%;
+                  height: 100%;
+                  display: block;
+                  object-fit: cover;
+                }
+              }
+
+              .name {
+                width: 100%;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
               }
             }
 
@@ -255,6 +625,11 @@
       }
     }
   }
+
+  /*
+   * STEP 5
+   * 최종 확인
+   */
 
   .step-5 {
     .container {
@@ -287,6 +662,13 @@
             margin-bottom: var(--spacing-4);
             overflow: hidden;
             border-radius: var(--radius-32);
+
+            img {
+              width: 100%;
+              height: 100%;
+              display: block;
+              object-fit: cover;
+            }
           }
 
           p {
@@ -296,6 +678,7 @@
           }
         }
       }
+
       .complete-message {
         text-align: center;
 
@@ -320,12 +703,29 @@
     }
   }
 
+  /*
+   * API ERROR
+   */
+
+  .verify-error {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    text-align: center;
+    color: var(--text-sub);
+    font-size: var(--font-size-caption);
+  }
+
+  /*
+   * 하단 이전 / 다음
+   */
+
   .actions {
     flex-shrink: 0;
     height: 80px;
     padding: 10px 16px 20px;
     display: flex;
     gap: var(--spacing-8);
+    background-color: var(--bg-canvas);
 
     button {
       flex: 1;
@@ -345,7 +745,14 @@
       &.disabled {
         background-color: var(--interact-disabled);
         color: var(--text-disabled);
+        cursor: default;
       }
     }
+  }
+}
+
+@keyframes verify-spin {
+  to {
+    transform: rotate(360deg);
   }
 }
