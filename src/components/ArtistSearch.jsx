@@ -1,12 +1,10 @@
+import { useState } from 'react';
 import { MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { notification } from 'antd';
+
+import { searchArtists } from '@/api/services/verifyService';
 
 function ArtistSearch({
-  artistKeyword,
-  onArtistKeywordChange,
-  artistSearchResults,
-  isArtistSearchLoading,
-  onSearchArtist,
-
   selectedSearchArtist,
   onSelectSearchArtist,
   onResetSelectedSearchArtist,
@@ -15,9 +13,78 @@ function ArtistSearch({
   selectedContent,
   onSelectContent,
 }) {
+  const [artistKeyword, setArtistKeyword] = useState('');
+  const [artistSearchResults, setArtistSearchResults] = useState([]);
+  const [isArtistSearchLoading, setIsArtistSearchLoading] = useState(false);
+
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      onSearchArtist();
+      handleSearchArtist();
+    }
+  };
+
+  const handleSearchArtist = async () => {
+    const keyword = artistKeyword.trim();
+
+    if (!keyword) {
+      setArtistSearchResults([]);
+      onResetSelectedSearchArtist();
+
+      notification.warning({
+        message: '확인해주세요.',
+        description: '검색할 아티스트 이름을 입력해주세요.',
+        placement: 'topRight',
+        duration: 4.5,
+      });
+
+      return;
+    }
+
+    try {
+      setIsArtistSearchLoading(true);
+
+      const result = await searchArtists({
+        keyword,
+        size: 20,
+      });
+
+      const searchedArtists = result?.artists ?? [];
+
+      setArtistSearchResults(searchedArtists);
+      onResetSelectedSearchArtist();
+
+      if (searchedArtists.length === 0) {
+        notification.info({
+          message: '안내',
+          description: '검색된 아티스트가 없습니다.',
+          placement: 'topRight',
+          duration: 4.5,
+        });
+      }
+    } catch (error) {
+      console.error('아티스트 검색 실패:', error);
+
+      setArtistSearchResults([]);
+
+      notification.error({
+        message: '오류가 발생했습니다.',
+        description:
+          error?.response?.data?.message ||
+          error?.response?.data?.error ||
+          '아티스트 검색에 실패했습니다.',
+        placement: 'topRight',
+        duration: 4.5,
+      });
+    } finally {
+      setIsArtistSearchLoading(false);
+    }
+  };
+
+  const handleArtistKeywordChange = (keyword) => {
+    setArtistKeyword(keyword);
+
+    if (selectedSearchArtist) {
+      onResetSelectedSearchArtist();
     }
   };
 
@@ -29,14 +96,14 @@ function ArtistSearch({
             type="text"
             placeholder="아티스트로 찾아볼까요?"
             value={artistKeyword}
-            onChange={(event) => onArtistKeywordChange(event.target.value)}
+            onChange={(event) => handleArtistKeywordChange(event.target.value)}
             onKeyDown={handleKeyDown}
           />
 
           <button
             type="button"
             className="icon"
-            onClick={onSearchArtist}
+            onClick={handleSearchArtist}
             disabled={isArtistSearchLoading}
           >
             <MagnifyingGlassIcon />

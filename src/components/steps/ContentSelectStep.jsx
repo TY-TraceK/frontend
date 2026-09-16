@@ -1,7 +1,7 @@
 import { CaretDownIcon, MagnifyingGlassIcon } from '@phosphor-icons/react';
 
 import MediaCard from '../MediaCard';
-import ArtistSearch from './ArtistSearch';
+import ArtistSearch from '../ArtistSearch';
 
 function ContentSelectStep({
   selectedLocation,
@@ -13,15 +13,10 @@ function ContentSelectStep({
   onOpenArtistSearch,
   onCloseArtistSearch,
 
-  artistKeyword,
-  onArtistKeywordChange,
-  artistSearchResults,
-  isArtistSearchLoading,
-  onSearchArtist,
-
   selectedSearchArtist,
   onSelectSearchArtist,
   onResetSelectedSearchArtist,
+
   searchedArtistContents,
 }) {
   return (
@@ -82,11 +77,6 @@ function ContentSelectStep({
         {isArtistSearch && (
           <>
             <ArtistSearch
-              artistKeyword={artistKeyword}
-              onArtistKeywordChange={onArtistKeywordChange}
-              artistSearchResults={artistSearchResults}
-              isArtistSearchLoading={isArtistSearchLoading}
-              onSearchArtist={onSearchArtist}
               selectedSearchArtist={selectedSearchArtist}
               onSelectSearchArtist={onSelectSearchArtist}
               onResetSelectedSearchArtist={onResetSelectedSearchArtist}
