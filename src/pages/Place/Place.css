@@ -1,5 +1,16 @@
 .place {
   margin-top: 0;
+
+  .place-state {
+    padding: var(--spacing-24);
+    text-align: center;
+    color: var(--text-sub);
+
+    &.error {
+      color: var(--text-error);
+    }
+  }
+
   .hero {
     width: 100%;
     aspect-ratio: 1 / 1.12;
@@ -85,11 +96,6 @@
         }
 
         .info {
-          .close-time:before {
-            content: "-";
-            margin: 4px;
-          }
-
           .additional:before {
             content: "·";
             margin: 0 var(--spacing-4);
