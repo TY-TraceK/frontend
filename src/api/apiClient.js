@@ -10,9 +10,6 @@ const apiClient = axios.create({
     Accept: 'application/json',
     'ngrok-skip-browser-warning': 'true',
   },
-  validateStatus: (status) => {
-    return status < 600;
-  },
 });
 
 apiClient.interceptors.request.use(

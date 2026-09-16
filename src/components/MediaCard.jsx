@@ -1,21 +1,23 @@
-import { Link } from "react-router-dom";
-import "./Card.css";
-import { HouseIcon } from "@phosphor-icons/react";
+import { Link } from 'react-router-dom';
+import './Card.css';
+import { HouseIcon } from '@phosphor-icons/react';
 
 function MediaCard({
-  className = "",
+  className = '',
   tag,
   title,
+  imageUrl,
+  onClick,
   description,
   showShortcut = false,
   showDescription = true,
 }) {
   return (
     <li className={`item media ${className}`}>
-      <Link>
+      <Link onClick={onClick}>
         {/* MEMO: 예능 고정 출연진일 때, 미디어 홈으로 바로가기 */}
         <div className="image">
-          <img src="https://picsum.photos/id/410/400/600" alt="" />
+          <img src={imageUrl} alt="" />
         </div>
         <div className="item-info">
           <span className="tag">{tag}</span>
