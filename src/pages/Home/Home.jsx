@@ -50,7 +50,6 @@ function Home() {
           </p>
           <p>좋아하는 콘텐츠를 저장해보세요!</p>
         </section>
-
         {/* MEMO: 로그인 후 변경 형태 - 해당 섹션 제외 비회원 모두 이용 가능*/}
         <section className="personalized-content">
           <div className="title">

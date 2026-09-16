@@ -1,0 +1,36 @@
+.pagination {
+  padding: 0 var(--spacing-12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg-elevated);
+  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-24);
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-16);
+
+    :disabled {
+      background-color: var(--bg-disabled);
+      color: var(--text-disabled);
+      cursor: default;
+    }
+  }
+
+  .page-list {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-8);
+    color: var(--text-sub);
+
+    button.active {
+      background-color: var(--interact-active);
+      color: var(--gl-text-white);
+    }
+  }
+}
