@@ -4,17 +4,11 @@ import './VerifyModal.css';
 import { XIcon } from '@phosphor-icons/react';
 import { notification } from 'antd';
 
-import {
-  createVisitVerification,
-  getLocationRelatedInfo,
-  getLocationsWithinBounds,
-  searchArtists,
-} from '@/api/services/verifyService';
-
 import PlaceSelectStep from './steps/PlaceSelectStep';
 import ContentSelectStep from './steps/ContentSelectStep';
 import ArtistSelectStep from './steps/ArtistSelectStep';
 import VerifyConfirmStep from './steps/VerifyConfirmStep';
+import VerifyService from '@/api/services/verifyService.js';
 
 const TEMP_CURRENT_POSITION = {
   latitude: 35.1796,
@@ -135,7 +129,7 @@ function VerifyModal({ isOpen, onClose }) {
       try {
         setIsLoading(true);
 
-        const result = await getLocationsWithinBounds(mapBounds);
+        const result = await VerifyService.getLocationsWithinBounds(mapBounds);
 
         setLocations(result ?? []);
       } catch (error) {
@@ -240,7 +234,9 @@ function VerifyModal({ isOpen, onClose }) {
     try {
       setIsLoading(true);
 
-      const relatedInfo = await getLocationRelatedInfo(selectedLocation.id);
+      const relatedInfo = await VerifyService.getLocationRelatedInfo(
+        selectedLocation.id
+      );
 
       const contents = relatedInfo?.relatedContentGroups ?? [];
 
@@ -341,7 +337,7 @@ function VerifyModal({ isOpen, onClose }) {
     try {
       setIsLoading(true);
 
-      await createVisitVerification({
+      await VerifyService.createVisitVerification({
         locationId: selectedLocation.id,
         contentId: selectedContent.contentId,
         artistIds: selectedArtists.map((artist) => artist.artistId),
