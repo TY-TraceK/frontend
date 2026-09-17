@@ -7,9 +7,16 @@ import {
   XIcon,
 } from '@phosphor-icons/react';
 import './Header.css';
+import AuthService from '@/api/services/authSerivce.js';
 
 function Header({ type = 'default', title }) {
   const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleLogout = () => {
+    window.location.href = '/';
+    AuthService.logout();
+  };
   const [searchActive, setSearchActive] = useState(false);
 
   return (
@@ -85,10 +92,27 @@ function Header({ type = 'default', title }) {
         )}
 
         {type === 'mypage' && (
-          <button type="button" className="icon">
-            <DotsThreeVerticalIcon />
-          </button>
-          // TODO: 로그아웃, 회원 탈퇴, 고객센터
+          <>
+            <button
+              type="button"
+              className="icon"
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+            >
+              <DotsThreeVerticalIcon />
+            </button>
+
+            {isMenuOpen && (
+              <div className="profile-menu-tooltip">
+                <button
+                  type="button"
+                  className="logout-button"
+                  onClick={handleLogout}
+                >
+                  로그아웃
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </header>
