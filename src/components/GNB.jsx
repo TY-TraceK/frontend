@@ -31,7 +31,7 @@ function GNB() {
             </span>
             <span className="menu-name">지도</span>
           </Link>
-          <Link className="menu archive">
+          <Link to="/archive" className="menu archive">
             <span className="icon">
               <ArchiveIcon />
             </span>
