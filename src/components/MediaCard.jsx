@@ -14,7 +14,12 @@ function MediaCard({
 }) {
   return (
     <li className={`item media ${className}`}>
-      <Link onClick={onClick}>
+      <Link
+        onClick={(event) => {
+          event.preventDefault();
+          onClick?.(event);
+        }}
+      >
         {/* MEMO: 예능 고정 출연진일 때, 미디어 홈으로 바로가기 */}
         <div className="image">
           <img src={imageUrl} alt="" />
