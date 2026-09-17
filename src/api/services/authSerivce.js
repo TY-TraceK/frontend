@@ -75,6 +75,7 @@ const AuthService = {
   },
 
   logout() {
+    apiClient.post('/logout');
     TokenStorage.clear();
   },
 

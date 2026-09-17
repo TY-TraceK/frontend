@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { authService } from '@/api/services/index.js';
+import { useProfile } from '@/hooks/userContext.jsx';
 
 function KakaoCallback() {
   const navigate = useNavigate();
@@ -10,6 +11,8 @@ function KakaoCallback() {
 
   const [loginUser, setLoginUser] = useState(null);
   const [loginError, setLoginError] = useState(null);
+
+  const { setProfileData } = useProfile();
 
   useEffect(() => {
     if (requestedRef.current) {
@@ -31,8 +34,8 @@ function KakaoCallback() {
 
       try {
         const data = await authService.loginWithKakao(code);
-
         setLoginUser(data);
+        setProfileData();
       } catch (error) {
         console.error('카카오 로그인 실패:', error);
 
