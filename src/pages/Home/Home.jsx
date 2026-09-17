@@ -240,7 +240,7 @@ function Home() {
           </div>
         </section>
         <section className="archive-banner">
-          <Link>
+          <Link to={'/archive'}>
             {/* MEMO: 클릭 시 아카이브 페이지로 이동 */}
             <p>오늘 하루 어디 다녀왔는지, 한 눈에 확인하는 방법!</p>
             <p className="emphasis">방문 인증으로 만들어지는 나만의 타임라인</p>
