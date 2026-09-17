@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { MagnifyingGlassIcon } from '@phosphor-icons/react';
 import { notification } from 'antd';
 
-import { searchArtists } from '@/api/services/verifyService';
+import VerifyService from '@/api/services/verifyService';
 
 function ArtistSearch({
   selectedSearchArtist,
@@ -43,7 +43,7 @@ function ArtistSearch({
     try {
       setIsArtistSearchLoading(true);
 
-      const result = await searchArtists({
+      const result = await VerifyService.searchArtists({
         keyword,
         size: 20,
       });
