@@ -39,10 +39,7 @@ h3 {
   font-size: var(--font-size-heading);
   font-weight: 500;
 }
-span.accent-text,
-p.accent-text,
-a.accent-text,
-div.accent-text {
+*.accent-text {
   color: var(--text-accent);
 }
 

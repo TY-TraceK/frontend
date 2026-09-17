@@ -5,7 +5,7 @@
     padding: var(--spacing-24);
     text-align: center;
     color: var(--text-sub);
-
+    /*  */
     &.error {
       color: var(--text-error);
     }
@@ -30,7 +30,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        right: var(--spacing-24);
+        right: var(--spacing-12);
         width: 40px;
         aspect-ratio: 1/1;
         border-radius: var(--radius-24);
@@ -50,15 +50,22 @@
       .place-meta {
         display: flex;
         align-items: center;
+        font-size: var(--font-size-caption);
 
         .category {
           display: flex;
           align-items: center;
           gap: var(--spacing-4);
 
+          .icon {
+            svg {
+              font-size: var(--font-size-heading);
+            }
+          }
+
           &:after {
-            content: "·";
-            margin: 0 var(--spacing-8);
+            content: '·';
+            margin-right: var(--spacing-4);
           }
         }
       }
@@ -68,6 +75,13 @@
       }
       .place-stats {
         margin-top: var(--spacing-16);
+        font-size: var(--font-size-caption);
+
+        .icon {
+          svg {
+            font-size: var(--font-size-heading);
+          }
+        }
         div {
           display: flex;
           align-items: center;
@@ -89,15 +103,14 @@
         display: flex;
         align-items: center;
         gap: var(--spacing-16);
-        margin: 0 0 var(--spacing-8) var(--spacing-16);
-
+        margin: 0 0 var(--spacing-8) var(--spacing-8);
         .icon {
           color: var(--text-icon);
         }
 
         .info {
           .additional:before {
-            content: "·";
+            content: '·';
             margin: 0 var(--spacing-4);
           }
 
