@@ -66,6 +66,11 @@
 
       .content-stats {
         margin-top: var(--spacing-16);
+        font-size: var(--font-size-caption);
+        .icon svg {
+          font-size: var(--font-size-heading);
+        }
+
         div {
           display: flex;
           align-items: center;
@@ -106,7 +111,8 @@
               border-radius: var(--radius-24);
 
               img {
-                margin-top: -10%;
+                object-fit: cover;
+                object-position: center;
               }
             }
           }
