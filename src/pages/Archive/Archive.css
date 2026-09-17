@@ -7,6 +7,7 @@
     }
 
     .archive-list {
+      margin-bottom: var(--spacing-32);
       .archive-header {
         display: flex;
         align-items: center;
@@ -112,18 +113,20 @@
             }
 
             .description {
+              font-size: var(--font-size-caption);
               margin-bottom: var(--spacing-8);
             }
 
             .tags {
               display: flex;
+              flex-wrap: wrap;
               gap: var(--spacing-8);
+              font-size: var(--font-size-caption);
 
               .tag {
                 padding: 3px 10px;
                 border-radius: var(--radius-12);
                 background-color: var(--interact-subtle);
-                font-size: var(--font-size-caption);
               }
             }
           }
@@ -215,12 +218,17 @@
       }
     }
   }
+  .archive-load-more {
+    text-align: center;
+    font-size: var(--font-size-caption);
+    color: var(--text-sub);
+  }
 }
 
-.archive .actions .heart.selected {
+/* .archive .actions .heart.selected {
   color: #ff4d4f;
 }
 
 .archive .actions .bookmark.selected {
   color: #000000;
-}
+} */
