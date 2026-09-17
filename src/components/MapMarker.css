@@ -1,0 +1,172 @@
+@font-face {
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Light.woff2')
+    format('woff2');
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2')
+    format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Medium.woff2')
+    format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+
+.map-marker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid var(--gl-border-map);
+  font-family: Pretendard, sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--gl-text-white);
+
+  &.default {
+    min-width: 32px;
+    min-height: 40px;
+    padding: 6px 8px;
+
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 20px;
+      height: 20px;
+
+      transform: rotate(45deg);
+    }
+
+    .name {
+      max-width: 120px;
+      margin-left: 4px;
+
+      transform: rotate(45deg);
+    }
+  }
+
+  &.bookmark {
+    width: 32px;
+    height: 40px;
+
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 20px;
+      height: 20px;
+
+      transform: rotate(45deg);
+    }
+  }
+
+  &.compact {
+    width: 12px;
+    height: 12px;
+
+    background-color: #0dd3e2;
+    border-radius: 50%;
+  }
+
+  &.ATTRACTION {
+    background-color: var(--loc-attraction);
+
+    &.active {
+      background-color: var(--loc-attraction-pressed);
+      box-shadow: var(--shadow-pressed);
+    }
+  }
+
+  &.CULTURAL_FACILITY {
+    background-color: var(--loc-culture);
+
+    &.active {
+      background-color: var(--loc-culture-pressed);
+      box-shadow: var(--shadow-pressed);
+    }
+  }
+
+  &.FESTIVAL {
+    background-color: var(--loc-event);
+
+    &.active {
+      background-color: var(--loc-event-pressed);
+      box-shadow: var(--shadow-pressed);
+    }
+  }
+
+  &.FILMING_LOCATION {
+    background-color: var(--loc-filming);
+
+    &.active {
+      background-color: var(--loc-filming-pressed);
+      box-shadow: var(--shadow-pressed);
+    }
+  }
+
+  &.RESTAURANT {
+    background-color: var(--loc-restaurant);
+
+    &.active {
+      background-color: var(--loc-restaurant-pressed);
+      box-shadow: var(--shadow-pressed);
+    }
+  }
+
+  &.CAFE {
+    background-color: var(--loc-cafe);
+
+    &.active {
+      background-color: var(--loc-cafe-pressed);
+      box-shadow: var(--shadow-pressed);
+    }
+  }
+
+  &.ACCOMMODATION {
+    background-color: var(--loc-accommodation);
+
+    &.active {
+      background-color: var(--loc-accommodation-pressed);
+      box-shadow: var(--shadow-pressed);
+    }
+  }
+
+  &.SHOPPING {
+    background-color: var(--loc-shopping);
+
+    &.active {
+      background-color: var(--loc-shopping-pressed);
+      box-shadow: var(--shadow-pressed);
+    }
+  }
+
+  &.ETC {
+    background-color: var(--loc-other);
+
+    &.active {
+      background-color: var(--loc-other-pressed);
+      box-shadow: var(--shadow-pressed);
+    }
+  }
+}
