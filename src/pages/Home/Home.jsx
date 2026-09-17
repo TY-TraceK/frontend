@@ -12,13 +12,21 @@ import {
 import RankingService from '@/api/services/rankingService.js';
 
 import './Home.css';
+import { useProfile } from '@/hooks/userContext.jsx';
 
 function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [topRankings, setTopRankings] = useState([]);
 
   const navigate = useNavigate();
+  const isLoggedIn = !!localStorage.getItem('accessToken');
+  const { user, setProfileData } = useProfile();
 
+  useEffect(() => {
+    if (isLoggedIn && user == null) {
+      setProfileData();
+    }
+  }, []);
   // 여행지 TOP 3 조회
   useEffect(() => {
     const fetchTopRankings = async () => {
@@ -39,38 +47,37 @@ function Home() {
   return (
     <main className="home">
       <div className="container">
-        {/* MEMO: 로그인 유도 섹션으로 비회원에게만 노출 */}
-        <section className="login-prompt">
-          <p>
-            {/* MEMO: 로그인 클릭 시, 로그인 페이지로 이동 */}
-            <span className="accent-text" onClick={() => navigate('/login')}>
-              로그인
-            </span>
-            하고
-          </p>
-          <p>좋아하는 콘텐츠를 저장해보세요!</p>
-        </section>
-        {/* MEMO: 로그인 후 변경 형태 - 해당 섹션 제외 비회원 모두 이용 가능*/}
-        <section className="personalized-content">
-          <div className="title">
+        {user == null ? (
+          <section className="login-prompt">
             <p>
-              <span className="accent-text">닉네임</span> 님,
-            </p>
-            <p>오늘은 어떤 화면 속으로 여행 가볼까요?</p>
-          </div>
-
-          <div className="banner">
-            <Link>
-              {/* MEMO: 팬인 아티스트/미디어 콘텐츠 중 여행지가 추가된 내역이 있다면,
-                아티스트/미디어 콘텐츠 홈으로 이동 */}
-              팬인 콘텐츠에 새로운 여행지가 추가됐어요.
-              <span className="icon">
-                <CaretRightIcon />
+              {/* MEMO: 로그인 클릭 시, 로그인 페이지로 이동 */}
+              <span className="accent-text" onClick={() => navigate('/login')}>
+                로그인
               </span>
-            </Link>
-          </div>
-        </section>
-
+              하고
+            </p>
+            <p>좋아하는 콘텐츠를 저장해보세요!</p>
+          </section>
+        ) : (
+          <section className="personalized-content">
+            <div className="title">
+              <p>
+                <span className="accent-text">{user?.nickName}</span> 님,
+              </p>
+              <p>오늘은 어떤 화면 속으로 여행 가볼까요?</p>
+            </div>
+            <div className="banner">
+              <Link>
+                {/* MEMO: 팬인 아티스트/미디어 콘텐츠 중 여행지가 추가된 내역이 있다면,
+                아티스트/미디어 콘텐츠 홈으로 이동 */}
+                팬인 콘텐츠에 새로운 여행지가 추가됐어요.
+                <span className="icon">
+                  <CaretRightIcon />
+                </span>
+              </Link>
+            </div>
+          </section>
+        )}
         <section className="new-contents">
           <h2>새로운 콘텐츠를 통해 여행지를 찾아보세요!</h2>
 
@@ -103,7 +110,6 @@ function Home() {
             </li>
           </ul>
         </section>
-
         <section className="hero">
           <div className="header">
             <h2>오늘은 어디로 여행을 떠나볼까요?</h2>
@@ -233,7 +239,6 @@ function Home() {
             </Swiper>
           </div>
         </section>
-
         <section className="archive-banner">
           <Link>
             {/* MEMO: 클릭 시 아카이브 페이지로 이동 */}
@@ -248,7 +253,6 @@ function Home() {
             </span>
           </Link>
         </section>
-
         {/* 여행지 실시간 TOP 3 */}
         <section className="location-ranking">
           <ul className="ranking-list">
@@ -291,7 +295,6 @@ function Home() {
             <CaretRightIcon />
           </Link>
         </section>
-
         <section className="content-curator">
           {/* MEMO: 큐레이션 섹션 진행할 건지 논의 필요함. 잠시 보류해주세요. 감사합니다! */}
           <Link className="link">
