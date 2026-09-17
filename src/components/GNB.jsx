@@ -1,12 +1,12 @@
-import { Link } from "react-router-dom";
-import "./GNB.css";
+import { Link } from 'react-router-dom';
+import './GNB.css';
 import {
   ArchiveIcon,
   HouseIcon,
   MapTrifoldIcon,
   StarIcon,
   UserIcon,
-} from "@phosphor-icons/react";
+} from '@phosphor-icons/react';
 
 function GNB() {
   return (
@@ -37,7 +37,7 @@ function GNB() {
             </span>
             <span className="menu-name">아카이브</span>
           </Link>
-          <Link className="menu profile">
+          <Link to="/profile" className="menu profile">
             <span className="icon">
               <UserIcon />
             </span>
