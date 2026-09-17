@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   CaretLeftIcon,
   DotsThreeVerticalIcon,
@@ -9,6 +9,7 @@ import {
 import './Header.css';
 
 function Header({ type = 'default', title }) {
+  const navigate = useNavigate();
   const [searchActive, setSearchActive] = useState(false);
 
   return (
@@ -22,7 +23,12 @@ function Header({ type = 'default', title }) {
         )}
 
         {type !== 'home' && (
-          <button type="button" className="icon">
+          <button
+            type="button"
+            className="icon"
+            aria-label="뒤로가기"
+            onClick={() => navigate(-1)}
+          >
             <CaretLeftIcon />
           </button>
         )}

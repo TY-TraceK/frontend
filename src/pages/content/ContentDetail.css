@@ -1,5 +1,16 @@
 .content-detail {
   margin-top: 0;
+
+  .content-state {
+    padding: var(--spacing-24);
+    text-align: center;
+    color: var(--text-sub);
+
+    &.error {
+      color: var(--text-error);
+    }
+  }
+
   .hero {
     width: 100%;
     aspect-ratio: 1/1.12;

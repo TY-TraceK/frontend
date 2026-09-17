@@ -13,7 +13,12 @@ function PlaceCard({
 }) {
   return (
     <li className={`item place ${className}`}>
-      <Link onClick={onClick}>
+      <Link
+        onClick={(event) => {
+          event.preventDefault();
+          onClick?.(event);
+        }}
+      >
         <div className="image">
           <img src={imageUrl} alt="" />
         </div>
