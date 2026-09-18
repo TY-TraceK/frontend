@@ -23,6 +23,19 @@ function Home() {
   const [categoryContents, setCategoryContents] = useState([]);
   const [contentCuration, setContentCuration] = useState(null);
   const categoryTabsRef = useRef(null);
+  const [canScrollCategoriesLeft, setCanScrollCategoriesLeft] = useState(false);
+  const [canScrollCategoriesRight, setCanScrollCategoriesRight] =
+    useState(false);
+
+  const updateCategoryScrollButtons = () => {
+    const tabs = categoryTabsRef.current;
+    if (!tabs) return;
+
+    setCanScrollCategoriesLeft(tabs.scrollLeft > 0);
+    setCanScrollCategoriesRight(
+      tabs.scrollLeft + tabs.clientWidth < tabs.scrollWidth - 1
+    );
+  };
 
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('accessToken');
@@ -52,6 +65,20 @@ function Home() {
 
     fetchCategoryContents();
   }, [selectedContentCategory]);
+
+  useEffect(() => {
+    const tabs = categoryTabsRef.current;
+    if (!tabs) return undefined;
+
+    updateCategoryScrollButtons();
+    tabs.addEventListener('scroll', updateCategoryScrollButtons);
+    window.addEventListener('resize', updateCategoryScrollButtons);
+
+    return () => {
+      tabs.removeEventListener('scroll', updateCategoryScrollButtons);
+      window.removeEventListener('resize', updateCategoryScrollButtons);
+    };
+  }, []);
 
   // 여행지 TOP 3 조회
   useEffect(() => {
@@ -122,6 +149,22 @@ function Home() {
           <h2>새로운 콘텐츠를 통해 여행지를 찾아보세요!</h2>
 
           <div className="tabs-wrapper">
+            {canScrollCategoriesLeft && (
+              <button
+                type="button"
+                className="tabs-scroll tabs-prev"
+                aria-label="이전 카테고리 보기"
+                onClick={() =>
+                  categoryTabsRef.current?.scrollBy({
+                    left: -160,
+                    behavior: 'smooth',
+                  })
+                }
+              >
+                <CaretRightIcon />
+              </button>
+            )}
+
             <ul className="tabs" ref={categoryTabsRef}>
               {CONTENT_CATEGORY_OPTIONS.map((category) => (
                 <li key={category.value}>
@@ -139,19 +182,22 @@ function Home() {
                 </li>
               ))}
             </ul>
-            <button
-              type="button"
-              className="tabs-next"
-              aria-label="다음 카테고리 보기"
-              onClick={() =>
-                categoryTabsRef.current?.scrollBy({
-                  left: 160,
-                  behavior: 'smooth',
-                })
-              }
-            >
-              <CaretRightIcon />
-            </button>
+
+            {canScrollCategoriesRight && (
+              <button
+                type="button"
+                className="tabs-scroll tabs-next"
+                aria-label="다음 카테고리 보기"
+                onClick={() =>
+                  categoryTabsRef.current?.scrollBy({
+                    left: 160,
+                    behavior: 'smooth',
+                  })
+                }
+              >
+                <CaretRightIcon />
+              </button>
+            )}
           </div>
 
           <ul className="list">
