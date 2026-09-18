@@ -14,6 +14,7 @@ import { useProfile } from '@/hooks/userContext.jsx';
 import { useEffect, useRef, useState } from 'react';
 import UserService from '@/api/services/userService.js';
 import VerifyService from '@/api/services/verifyService.js';
+import RecentLocationStorage from '@/api/recentLocationStorage.js';
 
 function Profile() {
   const { user, setProfileData } = useProfile();
@@ -25,6 +26,7 @@ function Profile() {
   const [isSaving, setIsSaving] = useState(false);
   const [userActivity, setUserActivity] = useState(null);
   const [lastVerificationData, setLastVerificationData] = useState(null);
+  const [recentLocations, setRecentLocations] = useState([]);
 
   const fileInputRef = useRef(null);
 
@@ -48,6 +50,7 @@ function Profile() {
         console.error('프로필 조회 실패:', error);
       }
     };
+    setRecentLocations(RecentLocationStorage.getRecent(4));
     fetchData();
   }, [user, setProfileData]);
 
@@ -225,7 +228,7 @@ function Profile() {
           <div className="title-row">
             <h3 className="title">최근 본 여행지</h3>
 
-            <Link to="#" className="accent-text">
+            <Link to="/profile/recent-locations" className="accent-text">
               더보기
               <span className="icon">
                 <CaretRightIcon />
@@ -233,55 +236,25 @@ function Profile() {
             </Link>
           </div>
 
-          <ul className="list">
-            <li className="item">
-              <Link to="#">
-                <div className="image">
-                  <img src="https://picsum.photos/id/123/600/400" alt="" />
-                </div>
-                <span className="location">부산광역시</span>
-                <p className="name ellipsis-1">
-                  가게명가게명가게명가게명가게명가게명
-                </p>
-              </Link>
-            </li>
-
-            <li className="item">
-              <Link to="#">
-                <div className="image">
-                  <img src="https://picsum.photos/id/123/600/400" alt="" />
-                </div>
-                <span className="location">부산광역시</span>
-                <p className="name ellipsis-1">
-                  가게명가게명가게명가게명가게명가게명
-                </p>
-              </Link>
-            </li>
-
-            <li className="item">
-              <Link to="#">
-                <div className="image">
-                  <img src="https://picsum.photos/id/123/600/400" alt="" />
-                </div>
-                <span className="location">부산광역시</span>
-                <p className="name ellipsis-1">
-                  가게명가게명가게명가게명가게명가게명
-                </p>
-              </Link>
-            </li>
-
-            <li className="item">
-              <Link to="#">
-                <div className="image">
-                  <img src="https://picsum.photos/id/123/600/400" alt="" />
-                </div>
-                <span className="location">부산광역시</span>
-                <p className="name ellipsis-1">
-                  가게명가게명가게명가게명가게명가게명
-                </p>
-              </Link>
-            </li>
-          </ul>
+          {recentLocations.length === 0 ? (
+            <div>최근 본 여행지가 없습니다.</div>
+          ) : (
+            <ul className="list">
+              {recentLocations.map((location) => (
+                <li className="item" key={location.id}>
+                  <Link to={`/place?id=${location.id}`}>
+                    <div className="image">
+                      {location.mainImageUrl && (
+                        <img src={location.mainImageUrl} alt={location.name} />
+                      )}
+                    </div>
+                    <span className="location">{location.city}</span>
+                    <p className="name ellipsis-1">{location.name}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
 
         <section className="statistics">
