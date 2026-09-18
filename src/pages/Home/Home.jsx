@@ -10,16 +10,18 @@ import {
 } from '@phosphor-icons/react';
 
 import RankingService from '@/api/services/rankingService.js';
-import LocationService from '@/api/services/locationService.js';
 import ContentService from '@/api/services/contentService.js';
 import { CONTENT_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
 
 import './Home.css';
 import { useProfile } from '@/hooks/userContext.jsx';
+import LocationService from '@/api/services/locationService.js';
 
 function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [topSavedLocations, setTopSavedLocations] = useState([]);
+  const [updatingArchiveLocationId, setUpdatingArchiveLocationId] =
+    useState(null);
   const [topRankings, setTopRankings] = useState([]);
   const [selectedContentCategory, setSelectedContentCategory] = useState('DRAMA');
   const [categoryContents, setCategoryContents] = useState([]);
@@ -96,6 +98,50 @@ function Home() {
 
     fetchTopSavedLocations();
   }, []);
+
+  const handleToggleArchive = async (event, location) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (
+      location?.id == null ||
+      updatingArchiveLocationId != null
+    ) {
+      return;
+    }
+
+    const previousArchived = location?.isArchived === true;
+    const nextArchived = !previousArchived;
+
+    setTopSavedLocations((previous) =>
+      previous.map((item) =>
+        item.id === location.id
+          ? { ...item, isArchived: nextArchived }
+          : item
+      )
+    );
+
+    try {
+      setUpdatingArchiveLocationId(location.id);
+
+      if (nextArchived) {
+        await LocationService.archiveLocation(location.id);
+      } else {
+        await LocationService.unarchiveLocation(location.id);
+      }
+    } catch (error) {
+      setTopSavedLocations((previous) =>
+        previous.map((item) =>
+          item.id === location.id
+            ? { ...item, isArchived: previousArchived }
+            : item
+        )
+      );
+      console.error('홈 관광지 북마크 변경 실패:', error);
+    } finally {
+      setUpdatingArchiveLocationId(null);
+    }
+  };
 
   // 여행지 TOP 3 조회
   useEffect(() => {
@@ -257,8 +303,25 @@ function Home() {
               {topSavedLocations.map((location) => (
                 <SwiperSlide key={location.id}>
                   <div className="card relative">
-                    <button className="bookmark icon" type="button">
-                      <BookmarkSimpleIcon />
+                    <button
+                      className={`bookmark icon ${
+                        location.isArchived === true ? 'selected' : ''
+                      }`}
+                      type="button"
+                      aria-label={
+                        location.isArchived === true
+                          ? '북마크 해제'
+                          : '북마크 저장'
+                      }
+                      aria-pressed={location.isArchived === true}
+                      disabled={updatingArchiveLocationId === location.id}
+                      onClick={(event) => handleToggleArchive(event, location)}
+                    >
+                      <BookmarkSimpleIcon
+                        weight={
+                          location.isArchived === true ? 'fill' : 'regular'
+                        }
+                      />
                     </button>
 
                     <Link className="link" to={`/place?id=${location.id}`}>
