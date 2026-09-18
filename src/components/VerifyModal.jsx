@@ -475,81 +475,87 @@ function VerifyModal({ isOpen, onClose }) {
 
   return (
     <main className="verify-modal">
-      {step >= 3 && (
-        <div className="close-btn-box">
-          <button type="button" className="close icon" onClick={onClose}>
-            <XIcon />
-          </button>
-        </div>
-      )}
-
-      {step === 2 && (
-        <PlaceSelectStep
-          locations={locations}
-          selectedLocation={selectedLocation}
-          onSelectLocation={handleSelectLocation}
-        />
-      )}
-
-      {step === 3 && (
-        <ContentSelectStep
-          selectedLocation={selectedLocation}
-          relatedContents={relatedContents}
-          selectedContent={selectedContent}
-          onSelectContent={handleSelectContent}
-          isArtistSearch={isArtistSearch}
-          onOpenArtistSearch={handleOpenArtistSearch}
-          onCloseArtistSearch={handleCloseArtistSearch}
-          selectedSearchArtist={selectedSearchArtist}
-          onSelectSearchArtist={handleSelectSearchArtist}
-          onResetSelectedSearchArtist={handleResetSelectedSearchArtist}
-          searchedArtistContents={searchedArtistContents}
-        />
-      )}
-
-      {step === 4 && (
-        <ArtistSelectStep
-          selectedLocation={selectedLocation}
-          selectedContent={selectedContent}
-          fixedArtists={fixedArtists}
-          guestArtists={guestArtists}
-          isAllFixedSelected={isAllFixedSelected}
-          isArtistSelected={isArtistSelected}
-          onSelectArtist={handleSelectArtist}
-          onSelectAllFixedArtists={handleSelectAllFixedArtists}
-        />
-      )}
-
-      {step === 5 && (
-        <VerifyConfirmStep
-          selectedLocation={selectedLocation}
-          selectedContent={selectedContent}
-          selectedArtists={selectedArtists}
-          isComplete={isComplete}
-        />
-      )}
-
-      <div className="actions">
-        {isComplete ? (
-          <button type="button" className="active" onClick={onClose}>
-            닫기
-          </button>
-        ) : (
-          <>
-            <button type="button" className="neutral" onClick={handlePrevious}>
-              이전
+      <div className="frame">
+        {step >= 3 && (
+          <div className="close-btn-box">
+            <button type="button" className="close icon" onClick={onClose}>
+              <XIcon />
             </button>
-
-            <button
-              type="button"
-              className={isNextDisabled ? 'disabled' : 'active'}
-              onClick={handleNext}
-              disabled={isNextDisabled}
-            >
-              {step === 5 ? '제출' : '다음'}
-            </button>
-          </>
+          </div>
         )}
+
+        {step === 2 && (
+          <PlaceSelectStep
+            locations={locations}
+            selectedLocation={selectedLocation}
+            onSelectLocation={handleSelectLocation}
+          />
+        )}
+
+        {step === 3 && (
+          <ContentSelectStep
+            selectedLocation={selectedLocation}
+            relatedContents={relatedContents}
+            selectedContent={selectedContent}
+            onSelectContent={handleSelectContent}
+            isArtistSearch={isArtistSearch}
+            onOpenArtistSearch={handleOpenArtistSearch}
+            onCloseArtistSearch={handleCloseArtistSearch}
+            selectedSearchArtist={selectedSearchArtist}
+            onSelectSearchArtist={handleSelectSearchArtist}
+            onResetSelectedSearchArtist={handleResetSelectedSearchArtist}
+            searchedArtistContents={searchedArtistContents}
+          />
+        )}
+
+        {step === 4 && (
+          <ArtistSelectStep
+            selectedLocation={selectedLocation}
+            selectedContent={selectedContent}
+            fixedArtists={fixedArtists}
+            guestArtists={guestArtists}
+            isAllFixedSelected={isAllFixedSelected}
+            isArtistSelected={isArtistSelected}
+            onSelectArtist={handleSelectArtist}
+            onSelectAllFixedArtists={handleSelectAllFixedArtists}
+          />
+        )}
+
+        {step === 5 && (
+          <VerifyConfirmStep
+            selectedLocation={selectedLocation}
+            selectedContent={selectedContent}
+            selectedArtists={selectedArtists}
+            isComplete={isComplete}
+          />
+        )}
+
+        <div className="actions">
+          {isComplete ? (
+            <button type="button" className="active" onClick={onClose}>
+              닫기
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="neutral"
+                onClick={handlePrevious}
+              >
+                이전
+              </button>
+
+              <button
+                type="button"
+                className={isNextDisabled ? 'disabled' : 'active'}
+                onClick={handleNext}
+                disabled={isNextDisabled}
+              >
+                {step === 5 ? '제출' : '다음'}
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </main>
   );

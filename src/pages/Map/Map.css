@@ -1,6 +1,12 @@
 .map {
   margin: 0;
 
+  .frame {
+    position: fixed;
+    inset: 0;
+    display: block;
+  }
+
   .map-area {
     background-color: #d9d9d9;
     height: 100vh;
@@ -142,6 +148,7 @@
     background-color: var(--bg-elevated);
     box-shadow: var(--shadow-card);
   }
+
   .place-sheet {
     position: absolute;
     right: 0;
