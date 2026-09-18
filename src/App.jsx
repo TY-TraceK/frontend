@@ -136,10 +136,8 @@ function App() {
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/search" element={<Search />} />
         <Route path="/map" element={<Map />} />
-
-        {/* 로그인 후 접근 가능한 페이지이나, 퍼블리싱 용이성을 위해 하단에 배치 */}
-        <Route path="/contents" element={<ContentsHome />} />
-        <Route path="/list" element={<ListTemplate />} />
+        <Route path="/archive" element={<Archive />} />
+        <Route path="/profile" element={<Profile />} />
         <Route
           path="/profile/recent-locations"
           element={
@@ -174,10 +172,8 @@ function App() {
             />
           }
         />
-        <Route path="/archive" element={<Archive />} />
-        <Route path="/profile" element={<Profile />} />
 
-        {/* 로그인 후 접근 가능한 페이지 */}
+        {/* 로그인 후 접근 가능한 페이지이나, 퍼블리싱 용이성을 위해 하단에 배치 */}
         <Route element={<ProtectedRoute />}>
           <Route path="/contents" element={<ContentsHome />} />
           <Route
