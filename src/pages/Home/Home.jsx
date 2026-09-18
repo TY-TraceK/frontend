@@ -15,9 +15,13 @@ import { CONTENT_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
 
 import './Home.css';
 import { useProfile } from '@/hooks/userContext.jsx';
+import LocationService from '@/api/services/locationService.js';
 
 function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [topSavedLocations, setTopSavedLocations] = useState([]);
+  const [updatingArchiveLocationId, setUpdatingArchiveLocationId] =
+    useState(null);
   const [topRankings, setTopRankings] = useState([]);
   const [selectedContentCategory, setSelectedContentCategory] = useState('DRAMA');
   const [categoryContents, setCategoryContents] = useState([]);
@@ -79,6 +83,65 @@ function Home() {
       window.removeEventListener('resize', updateCategoryScrollButtons);
     };
   }, []);
+
+  useEffect(() => {
+    const fetchTopSavedLocations = async () => {
+      try {
+        const data = await LocationService.getTopSavedLocations(5);
+        setTopSavedLocations(data ?? []);
+        setActiveIndex(0);
+      } catch (error) {
+        console.error('인기 관광지 TOP5 조회 실패:', error);
+        setTopSavedLocations([]);
+      }
+    };
+
+    fetchTopSavedLocations();
+  }, []);
+
+  const handleToggleArchive = async (event, location) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (
+      location?.id == null ||
+      updatingArchiveLocationId != null
+    ) {
+      return;
+    }
+
+    const previousArchived = location?.isArchived === true;
+    const nextArchived = !previousArchived;
+
+    setTopSavedLocations((previous) =>
+      previous.map((item) =>
+        item.id === location.id
+          ? { ...item, isArchived: nextArchived }
+          : item
+      )
+    );
+
+    try {
+      setUpdatingArchiveLocationId(location.id);
+
+      if (nextArchived) {
+        await LocationService.archiveLocation(location.id);
+      } else {
+        await LocationService.unarchiveLocation(location.id);
+      }
+    } catch (error) {
+      setTopSavedLocations((previous) =>
+        previous.map((item) =>
+          item.id === location.id
+            ? { ...item, isArchived: previousArchived }
+            : item
+        )
+      );
+      console.error('홈 관광지 북마크 변경 실패:', error);
+    } finally {
+      setUpdatingArchiveLocationId(null);
+    }
+  };
 
   // 여행지 TOP 3 조회
   useEffect(() => {
@@ -226,116 +289,71 @@ function Home() {
           <div className="indicator">
             {/* MEMO: 03 위치에 슬라이드 값이 들어와야 하며, 최대 5개 희망 */}
             <span className="accent-text">
-              {String(activeIndex + 1).padStart(2, '0')}{' '}
+              {String(
+                topSavedLocations.length > 0 ? activeIndex + 1 : 0
+              ).padStart(2, '0')}{' '}
             </span>
-            / 03
+            / {String(topSavedLocations.length).padStart(2, '0')}
           </div>
 
           <div className="slider">
             <Swiper
               onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
             >
-              <SwiperSlide>
-                <div className="card relative">
-                  <button className="bookmark icon">
-                    {/* MEMO: 클릭시 북마크 아이콘이 fill 상태로 변경 toast로 저장되었다는 건 추후 적용 예정 */}
-                    <BookmarkSimpleIcon />
-                  </button>
+              {topSavedLocations.map((location) => (
+                <SwiperSlide key={location.id}>
+                  <div className="card relative">
+                    <button
+                      className={`bookmark icon ${
+                        location.isArchived === true ? 'selected' : ''
+                      }`}
+                      type="button"
+                      aria-label={
+                        location.isArchived === true
+                          ? '북마크 해제'
+                          : '북마크 저장'
+                      }
+                      aria-pressed={location.isArchived === true}
+                      disabled={updatingArchiveLocationId === location.id}
+                      onClick={(event) => handleToggleArchive(event, location)}
+                    >
+                      <BookmarkSimpleIcon
+                        weight={
+                          location.isArchived === true ? 'fill' : 'regular'
+                        }
+                      />
+                    </button>
 
-                  <Link className="link">
-                    {/* MEMO: 클릭 시 각 여행지 상세 페이지로 이동 */}
-                    <div className="image">
-                      <img src="https://picsum.photos/id/52/600/400" alt="" />
-                    </div>
+                    <Link className="link" to={`/place?id=${location.id}`}>
+                      <div className="image">
+                        {location.mainImageUrl && (
+                          <img
+                            src={location.mainImageUrl}
+                            alt={location.name}
+                          />
+                        )}
+                      </div>
 
-                    <div className="info">
-                      <div className="info-header">
-                        <p className="location-name">송도해수욕장</p>
+                      <div className="info">
+                        <div className="info-header">
+                          <p className="location-name">{location.name}</p>
 
-                        <div className="count">
-                          <span className="icon">
-                            <MapPinSimpleAreaIcon />
-                          </span>
-                          <span>2.4천 건</span>
+                          <div className="count">
+                            <BookmarkSimpleIcon />
+                            <span>
+                              {new Intl.NumberFormat('ko-KR').format(
+                                (location.likeCount ?? 0) +
+                                  (location.archiveCount ?? 0)
+                              )}
+                              건
+                            </span>
+                          </div>
                         </div>
                       </div>
-
-                      <div className="chip-list">
-                        {/* 해당 장소 인증 많은 미디어 콘텐츠 최대 4개 */}
-                        <span className="chip">런닝맨</span>
-                        <span className="chip">스테이씨, 떴다!</span>
-                        <span className="chip">깡철이</span>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              </SwiperSlide>
-
-              <SwiperSlide>
-                <div className="card relative">
-                  <button className="bookmark icon">
-                    <BookmarkSimpleIcon />
-                  </button>
-
-                  <Link className="link">
-                    <div className="image">
-                      <img src="https://picsum.photos/id/53/600/400" alt="" />
-                    </div>
-
-                    <div className="info">
-                      <div className="info-header">
-                        <p className="location-name">송도해수욕장</p>
-
-                        <div className="count">
-                          <span className="icon">
-                            <MapPinSimpleAreaIcon />
-                          </span>
-                          <span>2.4천 건</span>
-                        </div>
-                      </div>
-
-                      <div className="chip-list">
-                        <span className="chip">런닝맨</span>
-                        <span className="chip">스테이씨, 떴다!</span>
-                        <span className="chip">깡철이</span>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              </SwiperSlide>
-
-              <SwiperSlide>
-                <div className="card relative">
-                  <button className="bookmark icon">
-                    <BookmarkSimpleIcon />
-                  </button>
-
-                  <Link className="link">
-                    <div className="image">
-                      <img src="https://picsum.photos/id/54/600/400" alt="" />
-                    </div>
-
-                    <div className="info">
-                      <div className="info-header">
-                        <p className="location-name">송도해수욕장</p>
-
-                        <div className="count">
-                          <span className="icon">
-                            <MapPinSimpleAreaIcon />
-                          </span>
-                          <span>2.4천 건</span>
-                        </div>
-                      </div>
-
-                      <div className="chip-list icon">
-                        <span className="chip">런닝맨</span>
-                        <span className="chip">스테이씨, 떴다!</span>
-                        <span className="chip">깡철이</span>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              </SwiperSlide>
+                    </Link>
+                  </div>
+                </SwiperSlide>
+              ))}
             </Swiper>
           </div>
         </section>
