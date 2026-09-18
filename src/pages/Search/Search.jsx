@@ -19,13 +19,14 @@ function Search() {
   const [searchParams] = useSearchParams();
   const keyword = searchParams.get("keyword")?.trim() ?? "";
 
-  // MEMO: null = 아직 검색 안 한 상태. 검색하면 {artists, contents, locations}로 채워집니다.
+  // MEMO: null = 아직 검색 응답을 못 받은 상태. 검색하면 {artists, contents, locations}로 채워집니다.
   const [results, setResults] = useState(null);
+  // MEMO: 마지막으로 실제 응답을 받은 키워드. keyword와 다르면 아직 이 검색어의 결과가 아닙니다.
+  const [resultsKeyword, setResultsKeyword] = useState(null);
 
   // 검색 키워드 2글자 이상 match 방어
   useEffect(() => {
     if (keyword.length < 2) {
-      setResults(null);
       return;
     }
 
@@ -33,6 +34,7 @@ function Search() {
       try {
         const data = await SearchService.search(keyword);
         setResults(data);
+        setResultsKeyword(keyword);
       } catch (e) {
         console.error(e);
         window.alert("검색에 실패했습니다.");
@@ -45,7 +47,7 @@ function Search() {
   const artists = results?.artists ?? [];
   const contents = results?.contents ?? [];
   const locations = results?.locations ?? [];
-  const hasSearched = results !== null;
+  const hasSearched = keyword.length >= 2 && resultsKeyword === keyword;
   const hasNoResult =
     hasSearched &&
     artists.length === 0 &&
