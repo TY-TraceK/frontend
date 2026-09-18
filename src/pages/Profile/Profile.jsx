@@ -236,21 +236,25 @@ function Profile() {
             </Link>
           </div>
 
-          <ul className="list">
-            {recentLocations.map((location) => (
-              <li className="item" key={location.id}>
-                <Link to={`/place?id=${location.id}`}>
-                  <div className="image">
-                    {location.mainImageUrl && (
-                      <img src={location.mainImageUrl} alt={location.name} />
-                    )}
-                  </div>
-                  <span className="location">{location.city}</span>
-                  <p className="name ellipsis-1">{location.name}</p>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          {recentLocations.length === 0 ? (
+            <div>최근 본 여행지가 없습니다.</div>
+          ) : (
+            <ul className="list">
+              {recentLocations.map((location) => (
+                <li className="item" key={location.id}>
+                  <Link to={`/place?id=${location.id}`}>
+                    <div className="image">
+                      {location.mainImageUrl && (
+                        <img src={location.mainImageUrl} alt={location.name} />
+                      )}
+                    </div>
+                    <span className="location">{location.city}</span>
+                    <p className="name ellipsis-1">{location.name}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
 
         <section className="statistics">
