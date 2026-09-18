@@ -228,7 +228,7 @@ function Profile() {
           <div className="title-row">
             <h3 className="title">최근 본 여행지</h3>
 
-            <Link to="#" className="accent-text">
+            <Link to="/profile/recent-locations" className="accent-text">
               더보기
               <span className="icon">
                 <CaretRightIcon />

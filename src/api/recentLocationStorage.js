@@ -49,6 +49,10 @@ const RecentLocationStorage = {
   getRecent(limit = MAX_RECENT_LOCATIONS) {
     return read().slice(0, limit);
   },
+
+  getAll() {
+    return read();
+  },
 };
 
 export default RecentLocationStorage;
