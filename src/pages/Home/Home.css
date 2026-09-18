@@ -36,7 +36,12 @@
       display: flex;
       gap: var(--spacing-8);
       margin-bottom: var(--spacing-16);
+      width: 100%;
+      max-width: 100%;
       overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
 
       &::-webkit-scrollbar {
