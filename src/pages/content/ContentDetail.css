@@ -99,6 +99,7 @@
             text-align: center;
             gap: var(--spacing-4);
             font-size: var(--font-size-caption);
+            cursor: pointer;
 
             .image {
               aspect-ratio: 1/1;

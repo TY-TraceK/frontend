@@ -36,48 +36,18 @@ const CATEGORY_ICON = {
   ETC: AsteriskIcon,
 };
 
-// TODO: DB에 장소 데이터가 채워지면 이 mock과 아래 catch의 fallback 처리를 제거해주세요.
-const MOCK_PLACE_DATA = {
-  locationInfo: {
-    locationId: 1,
-    name: "송도해수욕장",
-    category: "ATTRACTION",
-    address: {
-      city: "부산광역시",
-      district: "서구",
-      address: "부산광역시 서구 송도해변로 100",
-    },
-    geoLocation: { latitude: 35.0764, longitude: 129.0143 },
-    mainImageUrl: "https://picsum.photos/id/913/800/900",
-    tel: "051-240-4000",
-    businessHours: "06:00 - 23:00, 연중무휴",
-    overview: "개장 100주년이 넘은 우리나라 1호 해수욕장",
-    archiveCount: 1062,
-    likeCount: 2173,
-    totalVerificationCount: 1984,
-    isLiked: false,
-    isArchived: false,
-  },
-  images: [],
-  contents: [
-    { contentId: 1, contentTitle: "런닝맨", contentType: "예능", contentPictureUrl: "https://picsum.photos/id/153/400/600", relatedVerificationsCount: 0 },
-    { contentId: 2, contentTitle: "스테이씨, 떴다!", contentType: "예능", contentPictureUrl: "https://picsum.photos/id/154/400/600", relatedVerificationsCount: 0 },
-    { contentId: 3, contentTitle: "깡철이", contentType: "예능", contentPictureUrl: "https://picsum.photos/id/230/400/600", relatedVerificationsCount: 0 },
-    { contentId: 4, contentTitle: "스테이씨크릿 in 부산", contentType: "예능", contentPictureUrl: "https://picsum.photos/id/238/400/600", relatedVerificationsCount: 0 },
-  ],
-  artists: [
-    { artistId: 1, artistName: "런닝맨", artistPictureUrl: "https://picsum.photos/id/153/400/600", isGroup: true, relatedVerificationsCount: 0 },
-    { artistId: 2, artistName: "스테이씨, 떴다!", artistPictureUrl: "https://picsum.photos/id/154/400/600", isGroup: true, relatedVerificationsCount: 0 },
-    { artistId: 3, artistName: "깡철이", artistPictureUrl: "https://picsum.photos/id/230/400/600", isGroup: false, relatedVerificationsCount: 0 },
-    { artistId: 4, artistName: "스테이씨크릿 in 부산", artistPictureUrl: "https://picsum.photos/id/238/400/600", isGroup: true, relatedVerificationsCount: 0 },
-  ],
-};
-
 const formatCount = (count) => new Intl.NumberFormat("ko-KR").format(count ?? 0);
 
 const getCategoryLabel = (category) =>
   LOCATION_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ??
   category;
+
+const getFirstSentence = (text) => {
+  if (!text) return "";
+
+  const [firstSentence] = text.trim().split(/(?<=[.!?])\s/);
+  return firstSentence;
+};
 
 function Place() {
   const navigate = useNavigate();
@@ -115,17 +85,15 @@ function Place() {
         setPlaceData(data);
       } catch (e) {
         console.error(e);
-        console.warn(
-          "[Place] 장소 상세 조회에 실패해 임시 더미 데이터를 표시합니다. (DB 데이터 확인 필요)",
-        );
-        setPlaceData(MOCK_PLACE_DATA);
+        window.alert("현재 장소 정보를 확인할 수 없습니다.");
+        navigate(-1);
       } finally {
         setLoading(false);
       }
     };
 
     fetchPlace();
-  }, [locationId]);
+  }, [locationId, navigate]);
 
   const handleCopyPhone = async (tel) => {
     if (!tel) return;
@@ -270,7 +238,7 @@ function Place() {
           </div>
 
           <h2>{locationInfo.name}</h2>
-          <p className="description">{locationInfo.overview}</p>
+          <p className="description">{getFirstSentence(locationInfo.overview)}</p>
           <div className="place-stats">
             <div className="like-count">
               <span className="icon heart">
@@ -362,7 +330,7 @@ function Place() {
             <ul className="list" ref={artistListRef}>
               {artists.map((artist) => (
                 <li className="item" key={artist.artistId}>
-                  <Link>
+                  <Link to={`/content/detail?type=artist&id=${artist.artistId}`}>
                     <div className="image">
                       {artist.artistPictureUrl && (
                         <img src={artist.artistPictureUrl} alt={artist.artistName} />

@@ -21,6 +21,30 @@ const ContentService = {
 
     return result.data;
   },
+
+  async followContent(contentId) {
+    const response = await apiClient.post(`/contents/${contentId}/fans`);
+
+    const result = response.data;
+
+    if (!result.isSuccess) {
+      throw new Error(result.message);
+    }
+
+    return result.data;
+  },
+
+  async unfollowContent(contentId) {
+    const response = await apiClient.delete(`/contents/${contentId}/fans`);
+
+    const result = response.data;
+
+    if (!result.isSuccess) {
+      throw new Error(result.message);
+    }
+
+    return result.data;
+  },
 };
 
 export default ContentService;

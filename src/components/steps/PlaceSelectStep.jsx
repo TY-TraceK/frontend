@@ -1,4 +1,9 @@
 import PlaceCard from '../PlaceCard';
+import { LOCATION_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
+
+const getLocationCategoryLabel = (category) =>
+  LOCATION_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ??
+  category;
 
 function PlaceSelectStep({ locations, selectedLocation, onSelectLocation }) {
   return (
@@ -13,7 +18,7 @@ function PlaceSelectStep({ locations, selectedLocation, onSelectLocation }) {
             <PlaceCard
               key={location.id}
               className={selectedLocation?.id === location.id ? 'selected' : ''}
-              tag={location.category}
+              tag={getLocationCategoryLabel(location.category)}
               title={location.name}
               description={location.address}
               imageUrl={location.mainImageUrl}
