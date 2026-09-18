@@ -18,6 +18,21 @@ function Header({ type = 'default', title }) {
     AuthService.logout();
   };
   const [searchActive, setSearchActive] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  const handleSearchSubmit = () => {
+    const trimmedKeyword = searchKeyword.trim();
+
+    if (!trimmedKeyword) return;
+
+    navigate(`/search?keyword=${encodeURIComponent(trimmedKeyword)}`);
+  };
+
+  const handleSearchKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSearchSubmit();
+    }
+  };
 
   return (
     <header className={type}>
@@ -55,7 +70,13 @@ function Header({ type = 'default', title }) {
                 </button>
               ) : (
                 <div className="search-input">
-                  <input type="text" placeholder="검색어를 입력하세요." />
+                  <input
+                    type="text"
+                    placeholder="검색어를 입력하세요."
+                    value={searchKeyword}
+                    onChange={(event) => setSearchKeyword(event.target.value)}
+                    onKeyDown={handleSearchKeyDown}
+                  />
                   <button
                     type="button"
                     className="icon"
@@ -72,8 +93,14 @@ function Header({ type = 'default', title }) {
         {type === 'expanded' && (
           <section className="search">
             <div className="search-input">
-              <input type="text" placeholder="검색어를 입력하세요." />
-              <button type="button" className="icon">
+              <input
+                type="text"
+                placeholder="검색어를 입력하세요."
+                value={searchKeyword}
+                onChange={(event) => setSearchKeyword(event.target.value)}
+                onKeyDown={handleSearchKeyDown}
+              />
+              <button type="button" className="icon" onClick={handleSearchSubmit}>
                 <MagnifyingGlassIcon />
               </button>
             </div>
@@ -83,8 +110,14 @@ function Header({ type = 'default', title }) {
         {type === 'home' && (
           <section className="search">
             <div className="search-input">
-              <input type="text" placeholder="검색어를 입력하세요." />
-              <button type="button" className="icon">
+              <input
+                type="text"
+                placeholder="검색어를 입력하세요."
+                value={searchKeyword}
+                onChange={(event) => setSearchKeyword(event.target.value)}
+                onKeyDown={handleSearchKeyDown}
+              />
+              <button type="button" className="icon" onClick={handleSearchSubmit}>
                 <MagnifyingGlassIcon />
               </button>
             </div>
