@@ -19,13 +19,13 @@ function GNB() {
             </span>
             <span className="menu-name">홈</span>
           </Link>
-          <Link className="menu contents">
+          <Link to="/contents" className="menu contents">
             <span className="icon">
               <StarIcon />
             </span>
             <span className="menu-name">콘텐츠</span>
           </Link>
-          <Link className="menu map">
+          <Link to="/map" className="menu map">
             <span className="icon">
               <MapTrifoldIcon />
             </span>
