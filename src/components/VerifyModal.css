@@ -4,13 +4,27 @@
   right: 0;
   bottom: 0;
   left: 0;
-  max-width: 540px;
+
   height: 100vh;
+
+  background-color: var(--bg-canvas);
+  z-index: 999;
+
+  /* TODO: 추후 frame 추가하면서 width 100vw로 변경*/
+  max-width: 540px;
+  /* TODO: 추후 frame 추가하면서 삭제 */
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-canvas);
-  z-index: 999;
+
+  .frame {
+    max-width: 540px;
+    height: 100vh;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-card);
+  }
 
   .close-btn-box {
     padding: 16px;

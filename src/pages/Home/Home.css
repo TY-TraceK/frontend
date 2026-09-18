@@ -1,17 +1,19 @@
 .home {
   .login-prompt,
   .personalized-content {
-    font-size: var(--font-size-heading);
+    font-size: var(--font-size-body);
     margin-bottom: var(--spacing-40);
 
     .accent-text {
       font-weight: 500;
+      cursor: pointer;
     }
   }
 
   .personalized-content {
     .banner {
-      font-size: var(--font-size-body);
+      display: none;
+      /* font-size: var(--font-size-body);
       padding: 18px 24px;
       margin-top: var(--spacing-16);
       border-radius: var(--radius-32);
@@ -23,7 +25,7 @@
         gap: var(--spacing-4);
         align-items: center;
         justify-content: space-between;
-      }
+      } */
     }
   }
 
@@ -39,46 +41,9 @@
     }
 
     .tabs {
-      display: flex;
-      gap: var(--spacing-8);
-      width: 100%;
-      max-width: 100%;
-      overflow-x: auto;
-      overflow-y: hidden;
-      overscroll-behavior-x: contain;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
-
-      li {
-        flex: 0 0 auto;
-      }
-
-      .tab {
-        white-space: nowrap;
-        padding: 6px 20px;
-        background-color: var(--interact-subtle);
-        border-radius: var(--radius-16);
-        cursor: pointer;
-
-        &:hover {
-          background-color: var(--interact-subtle-hover);
-        }
-
-        &.selected {
-          font-weight: 400;
-          color: var(--gl-text-white);
-          background-color: var(--interact-active);
-          box-shadow: var(--shadow-pressed);
-
-          &:hover {
-            background-color: var(--interact-hover);
-          }
-        }
-      }
+      gap: 0;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-16);
     }
 
     .tabs-scroll {
@@ -139,6 +104,7 @@
 
     .header {
       display: flex;
+      align-items: center;
       justify-content: space-between;
       margin-bottom: var(--spacing-16);
 
@@ -159,6 +125,7 @@
       text-align: right;
       margin-right: var(--spacing-24);
       margin-bottom: var(--spacing-16);
+      font-size: var(--font-size-caption);
     }
 
     .slider {
@@ -215,13 +182,21 @@
           .chip-list {
             display: flex;
             gap: var(--spacing-8);
+            flex-wrap: wrap;
 
             .chip {
+              max-width: 100%;
+              flex-shrink: 0;
               font-size: var(--font-size-caption);
               color: var(--gl-text-black);
               background-color: var(--gl-interact-subtle);
               padding: 1px 6px;
               border-radius: var(--radius-12);
+              /* TODO: 말 줄임표니까 추후에 클래스로 뺄 것 */
+              display: -webkit-box;
+              -webkit-line-clamp: 1;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
             }
           }
         }
@@ -277,7 +252,7 @@
             height: inherit;
 
             &:after {
-              content: "";
+              content: '';
               position: absolute;
               bottom: 0;
               left: 0;
@@ -318,13 +293,18 @@
             .location-name {
               font-size: var(--font-size-heading);
               margin-bottom: var(--spacing-4);
+              /* 추후에 클래스로 빼기 */
+              display: -webkit-box;
+              -webkit-line-clamp: 1;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
             }
             .count {
               display: flex;
               align-items: center;
               justify-content: right;
               gap: var(--spacing-4);
-              font-size: var(--font-size-caption);
+              font-size: var(--font-size-body);
 
               svg {
                 font-size: var(--font-size-heading);
@@ -338,6 +318,7 @@
       display: flex;
       align-items: center;
       justify-content: right;
+      padding: 10px 0;
       gap: var(--spacing-4);
     }
   }
@@ -358,12 +339,12 @@
       color: var(--text-sub);
       span {
         &:after {
-          content: "·";
+          content: '·';
           margin: 0 var(--spacing-4);
         }
 
         &:last-child:after {
-          content: "";
+          content: '';
         }
       }
     }

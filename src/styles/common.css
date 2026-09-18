@@ -39,10 +39,7 @@ h3 {
   font-size: var(--font-size-heading);
   font-weight: 500;
 }
-span.accent-text,
-p.accent-text,
-a.accent-text,
-div.accent-text {
+*.accent-text {
   color: var(--text-accent);
 }
 
@@ -143,7 +140,7 @@ div.accent-text {
 .search-input {
   display: flex;
   align-items: center;
-  padding: 10px 16px;
+  padding: 0 var(--spacing-8);
   background-color: var(--bg-elevated);
   border-radius: var(--radius-32);
   box-shadow: var(--shadow-card);
@@ -236,9 +233,10 @@ div.accent-text {
   display: flex;
   gap: var(--spacing-8);
   margin-bottom: var(--spacing-16);
+  font-size: var(--font-size-caption);
 
   .tab {
-    padding: 6px 20px;
+    padding: var(--spacing-8) var(--spacing-16);
     background-color: var(--interact-subtle);
     border-radius: var(--radius-16);
     cursor: pointer;
