@@ -2,105 +2,68 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Select from './Select';
 
-function ListTemplate() {
-  const [selectedRegion, setSelectedRegion] = useState('부산광역시');
+function ListTemplate({
+  items = [],
+  filters = [],
+  emptyMessage = '목록이 없습니다.',
+  getItemKey = (item) => item.id,
+  getItemLink = () => '#',
+  getImageUrl = (item) => item.imageUrl,
+  getImageAlt = (item) => item.title ?? item.name ?? '',
+  getItemTitle = (item) => item.title ?? item.name ?? '',
+  filterItems = (itemsToFilter) => itemsToFilter,
+}) {
+  const initialFilters = Object.fromEntries(
+    filters.map((filter) => [filter.name, filter.defaultValue ?? ''])
+  );
+  const [selectedFilters, setSelectedFilters] = useState(initialFilters);
 
-  const regions = ['부산광역시', '서울특별시', '경기도', '인천광역시'];
+  const handleFilterChange = (name, value) => {
+    setSelectedFilters((previous) => ({ ...previous, [name]: value }));
+  };
+
+  const filteredItems = filterItems(items, selectedFilters);
 
   return (
     <main className="list-template">
       <div className="container">
-        <div className="filter">
-          {' '}
-          <Select
-            value={selectedRegion}
-            options={regions}
-            onChange={setSelectedRegion}
-          />
-        </div>
+        {filters.length > 0 && (
+          <div className="filter">
+            {filters.map((filter) => (
+              <Select
+                key={filter.name}
+                value={selectedFilters[filter.name]}
+                options={filter.options}
+                onChange={(value) => {
+                  handleFilterChange(filter.name, value);
+                  filter.onChange?.(value);
+                }}
+              />
+            ))}
+          </div>
+        )}
 
-        <ul className="list">
-          <li className="item">
-            <Link>
-              <div className="image">
-                <img src="https://picsum.photos/id/11/400/600" alt="" />
-              </div>
-              <div className="title">name or title</div>
-            </Link>
-          </li>
-          <li className="item">
-            <Link>
-              <div className="image">
-                <img src="https://picsum.photos/id/11/400/600" alt="" />
-              </div>
-              <div className="title">name or title</div>
-            </Link>
-          </li>
-          <li className="item">
-            <Link>
-              <div className="image">
-                <img src="https://picsum.photos/id/11/400/600" alt="" />
-              </div>
-              <div className="title">name or title</div>
-            </Link>
-          </li>
-          <li className="item">
-            <Link>
-              <div className="image">
-                <img src="https://picsum.photos/id/11/400/600" alt="" />
-              </div>
-              <div className="title">name or title</div>
-            </Link>
-          </li>
-          <li className="item">
-            <Link>
-              <div className="image">
-                <img src="https://picsum.photos/id/11/400/600" alt="" />
-              </div>
-              <div className="title">name or title</div>
-            </Link>
-          </li>
-          <li className="item">
-            <Link>
-              <div className="image">
-                <img src="https://picsum.photos/id/11/400/600" alt="" />
-              </div>
-              <div className="title">name or title</div>
-            </Link>
-          </li>
-          <li className="item">
-            <Link>
-              <div className="image">
-                <img src="https://picsum.photos/id/11/400/600" alt="" />
-              </div>
-              <div className="title">name or title</div>
-            </Link>
-          </li>
-          <li className="item">
-            <Link>
-              <div className="image">
-                <img src="https://picsum.photos/id/11/400/600" alt="" />
-              </div>
-              <div className="title">name or title</div>
-            </Link>
-          </li>
-          <li className="item">
-            <Link>
-              <div className="image">
-                <img src="https://picsum.photos/id/11/400/600" alt="" />
-              </div>
-              <div className="title">name or title</div>
-            </Link>
-          </li>
-          <li className="item">
-            <Link>
-              <div className="image">
-                <img src="https://picsum.photos/id/11/400/600" alt="" />
-              </div>
-              <div className="title">name or title</div>
-            </Link>
-          </li>
-        </ul>
+        {filteredItems.length === 0 ? (
+          <div>{emptyMessage}</div>
+        ) : (
+          <ul className="list">
+            {filteredItems.map((item) => (
+              <li className="item" key={getItemKey(item)}>
+                <Link to={getItemLink(item)}>
+                  <div className="image">
+                    {getImageUrl(item) && (
+                      <img
+                        src={getImageUrl(item)}
+                        alt={getImageAlt(item)}
+                      />
+                    )}
+                  </div>
+                  <div className="title">{getItemTitle(item)}</div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </main>
   );

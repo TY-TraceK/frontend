@@ -22,6 +22,7 @@ import GNB from './components/GNB';
 import VerifyFab from './components/VerifyFab';
 import VerifyModal from './components/VerifyModal';
 import ListTemplate from './components/ListTemplate';
+import RecentLocationStorage from '@/api/recentLocationStorage.js';
 import { KakaoCallback, Login } from '@/pages/Login';
 import TokenStorage from '@/api/tokenStorage.js';
 
@@ -63,6 +64,9 @@ function App() {
     '/list': {
       title: '리스트 페이지 타이틀',
     },
+    '/profile/recent-locations': {
+      title: '최근 본 여행지',
+    },
   };
 
   const header = headerConfig[location.pathname] ?? {
@@ -96,6 +100,40 @@ function App() {
         {/* 로그인 후 접근 가능한 페이지이나, 퍼블리싱 용이성을 위해 하단에 배치 */}
         <Route path="/contents" element={<ContentsHome />} />
         <Route path="/list" element={<ListTemplate />} />
+        <Route
+          path="/profile/recent-locations"
+          element={
+            <ListTemplate
+              items={RecentLocationStorage.getAll()}
+              filters={[
+                {
+                  name: 'region',
+                  defaultValue: '전체',
+                  options: [
+                    '전체',
+                    ...new Set(
+                      RecentLocationStorage.getAll()
+                        .map((item) => item.city)
+                        .filter(Boolean)
+                    ),
+                  ],
+                },
+              ]}
+              filterItems={(items, selectedFilters) =>
+                selectedFilters.region === '전체'
+                  ? items
+                  : items.filter(
+                      (item) => item.city === selectedFilters.region
+                    )
+              }
+              emptyMessage="최근 본 여행지가 없습니다."
+              getItemLink={(item) => `/place?id=${item.id}`}
+              getImageUrl={(item) => item.mainImageUrl}
+              getImageAlt={(item) => item.name}
+              getItemTitle={(item) => item.name}
+            />
+          }
+        />
         <Route path="/archive" element={<Archive />} />
         <Route path="/profile" element={<Profile />} />
 
