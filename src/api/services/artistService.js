@@ -1,26 +1,7 @@
 import apiClient from '@/api/apiClient.js';
 
-const ContentService = {
-  async getContentsByCategory({
-    category,
-    page = 0,
-    size = 10,
-    sort = 'id,DESC',
-  } = {}) {
-    const response = await apiClient.get(`/contents/category/${category}`, {
-      params: { page, size, sort },
-    });
-
-    const result = response.data;
-
-    if (!result.isSuccess) {
-      throw new Error(result.message);
-    }
-
-    return result.data;
-  },
-
-  async getContentDetail({ contentId, city, lastCount, lastId, size } = {}) {
+const ArtistService = {
+  async getArtistLocations({ artistId, city, lastCount, lastId, size } = {}) {
     const params = {
       ...(city && { city }),
       ...(lastCount != null && { lastCount }),
@@ -28,7 +9,7 @@ const ContentService = {
       ...(size != null && { size }),
     };
 
-    const response = await apiClient.get(`/contents/${contentId}`, {
+    const response = await apiClient.get(`/artists/${artistId}/locations`, {
       params,
     });
 
@@ -41,8 +22,16 @@ const ContentService = {
     return result.data;
   },
 
-  async followContent(contentId) {
-    const response = await apiClient.post(`/contents/${contentId}/fans`);
+  async getArtistContents({ artistId, lastCount, lastId, size } = {}) {
+    const params = {
+      ...(lastCount != null && { lastCount }),
+      ...(lastId != null && { lastId }),
+      ...(size != null && { size }),
+    };
+
+    const response = await apiClient.get(`/artists/${artistId}/contents`, {
+      params,
+    });
 
     const result = response.data;
 
@@ -53,8 +42,20 @@ const ContentService = {
     return result.data;
   },
 
-  async unfollowContent(contentId) {
-    const response = await apiClient.delete(`/contents/${contentId}/fans`);
+  async followArtist(artistId) {
+    const response = await apiClient.post(`/artists/${artistId}/fans`);
+
+    const result = response.data;
+
+    if (!result.isSuccess) {
+      throw new Error(result.message);
+    }
+
+    return result.data;
+  },
+
+  async unfollowArtist(artistId) {
+    const response = await apiClient.delete(`/artists/${artistId}/fans`);
 
     const result = response.data;
 
@@ -66,4 +67,4 @@ const ContentService = {
   },
 };
 
-export default ContentService;
+export default ArtistService;

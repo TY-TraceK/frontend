@@ -2,6 +2,11 @@ import { CaretDownIcon, MagnifyingGlassIcon } from '@phosphor-icons/react';
 
 import MediaCard from '../MediaCard';
 import ArtistSearch from '../ArtistSearch';
+import { CONTENT_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
+
+const getContentCategoryLabel = (category) =>
+  CONTENT_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ??
+  category;
 
 function ContentSelectStep({
   selectedLocation,
@@ -63,7 +68,7 @@ function ContentSelectStep({
                         ? 'selected'
                         : ''
                     }
-                    tag={content.contentCategory}
+                    tag={getContentCategoryLabel(content.contentCategory)}
                     title={content.contentTitle}
                     imageUrl={content.contentPictureUrl}
                     onClick={() => onSelectContent(content)}

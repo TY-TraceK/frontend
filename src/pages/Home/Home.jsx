@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -10,6 +10,8 @@ import {
 } from '@phosphor-icons/react';
 
 import RankingService from '@/api/services/rankingService.js';
+import ContentService from '@/api/services/contentService.js';
+import { CONTENT_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
 
 import './Home.css';
 import { useProfile } from '@/hooks/userContext.jsx';
@@ -17,6 +19,23 @@ import { useProfile } from '@/hooks/userContext.jsx';
 function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [topRankings, setTopRankings] = useState([]);
+  const [selectedContentCategory, setSelectedContentCategory] = useState('DRAMA');
+  const [categoryContents, setCategoryContents] = useState([]);
+  const [contentCuration, setContentCuration] = useState(null);
+  const categoryTabsRef = useRef(null);
+  const [canScrollCategoriesLeft, setCanScrollCategoriesLeft] = useState(false);
+  const [canScrollCategoriesRight, setCanScrollCategoriesRight] =
+    useState(false);
+
+  const updateCategoryScrollButtons = () => {
+    const tabs = categoryTabsRef.current;
+    if (!tabs) return;
+
+    setCanScrollCategoriesLeft(tabs.scrollLeft > 0);
+    setCanScrollCategoriesRight(
+      tabs.scrollLeft + tabs.clientWidth < tabs.scrollWidth - 1
+    );
+  };
 
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('accessToken');
@@ -27,6 +46,40 @@ function Home() {
       setProfileData();
     }
   }, []);
+  useEffect(() => {
+    const fetchCategoryContents = async () => {
+      try {
+        const data = await ContentService.getContentsByCategory({
+          category: selectedContentCategory,
+          page: 0,
+          size: 3,
+          sort: 'id,DESC',
+        });
+
+        setCategoryContents(data.content ?? []);
+      } catch (error) {
+        console.error('카테고리별 콘텐츠 조회 실패:', error);
+        setCategoryContents([]);
+      }
+    };
+
+    fetchCategoryContents();
+  }, [selectedContentCategory]);
+
+  useEffect(() => {
+    const tabs = categoryTabsRef.current;
+    if (!tabs) return undefined;
+
+    updateCategoryScrollButtons();
+    tabs.addEventListener('scroll', updateCategoryScrollButtons);
+    window.addEventListener('resize', updateCategoryScrollButtons);
+
+    return () => {
+      tabs.removeEventListener('scroll', updateCategoryScrollButtons);
+      window.removeEventListener('resize', updateCategoryScrollButtons);
+    };
+  }, []);
+
   // 여행지 TOP 3 조회
   useEffect(() => {
     const fetchTopRankings = async () => {
@@ -42,6 +95,20 @@ function Home() {
     };
 
     fetchTopRankings();
+  }, []);
+
+  useEffect(() => {
+    const fetchContentCuration = async () => {
+      try {
+        const data = await RankingService.getContentCuration();
+        setContentCuration(data);
+      } catch (error) {
+        console.error('콘텐츠 큐레이션 조회 실패:', error);
+        setContentCuration(null);
+      }
+    };
+
+    fetchContentCuration();
   }, []);
 
   return (
@@ -81,33 +148,66 @@ function Home() {
         <section className="new-contents">
           <h2>새로운 콘텐츠를 통해 여행지를 찾아보세요!</h2>
 
-          <ul className="tabs">
-            {/* MEMO: 탭 클릭하여 콘텐츠 변경 시, tab에 selected 클래스 추가 */}
-            <li className="tab selected">드라마</li>
-            <li className="tab">영화</li>
-            <li className="tab">예능</li>
-            <li className="tab">뮤직비디오</li>
-          </ul>
+          <div className="tabs-wrapper">
+            {canScrollCategoriesLeft && (
+              <button
+                type="button"
+                className="tabs-scroll tabs-prev"
+                aria-label="이전 카테고리 보기"
+                onClick={() =>
+                  categoryTabsRef.current?.scrollBy({
+                    left: -160,
+                    behavior: 'smooth',
+                  })
+                }
+              >
+                <CaretRightIcon />
+              </button>
+            )}
+
+            <ul className="tabs" ref={categoryTabsRef}>
+              {CONTENT_CATEGORY_OPTIONS.map((category) => (
+                <li key={category.value}>
+                  <button
+                    type="button"
+                    className={`tab ${
+                      selectedContentCategory === category.value
+                        ? 'selected'
+                        : ''
+                    }`}
+                    onClick={() => setSelectedContentCategory(category.value)}
+                  >
+                    {category.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            {canScrollCategoriesRight && (
+              <button
+                type="button"
+                className="tabs-scroll tabs-next"
+                aria-label="다음 카테고리 보기"
+                onClick={() =>
+                  categoryTabsRef.current?.scrollBy({
+                    left: 160,
+                    behavior: 'smooth',
+                  })
+                }
+              >
+                <CaretRightIcon />
+              </button>
+            )}
+          </div>
 
           <ul className="list">
-            <li className="poster">
-              {/* MEMO: 클릭 시 각 미디어 홈으로 이동 */}
-              <Link>
-                <img src="https://picsum.photos/id/912/400/600" alt="" />
-              </Link>
-            </li>
-
-            <li className="poster">
-              <Link>
-                <img src="https://picsum.photos/id/508/400/600" alt="" />
-              </Link>
-            </li>
-
-            <li className="poster">
-              <Link>
-                <img src="https://picsum.photos/id/1015/400/600" alt="" />
-              </Link>
-            </li>
+            {categoryContents.map((content) => (
+              <li key={content.id} className="poster">
+                <Link to={`/content/detail?id=${content.id}`}>
+                  <img src={content.pictureUrl} alt={content.title} />
+                </Link>
+              </li>
+            ))}
           </ul>
         </section>
         <section className="hero">
@@ -240,7 +340,7 @@ function Home() {
           </div>
         </section>
         <section className="archive-banner">
-          <Link>
+          <Link to={'/archive'}>
             {/* MEMO: 클릭 시 아카이브 페이지로 이동 */}
             <p>오늘 하루 어디 다녀왔는지, 한 눈에 확인하는 방법!</p>
             <p className="emphasis">방문 인증으로 만들어지는 나만의 타임라인</p>
@@ -295,27 +395,31 @@ function Home() {
             <CaretRightIcon />
           </Link>
         </section>
-        <section className="content-curator">
-          {/* MEMO: 큐레이션 섹션 진행할 건지 논의 필요함. 잠시 보류해주세요. 감사합니다! */}
-          <Link className="link">
-            <p>🎬 이 콘텐츠를 따라 떠나볼까요?</p>
+        {contentCuration && (
+          <section className="content-curator">
+            <Link
+              className="link"
+              to={`/content/detail?id=${contentCuration.contentId}`}
+            >
+              <p>🎬 이 콘텐츠 따라 떠나볼까요?</p>
 
-            <h3>'런닝맨' 속 부산 여행</h3>
+              <h3>&lt;{contentCuration.contentTitle}&gt; 속 여행</h3>
 
-            <p className="route">
-              <span>송도해수욕장</span>
-              <span>송도해상케이블카</span>
-              <span>흰여울문화마을</span>
-            </p>
+              <p className="route">
+                {(contentCuration.locationNames ?? []).map((locationName) => (
+                  <span key={locationName}>{locationName}</span>
+                ))}
+              </p>
 
-            <span className="more accent-text">
-              여행지 더보기
-              <span className="icon">
-                <CaretRightIcon />
+              <span className="more accent-text">
+                여행지 더보기
+                <span className="icon">
+                  <CaretRightIcon />
+                </span>
               </span>
-            </span>
-          </Link>
-        </section>
+            </Link>
+          </section>
+        )}
       </div>
     </main>
   );

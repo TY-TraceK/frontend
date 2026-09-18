@@ -3,6 +3,11 @@ import { MagnifyingGlassIcon } from '@phosphor-icons/react';
 import { notification } from 'antd';
 
 import VerifyService from '@/api/services/verifyService';
+import { CONTENT_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
+
+const getContentCategoryLabel = (category) =>
+  CONTENT_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ??
+  category;
 
 function ArtistSearch({
   selectedSearchArtist,
@@ -207,7 +212,9 @@ function ArtistSearch({
                         </div>
 
                         <div className="content-info">
-                          <span className="tag">{content.contentCategory}</span>
+                          <span className="tag">
+                            {getContentCategoryLabel(content.contentCategory)}
+                          </span>
 
                           <p className="title">{content.contentTitle}</p>
                         </div>

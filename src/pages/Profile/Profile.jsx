@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { useProfile } from '@/hooks/userContext.jsx';
 import { useEffect, useRef, useState } from 'react';
 import UserService from '@/api/services/userService.js';
+import VerifyService from '@/api/services/verifyService.js';
 
 function Profile() {
   const { user, setProfileData } = useProfile();
@@ -22,6 +23,8 @@ function Profile() {
   const [profileImage, setProfileImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [userActivity, setUserActivity] = useState(null);
+  const [lastVerificationData, setLastVerificationData] = useState(null);
 
   const fileInputRef = useRef(null);
 
@@ -30,15 +33,22 @@ function Profile() {
 
     const fetchData = async () => {
       try {
-        await setProfileData();
+        if (isLoggedIn && user == null) {
+          await setProfileData();
+        }
+        setUserActivity(await UserService.getUserActivityProjection());
+        const verificationData =
+          await VerifyService.getMyVisitVerificationHistories({ size: 1 });
+        if (
+          verificationData?.histories != null &&
+          verificationData?.histories.length > 0
+        )
+          setLastVerificationData(verificationData?.histories[0].items[0]);
       } catch (error) {
         console.error('프로필 조회 실패:', error);
       }
     };
-
-    if (isLoggedIn && user == null) {
-      fetchData();
-    }
+    fetchData();
   }, [user, setProfileData]);
 
   useEffect(() => {
@@ -147,10 +157,7 @@ function Profile() {
             className={`image ${isEditing ? 'editable' : ''}`}
             onClick={handleImageClick}
           >
-            <img
-              src={previewUrl || '/images/default-profile.png'}
-              alt="프로필 이미지"
-            />
+            <img src={previewUrl} alt="프로필 이미지" />
 
             {isEditing && (
               <div className="image-edit-overlay">
@@ -282,53 +289,58 @@ function Profile() {
             <span className="icon star">
               <StarIcon weight="fill" />
             </span>
-            <p className="number">8</p>
+            <p className="number">{userActivity?.fanCount}</p>
             <p className="description">아티스트 & 미디어</p>
           </div>
-
           <div className="verify-stat stat-box">
             <span className="icon accent-text">
               <MapPinSimpleAreaIcon weight="fill" />
             </span>
-            <p className="number">4</p>
+            <p className="number">{userActivity?.visitVerificationCount}</p>
             <p className="description">방문 인증한 장소</p>
           </div>
-
           <div className="haert-stat stat-box">
             <span className="icon heart">
               <HeartIcon weight="fill" />
             </span>
-            <p className="number">127</p>
+            <p className="number">{userActivity?.likedCount}</p>
             <p className="description">좋아한 장소</p>
           </div>
-
           <div className="bookmark-stat stat-box">
             <span className="icon bookmark">
               <BookmarkSimpleIcon weight="fill" />
             </span>
-            <p className="number">26</p>
+            <p className="number">{userActivity?.bookMarkCount}</p>
             <p className="description">북마크한 장소</p>
           </div>
         </section>
 
         <section className="recent-verify-place">
           <h3>최근 방문 인증</h3>
+          {lastVerificationData == null ? (
+            <div>방문 인증 내역이 없습니다.</div>
+          ) : (
+            <div className="verify">
+              <div className="image">
+                <img src={lastVerificationData.locationImageUrl} alt="" />
+              </div>
 
-          <div className="verify">
-            <div className="image">
-              <img src="https://picsum.photos/id/128/400/600" alt="" />
+              <div className="info">
+                <span className="tag">{lastVerificationData.city}</span>
+                <h4>{lastVerificationData.locationName}</h4>
+                <p className="verify-content">
+                  <span className="artist">
+                    {lastVerificationData.artists[0].artistName}
+                    {lastVerificationData?.artists?.length > 1 &&
+                      `외 ${lastVerificationData?.artists?.length - 1} 명`}
+                  </span>
+                  <span className="media">
+                    {lastVerificationData.contentTitle}
+                  </span>
+                </p>
+              </div>
             </div>
-
-            <div className="info">
-              <span className="tag">부산광역시</span>
-              <h4>송도해수욕장</h4>
-
-              <p className="verify-content">
-                <span className="artist">김종국 외 n명</span>
-                <span className="media">런닝맨</span>
-              </p>
-            </div>
-          </div>
+          )}
         </section>
       </div>
     </main>

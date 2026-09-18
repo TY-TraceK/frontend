@@ -19,6 +19,17 @@ const RankingService = {
     return result.data;
   },
 
+  async getContentCuration() {
+    const response = await apiClient.get('/rankings/content-curation');
+    const result = response.data;
+
+    if (!result.isSuccess) {
+      throw new Error(result.message);
+    }
+
+    return result.data;
+  },
+
   async getLocationRanking({ category, city, topN } = {}) {
     const params = {
       ...(category && { category }),
