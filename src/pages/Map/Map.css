@@ -4,12 +4,28 @@
   .frame {
     position: fixed;
     inset: 0;
+    z-index: 1;
     display: block;
+    pointer-events: none;
+
+    > * {
+      pointer-events: auto;
+    }
   }
 
   .map-area {
+    position: relative;
+    z-index: 0;
     background-color: #d9d9d9;
     height: 100vh;
+
+    .map-error {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-sub);
+    }
   }
 
   .container {
@@ -146,6 +162,34 @@
     aspect-ratio: 1;
     border-radius: 50%;
     background-color: var(--bg-elevated);
+    box-shadow: var(--shadow-card);
+
+    &.active {
+      background-color: var(--interact-active);
+      color: var(--gl-text-white);
+    }
+  }
+
+  .floating.locate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 8px;
+    bottom: 150px;
+    width: 40px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-color: var(--bg-elevated);
+    box-shadow: var(--shadow-card);
+  }
+
+  .current-location-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: var(--interact-active);
+    border: 3px solid var(--gl-text-white);
     box-shadow: var(--shadow-card);
   }
 

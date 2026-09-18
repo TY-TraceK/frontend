@@ -14,7 +14,7 @@ import './MapMarker.css';
 
 const CATEGORY_ICONS = {
   ATTRACTION: SynagogueIcon,
-  CULTURAL_FACILITY: BankIcon,
+  CULTURE: BankIcon,
   FESTIVAL: ConfettiIcon,
   FILMING_LOCATION: FilmSlateIcon,
   RESTAURANT: ForkKnifeIcon,
@@ -24,7 +24,7 @@ const CATEGORY_ICONS = {
   ETC: AsteriskIcon,
 };
 
-const MapMarker = ({ variant = 'default', category, name, count }) => {
+const MapMarker = ({ variant = 'default', category, name, count, isActive = false }) => {
   const CategoryIcon = CATEGORY_ICONS[category];
 
   // variant: {default: 기본형으로 이름 + 마커, compact: 축약형으로 점만 제공, bookmark: 점 대신 마커}
@@ -35,9 +35,7 @@ const MapMarker = ({ variant = 'default', category, name, count }) => {
   }
 
   return (
-    //   MEMO: 특정 장소 선택될 시 active 클래스 추가 바랍니다.
-    //   category 클래스는 대문자로 잡아두었습니다. enum 그대로 들어오면 됩니다.
-    <div className={`map-marker ${variant} ${category}`}>
+    <div className={`map-marker ${variant} ${category} ${isActive ? 'active' : ''}`}>
       <span className="icon">{CategoryIcon && <CategoryIcon />}</span>
 
       {variant === 'default' && name && (

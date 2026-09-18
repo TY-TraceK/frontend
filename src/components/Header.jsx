@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   CaretLeftIcon,
   DotsThreeVerticalIcon,
@@ -11,6 +11,7 @@ import AuthService from '@/api/services/authSerivce.js';
 
 function Header({ type = 'default', title }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -25,7 +26,9 @@ function Header({ type = 'default', title }) {
 
     if (!trimmedKeyword) return;
 
-    navigate(`/search?keyword=${encodeURIComponent(trimmedKeyword)}`);
+    // 지도 페이지에서는 관광지 검색만 가능한 별도 API로 처리하고, 지도 화면 안에서 결과를 보여줍니다.
+    const targetPath = location.pathname === '/map' ? '/map' : '/search';
+    navigate(`${targetPath}?keyword=${encodeURIComponent(trimmedKeyword)}`);
   };
 
   const handleSearchKeyDown = (event) => {
