@@ -10,6 +10,8 @@ import {
 } from '@phosphor-icons/react';
 
 import RankingService from '@/api/services/rankingService.js';
+import ContentService from '@/api/services/contentService.js';
+import { CONTENT_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
 
 import './Home.css';
 import { useProfile } from '@/hooks/userContext.jsx';
@@ -17,6 +19,8 @@ import { useProfile } from '@/hooks/userContext.jsx';
 function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [topRankings, setTopRankings] = useState([]);
+  const [selectedContentCategory, setSelectedContentCategory] = useState('DRAMA');
+  const [categoryContents, setCategoryContents] = useState([]);
   const [contentCuration, setContentCuration] = useState(null);
 
   const navigate = useNavigate();
@@ -28,6 +32,26 @@ function Home() {
       setProfileData();
     }
   }, []);
+  useEffect(() => {
+    const fetchCategoryContents = async () => {
+      try {
+        const data = await ContentService.getContentsByCategory({
+          category: selectedContentCategory,
+          page: 0,
+          size: 3,
+          sort: 'id,DESC',
+        });
+
+        setCategoryContents(data.content ?? []);
+      } catch (error) {
+        console.error('카테고리별 콘텐츠 조회 실패:', error);
+        setCategoryContents([]);
+      }
+    };
+
+    fetchCategoryContents();
+  }, [selectedContentCategory]);
+
   // 여행지 TOP 3 조회
   useEffect(() => {
     const fetchTopRankings = async () => {
@@ -97,32 +121,29 @@ function Home() {
           <h2>새로운 콘텐츠를 통해 여행지를 찾아보세요!</h2>
 
           <ul className="tabs">
-            {/* MEMO: 탭 클릭하여 콘텐츠 변경 시, tab에 selected 클래스 추가 */}
-            <li className="tab selected">드라마</li>
-            <li className="tab">영화</li>
-            <li className="tab">예능</li>
-            <li className="tab">뮤직비디오</li>
+            {CONTENT_CATEGORY_OPTIONS.map((category) => (
+              <li key={category.value}>
+                <button
+                  type="button"
+                  className={`tab ${
+                    selectedContentCategory === category.value ? 'selected' : ''
+                  }`}
+                  onClick={() => setSelectedContentCategory(category.value)}
+                >
+                  {category.label}
+                </button>
+              </li>
+            ))}
           </ul>
 
           <ul className="list">
-            <li className="poster">
-              {/* MEMO: 클릭 시 각 미디어 홈으로 이동 */}
-              <Link>
-                <img src="https://picsum.photos/id/912/400/600" alt="" />
-              </Link>
-            </li>
-
-            <li className="poster">
-              <Link>
-                <img src="https://picsum.photos/id/508/400/600" alt="" />
-              </Link>
-            </li>
-
-            <li className="poster">
-              <Link>
-                <img src="https://picsum.photos/id/1015/400/600" alt="" />
-              </Link>
-            </li>
+            {categoryContents.map((content) => (
+              <li key={content.id} className="poster">
+                <Link to={`/content/detail?id=${content.id}`}>
+                  <img src={content.pictureUrl} alt={content.title} />
+                </Link>
+              </li>
+            ))}
           </ul>
         </section>
         <section className="hero">
