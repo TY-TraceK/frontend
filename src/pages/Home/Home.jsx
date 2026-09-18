@@ -17,6 +17,7 @@ import { useProfile } from '@/hooks/userContext.jsx';
 function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [topRankings, setTopRankings] = useState([]);
+  const [contentCuration, setContentCuration] = useState(null);
 
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('accessToken');
@@ -42,6 +43,20 @@ function Home() {
     };
 
     fetchTopRankings();
+  }, []);
+
+  useEffect(() => {
+    const fetchContentCuration = async () => {
+      try {
+        const data = await RankingService.getContentCuration();
+        setContentCuration(data);
+      } catch (error) {
+        console.error('콘텐츠 큐레이션 조회 실패:', error);
+        setContentCuration(null);
+      }
+    };
+
+    fetchContentCuration();
   }, []);
 
   return (
@@ -295,27 +310,31 @@ function Home() {
             <CaretRightIcon />
           </Link>
         </section>
-        <section className="content-curator">
-          {/* MEMO: 큐레이션 섹션 진행할 건지 논의 필요함. 잠시 보류해주세요. 감사합니다! */}
-          <Link className="link">
-            <p>🎬 이 콘텐츠를 따라 떠나볼까요?</p>
+        {contentCuration && (
+          <section className="content-curator">
+            <Link
+              className="link"
+              to={`/content/detail?id=${contentCuration.contentId}`}
+            >
+              <p>🎬 이 콘텐츠 따라 떠나볼까요?</p>
 
-            <h3>'런닝맨' 속 부산 여행</h3>
+              <h3>&lt;{contentCuration.contentTitle}&gt; 속 여행</h3>
 
-            <p className="route">
-              <span>송도해수욕장</span>
-              <span>송도해상케이블카</span>
-              <span>흰여울문화마을</span>
-            </p>
+              <p className="route">
+                {(contentCuration.locationNames ?? []).map((locationName) => (
+                  <span key={locationName}>{locationName}</span>
+                ))}
+              </p>
 
-            <span className="more accent-text">
-              여행지 더보기
-              <span className="icon">
-                <CaretRightIcon />
+              <span className="more accent-text">
+                여행지 더보기
+                <span className="icon">
+                  <CaretRightIcon />
+                </span>
               </span>
-            </span>
-          </Link>
-        </section>
+            </Link>
+          </section>
+        )}
       </div>
     </main>
   );
