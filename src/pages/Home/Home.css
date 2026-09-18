@@ -32,12 +32,33 @@
     h2 {
       margin-bottom: var(--spacing-16);
     }
+    .tabs-wrapper {
+      position: relative;
+      margin-bottom: var(--spacing-16);
+      overflow: hidden;
+    }
+
     .tabs {
       display: flex;
-      justify-content: space-between;
-      margin-bottom: var(--spacing-16);
+      gap: var(--spacing-8);
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      li {
+        flex: 0 0 auto;
+      }
 
       .tab {
+        white-space: nowrap;
         padding: 6px 20px;
         background-color: var(--interact-subtle);
         border-radius: var(--radius-16);
@@ -60,8 +81,37 @@
       }
     }
 
-    .list {
+    .tabs-scroll {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
       display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 30px;
+      border-radius: var(--radius-16);
+      background-color: var(--bg-elevated);
+      box-shadow: var(--shadow-card);
+      font-size: 18px;
+      z-index: 2;
+    }
+
+    .tabs-prev {
+      left: 0;
+
+      svg {
+        transform: rotate(180deg);
+      }
+    }
+
+    .tabs-next {
+      right: 0;
+    }
+
+    .list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
 
       .poster {
@@ -70,7 +120,16 @@
         overflow: hidden;
         cursor: pointer;
 
-        /* hover interaction 추후 적용 예정 */
+        a,
+        img {
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+
+        img {
+          object-fit: cover;
+        }
       }
     }
   }

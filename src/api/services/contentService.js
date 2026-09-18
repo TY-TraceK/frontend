@@ -1,6 +1,25 @@
 import apiClient from '@/api/apiClient.js';
 
 const ContentService = {
+  async getContentsByCategory({
+    category,
+    page = 0,
+    size = 10,
+    sort = 'id,DESC',
+  } = {}) {
+    const response = await apiClient.get(`/contents/category/${category}`, {
+      params: { page, size, sort },
+    });
+
+    const result = response.data;
+
+    if (!result.isSuccess) {
+      throw new Error(result.message);
+    }
+
+    return result.data;
+  },
+
   async getContentDetail({ contentId, city, lastCount, lastId, size } = {}) {
     const params = {
       ...(city && { city }),
