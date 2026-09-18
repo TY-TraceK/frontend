@@ -19,6 +19,7 @@ import {
 } from "@phosphor-icons/react";
 import LocationService from "@/api/services/locationService.js";
 import TokenStorage from "@/api/tokenStorage.js";
+import RecentLocationStorage from "@/api/recentLocationStorage.js";
 import { LOCATION_CATEGORY_OPTIONS } from "@/constants/rankingConstants.js";
 import "./Place.css";
 
@@ -83,6 +84,10 @@ function Place() {
 
         console.log("[Place] 장소 상세 응답:", data);
         setPlaceData(data);
+
+        if (TokenStorage.getAccessToken() && data?.locationInfo) {
+          RecentLocationStorage.add(data.locationInfo);
+        }
       } catch (e) {
         console.error(e);
         window.alert("현재 장소 정보를 확인할 수 없습니다.");

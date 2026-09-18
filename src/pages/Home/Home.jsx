@@ -339,15 +339,26 @@ function Home() {
                           <p className="location-name">{location.name}</p>
 
                           <div className="count">
-                            <BookmarkSimpleIcon />
+                            <span className="icon">
+                              <MapPinSimpleAreaIcon />
+                            </span>
                             <span>
                               {new Intl.NumberFormat('ko-KR').format(
-                                (location.likeCount ?? 0) +
-                                  (location.archiveCount ?? 0)
+                                location.totalVerificationCount ?? 0
                               )}
                               건
                             </span>
                           </div>
+                        </div>
+
+                        <div className="chip-list">
+                          {(location.relatedContentTitles ?? []).map(
+                            (contentTitle) => (
+                              <span className="chip" key={contentTitle}>
+                                {contentTitle}
+                              </span>
+                            )
+                          )}
                         </div>
                       </div>
                     </Link>
