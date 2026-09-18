@@ -11,6 +11,7 @@ function ListTemplate({
   getImageUrl = (item) => item.imageUrl,
   getImageAlt = (item) => item.title ?? item.name ?? '',
   getItemTitle = (item) => item.title ?? item.name ?? '',
+  filterItems = (itemsToFilter) => itemsToFilter,
 }) {
   const initialFilters = Object.fromEntries(
     filters.map((filter) => [filter.name, filter.defaultValue ?? ''])
@@ -20,6 +21,8 @@ function ListTemplate({
   const handleFilterChange = (name, value) => {
     setSelectedFilters((previous) => ({ ...previous, [name]: value }));
   };
+
+  const filteredItems = filterItems(items, selectedFilters);
 
   return (
     <main className="list-template">
@@ -40,11 +43,11 @@ function ListTemplate({
           </div>
         )}
 
-        {items.length === 0 ? (
+        {filteredItems.length === 0 ? (
           <div>{emptyMessage}</div>
         ) : (
           <ul className="list">
-            {items.map((item) => (
+            {filteredItems.map((item) => (
               <li className="item" key={getItemKey(item)}>
                 <Link to={getItemLink(item)}>
                   <div className="image">

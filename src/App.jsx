@@ -105,6 +105,27 @@ function App() {
           element={
             <ListTemplate
               items={RecentLocationStorage.getAll()}
+              filters={[
+                {
+                  name: 'region',
+                  defaultValue: '전체',
+                  options: [
+                    '전체',
+                    ...new Set(
+                      RecentLocationStorage.getAll()
+                        .map((item) => item.city)
+                        .filter(Boolean)
+                    ),
+                  ],
+                },
+              ]}
+              filterItems={(items, selectedFilters) =>
+                selectedFilters.region === '전체'
+                  ? items
+                  : items.filter(
+                      (item) => item.city === selectedFilters.region
+                    )
+              }
               emptyMessage="최근 본 여행지가 없습니다."
               getItemLink={(item) => `/place?id=${item.id}`}
               getImageUrl={(item) => item.mainImageUrl}
