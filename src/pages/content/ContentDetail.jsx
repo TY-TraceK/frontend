@@ -9,7 +9,10 @@ import {
 import ArtistService from "@/api/services/artistService.js";
 import ContentService from "@/api/services/contentService.js";
 import TokenStorage from "@/api/tokenStorage.js";
-import { LOCATION_CATEGORY_OPTIONS } from "@/constants/rankingConstants.js";
+import {
+  CONTENT_CATEGORY_OPTIONS,
+  LOCATION_CATEGORY_OPTIONS,
+} from "@/constants/rankingConstants.js";
 import MediaCard from "../../components/MediaCard";
 import PlaceCard from "../../components/PlaceCard";
 import Select from "../../components/Select";
@@ -22,6 +25,10 @@ const formatCount = (count) => new Intl.NumberFormat("ko-KR").format(count ?? 0)
 
 const getLocationCategoryLabel = (category) =>
   LOCATION_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ??
+  category;
+
+const getContentCategoryLabel = (category) =>
+  CONTENT_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ??
   category;
 
 const getLocationDescription = (location) => {
@@ -410,7 +417,7 @@ function ContentDetail() {
                 {contents.map((content) => (
                   <MediaCard
                     key={content.contentId}
-                    tag={content.contentCategory}
+                    tag={getContentCategoryLabel(content.contentCategory)}
                     title={content.contentTitle}
                     imageUrl={content.contentPictureUrl}
                     showShortcut={content.isFixed}

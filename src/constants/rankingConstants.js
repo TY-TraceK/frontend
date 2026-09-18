@@ -24,7 +24,7 @@ export const LOCATION_CATEGORY = Object.freeze({
 
   CULTURE: {
     value: 'CULTURE',
-    label: '문화시설',
+    label: '문화시설/박물관/미술관',
   },
 
   FESTIVAL: {
@@ -63,5 +63,38 @@ export const LOCATION_CATEGORY = Object.freeze({
   },
 });
 
+export const CONTENT_CATEGORY = Object.freeze({
+  KPOP: {
+    value: 'KPOP',
+    label: 'K-POP',
+  },
+
+  DRAMA: {
+    value: 'DRAMA',
+    label: '드라마',
+  },
+
+  MOVIE: {
+    value: 'MOVIE',
+    label: '영화',
+  },
+
+  ENTERTAINMENT: {
+    value: 'ENTERTAINMENT',
+    label: '예능',
+  },
+
+  WEBTOON: {
+    value: 'WEBTOON',
+    label: '웹툰/애니메이션',
+  },
+
+  ETC: {
+    value: 'ETC',
+    label: '기타',
+  },
+});
+
 export const RANKING_TYPE_OPTIONS = Object.values(RANKING_TYPE);
 export const LOCATION_CATEGORY_OPTIONS = Object.values(LOCATION_CATEGORY);
+export const CONTENT_CATEGORY_OPTIONS = Object.values(CONTENT_CATEGORY);
