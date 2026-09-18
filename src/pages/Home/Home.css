@@ -72,12 +72,11 @@
     }
 
     .list {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
 
       .poster {
-        flex: 1;
-        min-width: 0;
         aspect-ratio: 2/3;
         border-radius: var(--radius-16);
         overflow: hidden;
