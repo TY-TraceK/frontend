@@ -342,12 +342,21 @@ function Home() {
                             <BookmarkSimpleIcon />
                             <span>
                               {new Intl.NumberFormat('ko-KR').format(
-                                (location.likeCount ?? 0) +
-                                  (location.archiveCount ?? 0)
+                                location.totalVerificationCount ?? 0
                               )}
                               건
                             </span>
                           </div>
+                        </div>
+
+                        <div className="tags">
+                          {(location.relatedContentTitles ?? []).map(
+                            (contentTitle) => (
+                              <span className="tag" key={contentTitle}>
+                                {contentTitle}
+                              </span>
+                            )
+                          )}
                         </div>
                       </div>
                     </Link>
