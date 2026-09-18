@@ -11,6 +11,15 @@
         margin-bottom: var(--spacing-8);
       }
     }
+
+    .favorite-section .empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 110px;
+      color: var(--text-sub);
+      font-size: var(--font-size-caption);
+    }
     .ranking {
       .header {
         display: flex;

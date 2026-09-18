@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Navigate,
   Outlet,
@@ -6,6 +6,7 @@ import {
   Routes,
   useLocation,
   useNavigate,
+  useSearchParams,
 } from 'react-router-dom';
 
 import Home from './pages/Home/Home';
@@ -25,6 +26,7 @@ import ListTemplate from './components/ListTemplate';
 import RecentLocationStorage from '@/api/recentLocationStorage.js';
 import { KakaoCallback, Login } from '@/pages/Login';
 import TokenStorage from '@/api/tokenStorage.js';
+import UserService from '@/api/services/userService.js';
 
 function ProtectedRoute() {
   const isLoggedIn = !!localStorage.getItem('accessToken');
@@ -38,9 +40,12 @@ function ProtectedRoute() {
 
 function App() {
   const [isVerifyOpen, setIsVerifyOpen] = useState(false);
+  const [listItems, setListItems] = useState([]);
+  const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
   const location = useLocation();
+  const listType = searchParams.get('type');
 
   const isLoggedIn = !!TokenStorage.getAccessToken();
 
@@ -58,11 +63,21 @@ function App() {
     '/map': {
       type: 'expanded',
     },
+    '/search': {
+      type: 'expanded',
+    },
     '/profile': {
       type: 'mypage',
     },
     '/list': {
-      title: '리스트 페이지 타이틀',
+      title:
+      listType === 'artist'
+        ? '아티스트'
+        : listType === 'media'
+          ? '콘텐츠'
+          : listType === 'place'
+            ? '관광지'
+            : '리스트',
     },
     '/profile/recent-locations': {
       title: '최근 본 여행지',
@@ -82,6 +97,31 @@ function App() {
     setIsVerifyOpen(true);
   };
 
+  useEffect(() => {
+    const fetchList = async () => {
+      setListItems([]);
+
+      try {
+        if (listType === 'place') {
+          const data = await UserService.getMyLikedLocations();
+          setListItems(data ?? []);
+        } else if (listType === 'artist' || listType === 'media') {
+          const data = await UserService.getMyFans();
+
+          setListItems(
+            listType === 'artist'
+              ? data.artist ?? []
+              : data.content ?? []
+          );
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchList();
+  }, [listType]);
+
   return (
     <>
       <Header {...header} />
@@ -96,10 +136,8 @@ function App() {
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/search" element={<Search />} />
         <Route path="/map" element={<Map />} />
-
-        {/* 로그인 후 접근 가능한 페이지이나, 퍼블리싱 용이성을 위해 하단에 배치 */}
-        <Route path="/contents" element={<ContentsHome />} />
-        <Route path="/list" element={<ListTemplate />} />
+        <Route path="/archive" element={<Archive />} />
+        <Route path="/profile" element={<Profile />} />
         <Route
           path="/profile/recent-locations"
           element={
@@ -134,11 +172,56 @@ function App() {
             />
           }
         />
-        <Route path="/archive" element={<Archive />} />
-        <Route path="/profile" element={<Profile />} />
 
-        {/* 로그인 후 접근 가능한 페이지 */}
-        <Route element={<ProtectedRoute />}></Route>
+        {/* 로그인 후 접근 가능한 페이지이나, 퍼블리싱 용이성을 위해 하단에 배치 */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/contents" element={<ContentsHome />} />
+          <Route
+            path="/list"
+            element={
+              <ListTemplate
+                items={listItems}
+                emptyMessage={
+                  listType === 'artist'
+                    ? '아직 좋아하는 아티스트가 없어요.'
+                    : listType === 'media'
+                      ? '아직 좋아하는 미디어가 없어요.'
+                      : listType === 'place'
+                        ? '아직 좋아하는 여행지가 없어요.'
+                        : '목록이 없습니다.'
+                }
+                getItemLink={(item) => {
+                  if (listType === 'artist') {
+                    return `/content/detail?type=artist&id=${item.id}`;
+                  }
+
+                  if (listType === 'media') {
+                    return `/content/detail?id=${item.id}`;
+                  }
+
+                  if (listType === 'place') {
+                    return `/place?id=${item.id}`;
+                  }
+
+                  return '#';
+                }}
+                getImageUrl={(item) => {
+                  if (listType === 'place') {
+                    return item.mainImageUrl;
+                  }
+
+                  if (listType === 'artist' || listType === 'media') {
+                    return item.pictureUrl;
+                  }
+
+                  return null;
+                }}
+                getImageAlt={(item) => item.name}
+                getItemTitle={(item) => item.name}
+              />
+            }
+          />
+        </Route>
       </Routes>
 
       <VerifyFab onClick={handleVerifyClick} />

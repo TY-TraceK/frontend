@@ -37,6 +37,28 @@ const UserService = {
 
     return result.data;
   },
+
+  async getMyFans() {
+    const response = await apiClient.get('/users/me/fans');
+    const result = response.data;
+
+    if (!result.isSuccess) {
+      throw new Error(result.message);
+    }
+
+    return result.data;
+  },
+
+  async getMyLikedLocations() {
+    const response = await apiClient.get('/users/me/liked-locations');
+    const result = response.data;
+
+    if (!result.isSuccess) {
+      throw new Error(result.message);
+    }
+
+    return result.data;
+  },
 };
 
 export default UserService;
