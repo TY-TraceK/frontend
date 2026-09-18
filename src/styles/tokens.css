@@ -131,6 +131,12 @@
   --sem-success: #16a34a;
   --sem-warning: #d97706;
   --sem-error: #dc2626;
+  --sem-info: #2563eb;
+  --sem-success-bg: #dcffe8;
+  --sem-warning-bg: #ffe9d2;
+  --sem-error-bg: #ffdede;
+  --sem-info-bg: #dbe6ff;
+  --scroll-thumb: #d0e0ff;
 
   /* Feature */
   --feat-heart: #f93737;
@@ -197,5 +203,8 @@
     --interact-subtle: #4f5c71;
     --interact-subtle-hover: #354257;
     --interact-disabled: #42454a;
+
+    /* scroll */
+    --scroll-thumb: #434850;
   }
 }

@@ -1,0 +1,66 @@
+.ant-notification {
+  --notification-margin-edge: 16px;
+  width: calc(var(--ant-notification-width) + var(--spacing-16) * 2);
+  font-family: 'Paperlogy', sans-serif;
+
+  &.ant-notification-list {
+    padding: var(--spacing-16);
+  }
+
+  .ant-notification-list-content {
+    .ant-notification-notice {
+      max-width: 100%;
+      width: 100%;
+      padding: 0;
+      overflow: hidden;
+      border-radius: var(--radius-16);
+
+      .ant-notification-notice-wrapper {
+        align-items: stretch;
+
+        .ant-notification-notice-icon {
+          display: flex;
+          align-items: center;
+          padding: 0 var(--spacing-8);
+          &.ant-notification-notice-icon-error {
+            color: var(--sem-error);
+            background-color: var(--sem-error-bg);
+          }
+
+          &.ant-notification-notice-icon-warning {
+            color: var(--sem-warning);
+            background-color: var(--sem-warning-bg);
+          }
+
+          &.ant-notification-notice-icon-info {
+            color: var(--sem-info);
+            background-color: var(--sem-info-bg);
+          }
+
+          &.ant-notification-notice-icon-success {
+            color: var(--sem-success);
+            background-color: var(--sem-success-bg);
+          }
+        }
+
+        .ant-notification-notice-section {
+          padding: var(--spacing-8) 0;
+          gap: 0;
+          line-height: 1.6;
+
+          .ant-notification-notice-title {
+            font-weight: 500;
+          }
+
+          .ant-notification-notice-description {
+            font-weight: 300;
+          }
+        }
+      }
+
+      .ant-notification-notice-close {
+        inset-inline-end: var(--spacing-8);
+      }
+    }
+  }
+}
