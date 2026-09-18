@@ -32,10 +32,16 @@
     h2 {
       margin-bottom: var(--spacing-16);
     }
+    .tabs-wrapper {
+      position: relative;
+      margin-bottom: var(--spacing-16);
+      overflow: hidden;
+    }
+
     .tabs {
       display: flex;
       gap: var(--spacing-8);
-      margin-bottom: var(--spacing-16);
+      padding-right: 56px;
       width: 100%;
       max-width: 100%;
       overflow-x: auto;
@@ -74,6 +80,23 @@
           }
         }
       }
+    }
+
+    .tabs-next {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: var(--bg-elevated);
+      box-shadow: var(--shadow-card);
+      font-size: 24px;
+      z-index: 1;
     }
 
     .list {

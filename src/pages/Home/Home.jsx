@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -22,6 +22,7 @@ function Home() {
   const [selectedContentCategory, setSelectedContentCategory] = useState('DRAMA');
   const [categoryContents, setCategoryContents] = useState([]);
   const [contentCuration, setContentCuration] = useState(null);
+  const categoryTabsRef = useRef(null);
 
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('accessToken');
@@ -120,21 +121,38 @@ function Home() {
         <section className="new-contents">
           <h2>새로운 콘텐츠를 통해 여행지를 찾아보세요!</h2>
 
-          <ul className="tabs">
-            {CONTENT_CATEGORY_OPTIONS.map((category) => (
-              <li key={category.value}>
-                <button
-                  type="button"
-                  className={`tab ${
-                    selectedContentCategory === category.value ? 'selected' : ''
-                  }`}
-                  onClick={() => setSelectedContentCategory(category.value)}
-                >
-                  {category.label}
-                </button>
-              </li>
-            ))}
-          </ul>
+          <div className="tabs-wrapper">
+            <ul className="tabs" ref={categoryTabsRef}>
+              {CONTENT_CATEGORY_OPTIONS.map((category) => (
+                <li key={category.value}>
+                  <button
+                    type="button"
+                    className={`tab ${
+                      selectedContentCategory === category.value
+                        ? 'selected'
+                        : ''
+                    }`}
+                    onClick={() => setSelectedContentCategory(category.value)}
+                  >
+                    {category.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              className="tabs-next"
+              aria-label="다음 카테고리 보기"
+              onClick={() =>
+                categoryTabsRef.current?.scrollBy({
+                  left: 160,
+                  behavior: 'smooth',
+                })
+              }
+            >
+              <CaretRightIcon />
+            </button>
+          </div>
 
           <ul className="list">
             {categoryContents.map((content) => (
