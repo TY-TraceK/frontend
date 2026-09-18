@@ -1,20 +1,6 @@
 import apiClient from '@/api/apiClient.js';
 
 const LocationService = {
-  async getTopSavedLocations(limit = 5) {
-    const response = await apiClient.get('/locations/top-saved', {
-      params: { limit },
-    });
-
-    const result = response.data;
-
-    if (!result.isSuccess) {
-      throw new Error(result.message);
-    }
-
-    return result.data;
-  },
-
   async getLocationDetail({ locationId, lastCount, lastId, size } = {}) {
     const params = {
       ...(lastCount != null && { lastCount }),
