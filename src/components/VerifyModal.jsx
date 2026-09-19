@@ -644,6 +644,7 @@ function VerifyModal({ isOpen, onClose }) {
             selectedLocation={selectedTestLocation}
             onSelectLocation={handleSelectTestPosition}
             title="테스트할 위치를 선택해주세요."
+            fitMapToLocations
             mapPosition={
               selectedTestLocation
                 ? {
@@ -656,9 +657,6 @@ function VerifyModal({ isOpen, onClose }) {
                       longitude: Number(testLocations[0].longitude),
                     }
                   : null
-            }
-            onMapOutOfRange={() =>
-              showWarningNotification('100m 안에서만 방문 인증 가능합니다!')
             }
           />
         )}
