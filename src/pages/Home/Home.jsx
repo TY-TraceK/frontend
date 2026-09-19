@@ -17,6 +17,7 @@ import { CONTENT_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
 import './Home.css';
 import { useProfile } from '@/hooks/userContext.jsx';
 import LocationService from '@/api/services/locationService.js';
+import ImagePlaceholder from '../../components/common/ImagePlaceholder';
 
 function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -251,18 +252,26 @@ function Home() {
           </div>
 
           <ul className="list">
-            {categoryContents.map((content) => (
-              <li key={content.id} className="poster">
-                <Link to={`/content/detail?id=${content.id}`}>
-                  <img src={content.pictureUrl} alt={content.title} />
-                </Link>
-              </li>
-            ))}
+            {categoryContents.length > 0 ? (
+              categoryContents.map((content) => (
+                <li key={content.id} className="poster">
+                  <Link to={`/content/detail?id=${content.id}`}>
+                    {content.pictureUrl ? (
+                      <img src={content.pictureUrl} alt={content.title} />
+                    ) : (
+                      <ImagePlaceholder name={content.title} type="contents" />
+                    )}
+                  </Link>
+                </li>
+              ))
+            ) : (
+              <li className="empty">콘텐츠가 생기면 이곳에서 보여드릴게요.</li>
+            )}
           </ul>
         </section>
         <section className="hero">
           <div className="header">
-            <h2>오늘은 어디로 여행을 떠나볼까요?</h2>
+            <h2>오늘은 어디로 가볼까요?</h2>
 
             <button className="location-selector">
               {/* MEMO: 클릭 시, 현재 다른 지역 준비중 alert - taost component 만든 후 변경 */}
@@ -313,11 +322,13 @@ function Home() {
 
                     <Link className="link" to={`/place?id=${location.id}`}>
                       <div className="image">
-                        {location.mainImageUrl && (
+                        {location.mainImageUrl ? (
                           <img
                             src={location.mainImageUrl}
                             alt={location.name}
                           />
+                        ) : (
+                          <ImagePlaceholder type="place" />
                         )}
                       </div>
 
@@ -338,15 +349,17 @@ function Home() {
                           </div>
                         </div>
 
-                        <div className="chip-list">
-                          {(location.relatedContentTitles ?? []).map(
-                            (contentTitle) => (
-                              <span className="chip" key={contentTitle}>
-                                {contentTitle}
-                              </span>
-                            )
-                          )}
-                        </div>
+                        {location.relatedContentTitles?.length > 0 && (
+                          <div className="chip-list">
+                            {location.relatedContentTitles.map(
+                              (contentTitle) => (
+                                <span className="chip" key={contentTitle}>
+                                  {contentTitle}
+                                </span>
+                              )
+                            )}
+                          </div>
+                        )}
                       </div>
                     </Link>
                   </div>
@@ -358,11 +371,11 @@ function Home() {
         <section className="archive-banner">
           <Link to={'/archive'}>
             {/* MEMO: 클릭 시 아카이브 페이지로 이동 */}
-            <p>오늘 하루 어디 다녀왔는지, 한 눈에 확인하는 방법!</p>
-            <p className="emphasis">방문 인증으로 만들어지는 나만의 타임라인</p>
+            <p>방문 인증 하셨나요?</p>
+            <p className="emphasis">확인해 보세요, 오늘의 타임라인!</p>
 
             <span className="accent-text">
-              자세히 알아보기
+              확인하기
               <span className="icon">
                 <CaretRightIcon />
               </span>
@@ -376,8 +389,10 @@ function Home() {
               <li key={ranking.locationId} className="ranking-card relative">
                 <Link to={`/place?id=${ranking.locationId}`}>
                   <div className="image">
-                    {ranking.imageUrl && (
+                    {ranking.imageUrl ? (
                       <img src={ranking.imageUrl} alt={ranking.locationName} />
+                    ) : (
+                      <ImagePlaceholder type="place" />
                     )}
                   </div>
 

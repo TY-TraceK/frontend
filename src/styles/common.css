@@ -318,3 +318,9 @@ hr {
     }
   }
 }
+
+.list {
+  .poster a {
+    height: 100%;
+  }
+}
