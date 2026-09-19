@@ -296,18 +296,11 @@ function Map() {
   }, [locations]);
 
   // 선택 상태가 바뀌면 마커를 새로 그리지 않고 active 클래스와 z-index, variant만 갱신합니다.
-  // 마커 밀도 조절: 방문 인증 수 데이터가 아직 없어, 11개 이상일 때는 임시로 id 기준 상위 10개만
-  // default(이름+마커)로 표시하고 나머지는 compact(점) 마커로 표시합니다.
+  // 마커 밀도 조절: 11개 이상일 때는 응답 순서 기준 상위 10개만 default(이름+마커)로 표시하고
+  // 나머지는 compact(점) 마커로 표시합니다. 정렬 기준(방문 인증 수 등)은 백엔드 응답 순서를
+  // 그대로 따르므로, 백엔드가 정렬 기준을 바꿔도 이 로직은 그대로 유지됩니다.
   useEffect(() => {
-    const defaultIds =
-      locations.length <= 10
-        ? new Set(locations.map((location) => location.id))
-        : new Set(
-            [...locations]
-              .sort((a, b) => a.id - b.id)
-              .slice(0, 10)
-              .map((location) => location.id)
-          );
+    const defaultIds = new Set(locations.slice(0, 10).map((location) => location.id));
 
     overlaysRef.current.forEach(({ root, overlay, location }) => {
       const isActive = location.id === selectedLocationId;
