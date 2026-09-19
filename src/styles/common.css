@@ -251,13 +251,13 @@ svg {
   transition: none;
 }
 
-/* tags */
+/* tabs */
 /* TODO: 추후 css 정리 시, Home.css에서 justify-content 값 제외하고 삭제 + gap 값 0*/
 .tabs {
   display: flex;
   gap: var(--spacing-8);
   margin-bottom: var(--spacing-16);
-  font-size: var(--font-size-caption);
+  font-size: var(--font-size-body);
 
   .tab {
     padding: var(--spacing-8) var(--spacing-16);

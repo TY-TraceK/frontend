@@ -22,6 +22,8 @@ import rank1 from '@/assets/ranking/rank-1.svg';
 import rank2 from '@/assets/ranking/rank-2.svg';
 import rank3 from '@/assets/ranking/rank-3.svg';
 
+import Select from '../../components/common/Select';
+import ImagePlaceholder from '../../components/common/ImagePlaceholder';
 import './Ranking.css';
 
 const RANK_IMAGES = {
@@ -122,12 +124,12 @@ function Ranking() {
       <div className="container">
         <section className="ranking-filter">
           {/* 지역 / 여행지 */}
-          <div className="ranking-type-tabs">
+          <div className="tabs region-tabs">
             {RANKING_TYPE_OPTIONS.map((type) => (
               <button
                 key={type.value}
                 type="button"
-                className={`tab ${rankingType === type.value ? 'active' : ''}`}
+                className={`tab ${rankingType === type.value ? 'selected' : ''}`}
                 onClick={() => setRankingType(type.value)}
               >
                 {type.label}
@@ -140,16 +142,11 @@ function Ranking() {
               {/* 지역 */}
               {regionRankings.length > 0 && (
                 <div className="region-filter">
-                  <select
+                  <Select
                     value={selectedCity ?? ''}
-                    onChange={(e) => setSelectedCity(e.target.value)}
-                  >
-                    {regionRankings.map((region) => (
-                      <option key={region.region} value={region.region}>
-                        {region.region}
-                      </option>
-                    ))}
-                  </select>
+                    options={regionRankings.map((region) => region.region)}
+                    onChange={setSelectedCity}
+                  />
                 </div>
               )}
 
@@ -159,13 +156,13 @@ function Ranking() {
                   categoryExpanded ? 'expanded' : ''
                 }`}
               >
-                <div className="category-list">
+                <div className="category-list tabs">
                   {LOCATION_CATEGORY_OPTIONS.map((category) => (
                     <button
                       type="button"
                       key={category.value}
                       className={`tab ${
-                        selectedCategory === category.value ? 'active' : ''
+                        selectedCategory === category.value ? 'selected' : ''
                       }`}
                       onClick={() => setSelectedCategory(category.value)}
                     >
@@ -279,7 +276,11 @@ function RankingItem({ ranking, rankingType, top = false, onRegionClick }) {
         */}
         {!isRegion && (
           <div className="image">
-            {ranking.imageUrl && <img src={ranking.imageUrl} alt={title} />}
+            {ranking.imageUrl ? (
+              <img src={ranking.imageUrl} alt={title} />
+            ) : (
+              <ImagePlaceholder type="card" />
+            )}
           </div>
         )}
 
@@ -288,7 +289,7 @@ function RankingItem({ ranking, rankingType, top = false, onRegionClick }) {
           <div className="place">
             {tag && <span className="tag">{tag}</span>}
 
-            <span className="title">{title}</span>
+            <span className="title ellipsis-1">{title}</span>
           </div>
 
           <span className="verify-count accent-text">
