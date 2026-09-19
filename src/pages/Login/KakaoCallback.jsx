@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { authService } from '@/api/services/index.js';
 import { useProfile } from '@/hooks/userContext.jsx';
+import Logo from '../../assets/img/logo.png';
+import './Login.css';
 
 function KakaoCallback() {
   const navigate = useNavigate();
@@ -57,20 +59,10 @@ function KakaoCallback() {
 
   if (loginError) {
     return (
-      <div
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '8px',
-        }}
-      >
+      <main className="callback error">
         <h2>로그인 실패</h2>
 
         <p>{loginError.message}</p>
-
         <p>에러 코드: {loginError.code}</p>
 
         {loginError.status && <p>HTTP 상태 코드: {loginError.status}</p>}
@@ -78,75 +70,44 @@ function KakaoCallback() {
         <button
           type="button"
           onClick={() => navigate('/login', { replace: true })}
-          style={{
-            padding: '10px 24px',
-            cursor: 'pointer',
-            border: '1px solid black',
-          }}
         >
           다시 로그인
         </button>
-      </div>
+      </main>
     );
   }
 
   if (!loginUser) {
-    return (
-      <div
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        카카오 로그인 처리 중...
-      </div>
-    );
+    return <main className="callback loading">카카오 로그인 처리 중...</main>;
   }
 
   return (
-    <div
-      style={{
-        textAlign: 'center',
-        marginTop: '100px',
-        alignItems: 'center',
-      }}
-    >
-      <h2>로그인 성공!</h2>
-
-      <img
-        src={loginUser.profileImageUrl}
-        alt="프로필"
-        width="200"
-        height="200"
-        style={{
-          borderRadius: '50%',
-          objectFit: 'cover',
-          border: '1px solid black',
-        }}
-      />
-
-      <h3>{loginUser.nickName}</h3>
-
-      <p>
+    <main className="callback success">
+      <div className="image logo">
+        <img src={Logo} alt="KRoute 로고" />
+      </div>
+      <h2>
         {loginUser.isNewUser
           ? '회원가입이 완료되었습니다.'
           : '로그인되었습니다.'}
-      </p>
+      </h2>
+
+      <section className="profile">
+        <div className="image">
+          <img src={loginUser.profileImageUrl} alt="프로필" />
+        </div>
+        <h3>{loginUser.nickName}</h3>
+      </section>
+      <p className="emphasis">KRoute와 함께 여행지를 찾아볼까요?</p>
 
       <button
+        className="active"
         type="button"
         onClick={() => navigate('/', { replace: true })}
-        style={{
-          padding: '10px 24px',
-          cursor: 'pointer',
-          border: '1px solid black',
-        }}
       >
         확인
       </button>
-    </div>
+    </main>
   );
 }
 
