@@ -13,6 +13,7 @@ function PlaceSelectStep({
   title = '방문 인증할 장소를 선택해주세요.',
   showMap = true,
   mapPosition,
+  fitMapToLocations = false,
   onMapOutOfRange,
 }) {
   return (
@@ -24,6 +25,7 @@ function PlaceSelectStep({
           locations={locations}
           selectedLocation={selectedLocation}
           initialZoom={3}
+          fitLocations={fitMapToLocations}
           onSelectLocation={onSelectLocation}
           onOutOfRange={onMapOutOfRange}
         />
