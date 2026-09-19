@@ -28,6 +28,7 @@ function VerificationMap({
   locations = [],
   selectedLocation,
   initialZoom = 3,
+  fitLocations = false,
   onSelectLocation,
   onOutOfRange,
 }) {
@@ -59,6 +60,23 @@ function VerificationMap({
           strokeOpacity: 0.8,
           fillOpacity: 0.08,
         });
+
+        if (fitLocations && locations.length > 0) {
+          const bounds = new kakao.maps.LatLngBounds();
+
+          locations.forEach((location) => {
+            if (location.latitude == null || location.longitude == null) return;
+
+            bounds.extend(
+              new kakao.maps.LatLng(
+                Number(location.latitude),
+                Number(location.longitude)
+              )
+            );
+          });
+
+          map.setBounds(bounds);
+        }
 
         locations.forEach((location) => {
           if (location.latitude == null || location.longitude == null) return;
@@ -132,6 +150,7 @@ function VerificationMap({
     locations,
     selectedLocation,
     initialZoom,
+    fitLocations,
     onSelectLocation,
     onOutOfRange,
   ]);
