@@ -100,7 +100,7 @@ function Header({ type = 'default', title }) {
   );
 
   return (
-    <header className={type}>
+    <header className={`${type} ${title ? 'has-title' : ''}`}>
       <div className="container">
         {type === 'home' && (
           <h1 className="logo">
