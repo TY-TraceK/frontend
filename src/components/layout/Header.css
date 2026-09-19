@@ -129,6 +129,11 @@ header {
       .search {
         flex: 1;
         min-width: 0;
+
+        .search-button {
+          background-color: transparent;
+          box-shadow: none;
+        }
       }
     }
   }

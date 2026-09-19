@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import SearchService from "@/api/services/searchService.js";
+import { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import SearchService from '@/api/services/searchService.js';
 import {
   CONTENT_CATEGORY_OPTIONS,
   LOCATION_CATEGORY_OPTIONS,
-} from "@/constants/rankingConstants.js";
-import "./Search.css";
+} from '@/constants/rankingConstants.js';
+import ImagePlaceholder from '../../components/common/ImagePlaceholder';
+import './Search.css';
 
 const getLocationCategoryLabel = (category) =>
-  LOCATION_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ??
-  category;
+  LOCATION_CATEGORY_OPTIONS.find((option) => option.value === category)
+    ?.label ?? category;
 
 const getContentCategoryLabel = (category) =>
   CONTENT_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ??
@@ -17,7 +18,7 @@ const getContentCategoryLabel = (category) =>
 
 function Search() {
   const [searchParams] = useSearchParams();
-  const keyword = searchParams.get("keyword")?.trim() ?? "";
+  const keyword = searchParams.get('keyword')?.trim() ?? '';
 
   // MEMO: null = 아직 검색 응답을 못 받은 상태. 검색하면 {artists, contents, locations}로 채워집니다.
   const [results, setResults] = useState(null);
@@ -37,7 +38,7 @@ function Search() {
         setResultsKeyword(keyword);
       } catch (e) {
         console.error(e);
-        window.alert("검색에 실패했습니다.");
+        window.alert('검색에 실패했습니다.');
       }
     };
 
@@ -70,15 +71,19 @@ function Search() {
         {hasSearched && !hasNoResult && (
           <>
             {/* MEMO: 아티스트, 미디어, 플레이스 중 검색 결과가 없는 경우, 해당 섹션 hidden 처리 */}
-            <section className={`artist-area ${artists.length === 0 ? "hidden" : ""}`}>
+            <section
+              className={`artist-area ${artists.length === 0 ? 'hidden' : ''}`}
+            >
               <h2>아티스트</h2>
               <ul className="list">
                 {artists.map((artist) => (
                   <li className="item" key={artist.id}>
                     <Link to={`/content/detail?type=artist&id=${artist.id}`}>
                       <div className="image">
-                        {artist.pictureUrl && (
+                        {artist.pictureUrl ? (
                           <img src={artist.pictureUrl} alt={artist.name} />
+                        ) : (
+                          <ImagePlaceholder type="card" />
                         )}
                       </div>
                       <p className="name">{artist.name}</p>
@@ -88,15 +93,19 @@ function Search() {
               </ul>
             </section>
 
-            <section className={`media-area ${contents.length === 0 ? "hidden" : ""}`}>
+            <section
+              className={`media-area ${contents.length === 0 ? 'hidden' : ''}`}
+            >
               <h2>미디어</h2>
               <ul className="list">
                 {contents.map((content) => (
                   <li className="item" key={content.id}>
                     <Link to={`/content/detail?id=${content.id}`}>
                       <div className="image">
-                        {content.pictureUrl && (
+                        {content.pictureUrl ? (
                           <img src={content.pictureUrl} alt={content.title} />
+                        ) : (
+                          <ImagePlaceholder type="card" />
                         )}
                       </div>
                       <div className="info">
@@ -111,15 +120,22 @@ function Search() {
               </ul>
             </section>
 
-            <section className={`place-area ${locations.length === 0 ? "hidden" : ""}`}>
+            <section
+              className={`place-area ${locations.length === 0 ? 'hidden' : ''}`}
+            >
               <h2>장소</h2>
               <ul className="list">
                 {locations.map((location) => (
                   <li className="item" key={location.id}>
                     <Link to={`/place?id=${location.id}`}>
                       <div className="image">
-                        {location.mainImageUrl && (
-                          <img src={location.mainImageUrl} alt={location.name} />
+                        {location.mainImageUrl ? (
+                          <img
+                            src={location.mainImageUrl}
+                            alt={location.name}
+                          />
+                        ) : (
+                          <ImagePlaceholder type="card" />
                         )}
                       </div>
                       <div className="info">
