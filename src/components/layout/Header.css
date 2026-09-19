@@ -4,10 +4,11 @@ header {
   left: 0;
   right: 0;
   max-width: 540px;
-  height: 60px;
+  height: 68px;
   margin: 0 auto;
   padding: var(--spacing-16) 0;
   z-index: 99;
+  background-color: var(--bg-canvas);
 
   &.home {
     .container {
