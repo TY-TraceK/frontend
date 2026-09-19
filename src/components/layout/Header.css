@@ -143,14 +143,18 @@ header {
 
   &.mypage {
     .container {
+      position: relative;
       justify-content: space-between;
 
-      > .icon:first-child {
-        margin-right: auto;
-      }
-
-      > .icon:last-child {
-        margin-left: auto;
+      .profile-menu-tooltip {
+        position: absolute;
+        bottom: -48px;
+        right: 0;
+        width: auto;
+        padding: 10px 16px;
+        background-color: var(--interact-subtle);
+        border-radius: var(--radius-16);
+        box-shadow: var(--shadow-card);
       }
     }
   }

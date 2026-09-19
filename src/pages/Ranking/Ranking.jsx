@@ -120,29 +120,6 @@ function Ranking() {
   return (
     <main className="ranking">
       <div className="container">
-        {/* 랭킹 전용 헤더 */}
-        <header className="ranking-page-header">
-          <button
-            type="button"
-            className="header-button"
-            aria-label="뒤로가기"
-            onClick={() => navigate(-1)}
-          >
-            <CaretLeftIcon />
-          </button>
-
-          <h1>실시간 순위 Top {RANKING_LIMIT}</h1>
-
-          <button
-            type="button"
-            className="header-button"
-            aria-label="검색"
-            onClick={() => navigate('/search')}
-          >
-            <MagnifyingGlassIcon />
-          </button>
-        </header>
-
         <section className="ranking-filter">
           {/* 지역 / 여행지 */}
           <div className="ranking-type-tabs">
@@ -199,15 +176,13 @@ function Ranking() {
 
                 <button
                   type="button"
-                  className="toggle"
+                  className="toggle icon"
                   aria-label={
                     categoryExpanded ? '카테고리 접기' : '카테고리 펼치기'
                   }
                   onClick={() => setCategoryExpanded((prev) => !prev)}
                 >
-                  <span className="icon">
-                    {categoryExpanded ? <CaretUpIcon /> : <CaretDownIcon />}
-                  </span>
+                  {categoryExpanded ? <CaretUpIcon /> : <CaretDownIcon />}
                 </button>
               </div>
             </>
