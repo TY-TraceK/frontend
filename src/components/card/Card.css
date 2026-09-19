@@ -12,7 +12,8 @@
       gap: var(--spacing-12);
       .image {
         flex-shrink: 0;
-        width: 100px;
+        width: 33%;
+        max-width: 100px;
         aspect-ratio: 1/1;
         overflow: hidden;
         border-radius: var(--radius-24);

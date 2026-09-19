@@ -12,9 +12,9 @@
   z-index: 2;
 
   &.prev {
-    left: -8px;
+    left: -12px;
   }
   &.next {
-    right: -8px;
+    right: -12px;
   }
 }

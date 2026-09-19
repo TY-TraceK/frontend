@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { MapPinSimpleAreaIcon } from '@phosphor-icons/react';
+import ImagePlaceholder from '../common/ImagePlaceholder';
 import './Card.css';
 
 function PlaceCard({
@@ -20,7 +21,11 @@ function PlaceCard({
         }}
       >
         <div className="image">
-          <img src={imageUrl} alt="" />
+          {imageUrl ? (
+            <img src={imageUrl} alt="" />
+          ) : (
+            <ImagePlaceholder type="card" />
+          )}
         </div>
         <div className="item-info">
           <span className="tag">{tag}</span>

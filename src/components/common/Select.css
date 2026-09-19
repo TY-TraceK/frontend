@@ -1,6 +1,7 @@
 .select {
   position: relative;
-  width: 35%;
+  display: inline-block;
+  width: auto;
   margin-bottom: var(--spacing-16);
 
   &.open {
@@ -13,6 +14,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--spacing-4);
     width: 100%;
     min-height: 40px;
     padding: 0 var(--spacing-12);

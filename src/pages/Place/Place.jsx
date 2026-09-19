@@ -22,6 +22,7 @@ import RecentLocationStorage from '@/api/recentLocationStorage.js';
 import { LOCATION_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
 
 import ScrollButton from '../../components/common/ScrollButton';
+import ImagePlaceholder from '../../components/common/ImagePlaceholder';
 import './Place.css';
 
 const RELATED_LIST_SIZE = 10;
@@ -246,7 +247,11 @@ function Place() {
   return (
     <main className="place">
       <section className="hero image">
-        <img src={locationInfo.mainImageUrl} alt={locationInfo.name} />
+        {locationInfo.mainImageUrl ? (
+          <img src={locationInfo.mainImageUrl} alt={locationInfo.name} />
+        ) : (
+          <ImagePlaceholder type="place" />
+        )}
       </section>
       <div className="container">
         <section className="place-summary relative">
@@ -367,11 +372,13 @@ function Place() {
                 <li className="item" key={content.contentId}>
                   <Link to={`/content/detail?id=${content.contentId}`}>
                     <div className="image">
-                      {content.contentPictureUrl && (
+                      {content.contentPictureUrl ? (
                         <img
                           src={content.contentPictureUrl}
                           alt={content.contentTitle}
                         />
+                      ) : (
+                        <ImagePlaceholder type="contents" />
                       )}
                     </div>
                     <p className="ellipsis-2 media-title">
@@ -431,11 +438,13 @@ function Place() {
                     to={`/content/detail?type=artist&id=${artist.artistId}`}
                   >
                     <div className="image">
-                      {artist.artistPictureUrl && (
+                      {artist.artistPictureUrl ? (
                         <img
                           src={artist.artistPictureUrl}
                           alt={artist.artistName}
                         />
+                      ) : (
+                        <ImagePlaceholder type="artist" />
                       )}
                     </div>
                     <p className="ellipsis-2 artist-title">

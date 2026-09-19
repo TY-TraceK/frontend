@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import ImagePlaceholder from '../common/ImagePlaceholder';
 import './Card.css';
 import { HouseIcon } from '@phosphor-icons/react';
 
@@ -22,7 +23,11 @@ function MediaCard({
       >
         {/* MEMO: 예능 고정 출연진일 때, 미디어 홈으로 바로가기 */}
         <div className="image">
-          <img src={imageUrl} alt="" />
+          {imageUrl ? (
+            <img src={imageUrl} alt="" />
+          ) : (
+            <ImagePlaceholder type="card" />
+          )}
         </div>
         <div className="item-info">
           <span className="tag">{tag}</span>

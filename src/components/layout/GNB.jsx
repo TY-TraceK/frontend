@@ -28,7 +28,11 @@ function GNB() {
           <Link
             to="/contents"
             className={`menu contents ${
-              location.pathname.startsWith('/contents') ? 'current' : ''
+              location.pathname.startsWith('/contents') ||
+              location.pathname.startsWith('/content') ||
+              location.pathname.startsWith('/place')
+                ? 'current'
+                : ''
             }`}
           >
             <span className="icon">

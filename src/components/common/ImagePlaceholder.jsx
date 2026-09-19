@@ -4,11 +4,8 @@ import './ImagePlaceholder.css';
 const ImagePlaceholder = ({ name, type }) => {
   return (
     <div className={`image-placeholder ${type}`}>
-      <div className="image overlay">
-        <img src={placeholder} alt="" />
-      </div>
-
-      {name && <span className="name">{name}</span>}
+      <img src={placeholder} alt="" />
+      {name && <span className="name ellipsis-2">{name}</span>}
     </div>
   );
 };

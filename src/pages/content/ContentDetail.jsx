@@ -16,6 +16,8 @@ import {
 import MediaCard from '../../components/card/MediaCard';
 import PlaceCard from '../../components/card/PlaceCard';
 import Select from '../../components/common/Select';
+import ScrollButton from '../../components/common/ScrollButton';
+import ImagePlaceholder from '../../components/common/ImagePlaceholder';
 import './ContentDetail.css';
 
 const RELATED_LIST_SIZE = 20;
@@ -109,6 +111,10 @@ function ContentDetail() {
   const [fanSubmitting, setFanSubmitting] = useState(false);
 
   const affiliationListRef = useRef(null);
+  const [canScrollAffiliationLeft, setCanScrollAffiliationLeft] =
+    useState(false);
+  const [canScrollAffiliationRight, setCanScrollAffiliationRight] =
+    useState(false);
 
   useEffect(() => {
     if (!entityId) {
@@ -218,6 +224,16 @@ function ContentDetail() {
     affiliationListRef.current?.scrollBy({ left: 240, behavior: 'smooth' });
   };
 
+  const updateAffiliationScrollButtons = () => {
+    const list = affiliationListRef.current;
+    if (!list) return;
+
+    setCanScrollAffiliationLeft(list.scrollLeft > 0);
+    setCanScrollAffiliationRight(
+      list.scrollLeft + list.clientWidth < list.scrollWidth - 1
+    );
+  };
+
   if (!entityId) {
     return (
       <main className={`content-detail ${type}`}>
@@ -241,7 +257,11 @@ function ContentDetail() {
     return (
       <main className="content-detail media">
         <section className="hero image">
-          <img src={contentPictureUrl} alt={contentTitle} />
+          {contentPictureUrl ? (
+            <img src={contentPictureUrl} alt={contentTitle} />
+          ) : (
+            <ImagePlaceholder type="artist" />
+          )}
         </section>
         <div className="container">
           <section className="content-summary relative">
@@ -302,7 +322,11 @@ function ContentDetail() {
   return (
     <main className={`content-detail ${type}`}>
       <section className="hero image">
-        <img src={info.pictureUrl} alt={displayName} />
+        {info.pictureUrl ? (
+          <img src={info.pictureUrl} alt={displayName} />
+        ) : (
+          <ImagePlaceholder type="home" />
+        )}
       </section>
       <div className="container">
         <section className="content-summary relative">
@@ -344,7 +368,11 @@ function ContentDetail() {
         {affiliationArtists.length > 0 && (
           <section className="affiliation-list relative">
             <div className="list-wrapper">
-              <ul className="list" ref={affiliationListRef}>
+              <ul
+                className="list"
+                ref={affiliationListRef}
+                onScroll={updateAffiliationScrollButtons}
+              >
                 {affiliationArtists.map((artist) => (
                   <li className="item" key={artist.id}>
                     <a
@@ -363,15 +391,30 @@ function ContentDetail() {
                   </li>
                 ))}
               </ul>
-              {affiliationArtists.length > 6 && (
-                <button
-                  type="button"
-                  className="next-button"
-                  aria-label="다음 출연진 보기"
-                  onClick={scrollAffiliationList}
-                >
-                  <CaretRightIcon />
-                </button>
+              {canScrollAffiliationLeft && (
+                <ScrollButton
+                  direction="prev"
+                  ariaLabel="이전 출연진 보기"
+                  onClick={() =>
+                    affiliationListRef.current?.scrollBy({
+                      left: -240,
+                      behavior: 'smooth',
+                    })
+                  }
+                />
+              )}
+
+              {canScrollAffiliationRight && (
+                <ScrollButton
+                  direction="next"
+                  ariaLabel="다음 출연진 보기"
+                  onClick={() =>
+                    affiliationListRef.current?.scrollBy({
+                      left: 240,
+                      behavior: 'smooth',
+                    })
+                  }
+                />
               )}
             </div>
           </section>
