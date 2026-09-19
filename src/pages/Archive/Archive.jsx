@@ -618,10 +618,10 @@ function Archive() {
         </section>
 
         <section className="archive-filter">
-          <div className="archive-filter-types">
+          <div className="archive-filter-types tabs">
             <button
               type="button"
-              className={filterType === FILTER_TYPE.ALL ? 'selected' : ''}
+              className={`tab ${filterType === FILTER_TYPE.ALL ? 'selected' : ''}`}
               onClick={() => handleFilterType(FILTER_TYPE.ALL)}
             >
               전체
@@ -629,7 +629,7 @@ function Archive() {
 
             <button
               type="button"
-              className={filterType === FILTER_TYPE.MONTH ? 'selected' : ''}
+              className={`tab ${filterType === FILTER_TYPE.MONTH ? 'selected' : ''}`}
               onClick={() => handleFilterType(FILTER_TYPE.MONTH)}
             >
               월별
@@ -637,7 +637,7 @@ function Archive() {
 
             <button
               type="button"
-              className={filterType === FILTER_TYPE.PERIOD ? 'selected' : ''}
+              className={`tab ${filterType === FILTER_TYPE.PERIOD ? 'selected' : ''}`}
               onClick={() => handleFilterType(FILTER_TYPE.PERIOD)}
             >
               기간 선택
@@ -646,37 +646,31 @@ function Archive() {
 
           {filterType === FILTER_TYPE.MONTH && (
             <div className="archive-month-filter">
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(Number(e.target.value))}
-              >
-                {Array.from(
+              <Select
+                value={`${selectedYear}년`}
+                options={Array.from(
                   {
                     length: 5,
                   },
-                  (_, index) => currentYear - index
-                ).map((year) => (
-                  <option key={year} value={year}>
-                    {year}년
-                  </option>
-                ))}
-              </select>
+                  (_, index) => `${currentYear - index}년`
+                )}
+                onChange={(value) =>
+                  setSelectedYear(Number(value.replace('년', '')))
+                }
+              />
 
-              <select
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(Number(e.target.value))}
-              >
-                {Array.from(
+              <Select
+                value={`${selectedMonth}월`}
+                options={Array.from(
                   {
                     length: 12,
                   },
-                  (_, index) => index + 1
-                ).map((month) => (
-                  <option key={month} value={month}>
-                    {month}월
-                  </option>
-                ))}
-              </select>
+                  (_, index) => `${index + 1}월`
+                )}
+                onChange={(value) =>
+                  setSelectedMonth(Number(value.replace('월', '')))
+                }
+              />
             </div>
           )}
 
@@ -689,7 +683,7 @@ function Archive() {
                 onChange={(e) => setStartDate(e.target.value)}
               />
 
-              <span>~</span>
+              <span>-</span>
 
               <input
                 type="date"
@@ -702,13 +696,13 @@ function Archive() {
         </section>
 
         {isLoading && histories.length === 0 && (
-          <section className="archive-list">
+          <section className="archive-list loading">
             <p>방문 인증 내역을 불러오는 중입니다.</p>
           </section>
         )}
 
         {!isLoading && histories.length === 0 && (
-          <section className="archive-list">
+          <section className="archive-list empty">
             <p>방문 인증 내역이 없습니다.</p>
           </section>
         )}
