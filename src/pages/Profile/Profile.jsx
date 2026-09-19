@@ -298,7 +298,11 @@ function Profile() {
           ) : (
             <div className="verify">
               <div className="image">
-                <img src={lastVerificationData.locationImageUrl} alt="" />
+                {lastVerificationData.locationImageUrl ? (
+                  <img src={lastVerificationData.locationImageUrl} alt="" />
+                ) : (
+                  <ImagePlaceholder type="place" />
+                )}
               </div>
 
               <div className="info">

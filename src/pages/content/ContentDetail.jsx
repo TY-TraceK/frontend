@@ -382,8 +382,10 @@ function ContentDetail() {
                       }}
                     >
                       <div className="image">
-                        {artist.pictureUrl && (
+                        {artist.pictureUrl ? (
                           <img src={artist.pictureUrl} alt={artist.name} />
+                        ) : (
+                          <ImagePlaceholder type="artist" />
                         )}
                       </div>
                       <span className="name ellipsis-2">{artist.name}</span>

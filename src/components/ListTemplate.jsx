@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Select from './Select';
+import ImagePlaceholder from './ImagePlaceholder';
 
 function ListTemplate({
   items = [],
@@ -51,11 +52,10 @@ function ListTemplate({
               <li className="item" key={getItemKey(item)}>
                 <Link to={getItemLink(item)}>
                   <div className="image">
-                    {getImageUrl(item) && (
-                      <img
-                        src={getImageUrl(item)}
-                        alt={getImageAlt(item)}
-                      />
+                    {getImageUrl(item) ? (
+                      <img src={getImageUrl(item)} alt={getImageAlt(item)} />
+                    ) : (
+                      <ImagePlaceholder type="card" />
                     )}
                   </div>
                   <div className="title">{getItemTitle(item)}</div>
