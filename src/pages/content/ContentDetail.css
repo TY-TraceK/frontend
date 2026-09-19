@@ -13,7 +13,9 @@
 
   .hero {
     width: 100%;
-    aspect-ratio: 1/1.12;
+    /* 추후에 safe-area 처리후
+    aspect-ratio: 1 / 1.12; */
+    aspect-ratio: 1 / 1;
     overflow: hidden;
   }
 
