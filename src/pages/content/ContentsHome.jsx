@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { CaretRightIcon } from "@phosphor-icons/react";
-import RankingService from "@/api/services/rankingService.js";
-import UserService from "@/api/services/userService.js";
-import "./ContentsHome.css";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { CaretRightIcon } from '@phosphor-icons/react';
+import RankingService from '@/api/services/rankingService.js';
+import UserService from '@/api/services/userService.js';
+import '../../components/ImagePlaceholder';
+import './ContentsHome.css';
 
 // MEMO: MVP 기간에는 지역이 부산광역시로 고정됩니다.
-const CITY = "부산광역시";
+const CITY = '부산광역시';
 const RANKING_TOP_N = 3;
 // MEMO: 즐겨찾기 섹션은 4개(그리드 한 줄)를 초과할 때만 "더보기"를 보여주고, 미리보기는 4개까지만 표시합니다.
 const FAVORITE_PREVIEW_SIZE = 4;
@@ -35,7 +36,7 @@ function ContentsHome() {
     const fetchFans = async () => {
       try {
         const data = await UserService.getMyFans();
-        console.log("[ContentsHome] 팬 목록 응답:", data);
+        console.log('[ContentsHome] 팬 목록 응답:', data);
         setFavoriteArtists(data.artist ?? []);
         setFavoriteMedia(data.content ?? []);
       } catch (e) {
@@ -46,7 +47,7 @@ function ContentsHome() {
     const fetchLikedLocations = async () => {
       try {
         const data = await UserService.getMyLikedLocations();
-        console.log("[ContentsHome] 좋아요한 여행지 응답:", data);
+        console.log('[ContentsHome] 좋아요한 여행지 응답:', data);
         setFavoritePlaces(data ?? []);
       } catch (e) {
         console.error(e);
@@ -78,12 +79,17 @@ function ContentsHome() {
             {rankings.map((ranking) => (
               <li className="item relative" key={ranking.locationId}>
                 <Link to={`/place?id=${ranking.locationId}`}>
-                  <span className={`rank ${ranking.rank === 1 ? "top-1" : ""}`}>
+                  <span className={`rank ${ranking.rank === 1 ? 'top-1' : ''}`}>
                     {ranking.rank}
                   </span>
                   <div className="image">
-                    {ranking.imageUrl && (
+                    {ranking.imageUrl ? (
                       <img src={ranking.imageUrl} alt={ranking.locationName} />
+                    ) : (
+                      <ImagePlaceholder
+                        name={ranking.locationName}
+                        type="place"
+                      />
                     )}
                   </div>
                   <p className="name">{ranking.locationName}</p>
@@ -106,15 +112,17 @@ function ContentsHome() {
             )}
           </div>
           {favoriteArtists.length === 0 ? (
-            <p className="empty">아직 좋아하는 아티스트가 없어요.</p>
+            <p className="empty">좋아하는 아티스트를 추가해볼까요?</p>
           ) : (
             <ul className="list">
               {favoriteArtists.slice(0, FAVORITE_PREVIEW_SIZE).map((artist) => (
                 <li className="item" key={artist.id}>
                   <Link to={`/content/detail?type=artist&id=${artist.id}`}>
                     <div className="image">
-                      {artist.pictureUrl && (
+                      {artist.pictureUrl ? (
                         <img src={artist.pictureUrl} alt={artist.name} />
+                      ) : (
+                        <ImagePlaceholder type="artist" />
                       )}
                     </div>
                     <div className="title">{artist.name}</div>
@@ -138,15 +146,17 @@ function ContentsHome() {
             )}
           </div>
           {favoriteMedia.length === 0 ? (
-            <p className="empty">아직 좋아하는 미디어가 없어요.</p>
+            <p className="empty">좋아하는 미디어를 추가해볼까요?</p>
           ) : (
             <ul className="list">
               {favoriteMedia.slice(0, FAVORITE_PREVIEW_SIZE).map((content) => (
                 <li className="item" key={content.id}>
                   <Link to={`/content/detail?id=${content.id}`}>
                     <div className="image">
-                      {content.pictureUrl && (
+                      {content.pictureUrl ? (
                         <img src={content.pictureUrl} alt={content.name} />
+                      ) : (
+                        <ImagePlaceholder type="contents" />
                       )}
                     </div>
                     <div className="title">{content.name}</div>
@@ -170,15 +180,17 @@ function ContentsHome() {
             )}
           </div>
           {favoritePlaces.length === 0 ? (
-            <p className="empty">아직 좋아하는 여행지가 없어요.</p>
+            <p className="empty">가고 싶은 여행지를 저장해보세요.</p>
           ) : (
             <ul className="list">
               {favoritePlaces.slice(0, FAVORITE_PREVIEW_SIZE).map((place) => (
                 <li className="item" key={place.id}>
                   <Link to={`/place?id=${place.id}`}>
                     <div className="image">
-                      {place.mainImageUrl && (
+                      {place.mainImageUrl ? (
                         <img src={place.mainImageUrl} alt={place.name} />
+                      ) : (
+                        <ImagePlaceholder type="place" />
                       )}
                     </div>
                     <div className="title">{place.name}</div>
