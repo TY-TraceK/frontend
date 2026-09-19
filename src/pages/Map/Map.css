@@ -18,6 +18,8 @@
     z-index: 0;
     background-color: #d9d9d9;
     height: 100vh;
+    /* 모바일에서 브라우저가 지도 드래그 제스처를 페이지 스크롤로 가로채지 않도록 합니다. */
+    touch-action: none;
 
     .map-error {
       display: flex;

@@ -73,6 +73,14 @@ function loadKakaoMapsSdk() {
 function Map() {
   const [searchParams] = useSearchParams();
   const keyword = searchParams.get('keyword');
+  // Place 상세 등에서 특정 위치(lat/lng)를 지정해 들어오면 그 지점을 중심으로 지도를 띄웁니다.
+  const focusLat = parseFloat(searchParams.get('lat'));
+  const focusLng = parseFloat(searchParams.get('lng'));
+  const hasFocusPoint = Number.isFinite(focusLat) && Number.isFinite(focusLng);
+  const initialCenterRef = useRef(
+    hasFocusPoint ? { lat: focusLat, lng: focusLng } : DEFAULT_CENTER
+  );
+  const initialZoomRef = useRef(hasFocusPoint ? SEARCH_RESULT_ZOOM_LEVEL : DEFAULT_ZOOM_LEVEL);
 
   const mapAreaRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -91,6 +99,7 @@ function Map() {
   const [locations, setLocations] = useState([]);
   const [selectedLocationId, setSelectedLocationId] = useState(null);
   const [selectedLocationDetail, setSelectedLocationDetail] = useState(null);
+  const selectedLocationCoordsRef = useRef(null);
 
   const placeSheetRef = useRef(null);
   const [placeSheetHeight, setPlaceSheetHeight] = useState(0);
@@ -116,6 +125,20 @@ function Map() {
     const southwest = bounds.getSouthWest();
     const northeast = bounds.getNorthEast();
 
+    // 선택된 장소가 새 화면 범위 밖으로 나가면 바텀시트를 닫습니다.
+    const kakao = window.kakao;
+    const selectedCoords = selectedLocationCoordsRef.current;
+    if (kakao?.maps && selectedCoords) {
+      const stillVisible = bounds.contain(
+        new kakao.maps.LatLng(selectedCoords.lat, selectedCoords.lng)
+      );
+      if (!stillVisible) {
+        selectedLocationCoordsRef.current = null;
+        setSelectedLocationId(null);
+        setSelectedLocationDetail(null);
+      }
+    }
+
     try {
       const data = await LocationService.getLocationsInBounds({
         southwestLatitude: southwest.getLat(),
@@ -139,8 +162,11 @@ function Map() {
         if (cancelled || !mapAreaRef.current) return;
 
         const map = new kakao.maps.Map(mapAreaRef.current, {
-          center: new kakao.maps.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng),
-          level: DEFAULT_ZOOM_LEVEL,
+          center: new kakao.maps.LatLng(
+            initialCenterRef.current.lat,
+            initialCenterRef.current.lng
+          ),
+          level: initialZoomRef.current,
         });
         mapInstanceRef.current = map;
 
@@ -174,7 +200,10 @@ function Map() {
     setArchivedOnly((prev) => !prev);
   };
 
-  const handleSelectLocation = (locationId) => {
+  const handleSelectLocation = (locationId, coords) => {
+    if (coords) {
+      selectedLocationCoordsRef.current = coords;
+    }
     setSelectedLocationId(locationId);
   };
 
@@ -235,7 +264,12 @@ function Map() {
 
     locations.forEach((location) => {
       const container = document.createElement('div');
-      container.addEventListener('click', () => handleSelectLocation(location.id));
+      container.addEventListener('click', () =>
+        handleSelectLocation(location.id, {
+          lat: location.latitude,
+          lng: location.longitude,
+        })
+      );
 
       const root = createRoot(container);
       const overlay = new kakao.maps.CustomOverlay({
@@ -258,16 +292,34 @@ function Map() {
     };
   }, [locations]);
 
-  // 선택 상태가 바뀌면 마커를 새로 그리지 않고 active 클래스만 갱신합니다.
+  // 선택 상태가 바뀌면 마커를 새로 그리지 않고 active 클래스와 z-index, variant만 갱신합니다.
+  // 마커 밀도 조절: 방문 인증 수 데이터가 아직 없어, 11개 이상일 때는 임시로 id 기준 상위 10개만
+  // default(이름+마커)로 표시하고 나머지는 compact(점) 마커로 표시합니다.
   useEffect(() => {
-    overlaysRef.current.forEach(({ root, location }) => {
+    const defaultIds =
+      locations.length <= 10
+        ? new Set(locations.map((location) => location.id))
+        : new Set(
+            [...locations]
+              .sort((a, b) => a.id - b.id)
+              .slice(0, 10)
+              .map((location) => location.id)
+          );
+
+    overlaysRef.current.forEach(({ root, overlay, location }) => {
+      const isActive = location.id === selectedLocationId;
+
+      if (typeof overlay.setZIndex === 'function') {
+        overlay.setZIndex(isActive ? 10 : 1);
+      }
+
       root.render(
         <MapMarker
-          variant="default"
+          variant={defaultIds.has(location.id) ? 'default' : 'compact'}
           category={location.category}
           name={location.name}
           count={0}
-          isActive={location.id === selectedLocationId}
+          isActive={isActive}
         />
       );
     });
@@ -295,7 +347,7 @@ function Map() {
           map.setCenter(new kakao.maps.LatLng(first.latitude, first.longitude));
           map.setLevel(SEARCH_RESULT_ZOOM_LEVEL);
         }
-        handleSelectLocation(first.id);
+        handleSelectLocation(first.id, { lat: first.latitude, lng: first.longitude });
       })
       .catch((e) => {
         console.error(e);
