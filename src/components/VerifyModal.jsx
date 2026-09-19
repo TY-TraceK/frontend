@@ -10,18 +10,6 @@ import ArtistSelectStep from './steps/ArtistSelectStep';
 import VerifyConfirmStep from './steps/VerifyConfirmStep';
 import VerifyService from '@/api/services/verifyService.js';
 
-const TEMP_CURRENT_POSITION = {
-  latitude: 35.1796,
-  longitude: 129.0756,
-};
-
-const TEMP_MAP_BOUNDS = {
-  southwestLatitude: 35.101,
-  southwestLongitude: 129.001,
-  northeastLatitude: 35.11,
-  northeastLongitude: 129.01,
-};
-
 const getErrorMessage = (error, fallbackMessage) => {
   return (
     error?.response?.data?.message ||
@@ -61,8 +49,11 @@ function VerifyModal({ isOpen, onClose }) {
   const [step, setStep] = useState(2);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [currentPosition] = useState(TEMP_CURRENT_POSITION);
-  const [mapBounds] = useState(TEMP_MAP_BOUNDS);
+  const [currentPosition, setCurrentPosition] = useState(null);
+  const [mapBounds, setMapBounds] = useState(null);
+  const [locationPhase, setLocationPhase] = useState('loading');
+  const [testLocations, setTestLocations] = useState([]);
+  const [selectedTestLocation, setSelectedTestLocation] = useState(null);
 
   const [locations, setLocations] = useState([]);
   const [relatedContents, setRelatedContents] = useState([]);
@@ -120,33 +111,155 @@ function VerifyModal({ isOpen, onClose }) {
     setIsArtistSearch(false);
     setIsSearchFlow(false);
     setSelectedSearchArtist(null);
+    setCurrentPosition(null);
+    setMapBounds(null);
+    setTestLocations([]);
+    setSelectedTestLocation(null);
+    setLocationPhase('loading');
   }, [isOpen]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || locationPhase !== 'loading') return;
+
+    let cancelled = false;
+
+    const showTestLocationSelection = async () => {
+      try {
+        const result = await VerifyService.getVerificationLocationCandidates({
+          latitude: 0,
+          longitude: 0,
+        });
+
+        if (cancelled) return;
+
+        setTestLocations(result.locations ?? []);
+        setLocationPhase('test-select');
+        showInfoNotification(
+          '현재 위치를 확인할 수 없어 테스트 위치를 선택해주세요.'
+        );
+      } catch (error) {
+        if (cancelled) return;
+
+        console.error('테스트 위치 조회 실패:', error);
+        showErrorNotification(
+          getErrorMessage(error, '테스트 위치를 불러오지 못했습니다.')
+        );
+      }
+    };
+
+    if (!navigator.geolocation) {
+      showTestLocationSelection();
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    const fallbackTimer = window.setTimeout(
+      showTestLocationSelection,
+      3 * 60 * 1000
+    );
+
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        if (cancelled) return;
+
+        window.clearTimeout(fallbackTimer);
+
+        const position = {
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+        };
+
+        try {
+          const result =
+            await VerifyService.getVerificationLocationCandidates(position);
+
+          if (cancelled) return;
+
+          if (result.isInBusan) {
+            setCurrentPosition(position);
+            setLocationPhase('position');
+            return;
+          }
+
+          setTestLocations(result.locations ?? []);
+          setLocationPhase('test-select');
+          showInfoNotification(
+            '방문 인증은 부산 지역에서만 가능합니다. 테스트 기간 동안 임의의 부산 GPS를 선택해주세요.'
+          );
+        } catch (error) {
+          if (cancelled) return;
+
+          console.error('현재 위치 확인 실패:', error);
+          await showTestLocationSelection();
+        }
+      },
+      async () => {
+        if (cancelled) return;
+
+        window.clearTimeout(fallbackTimer);
+        await showTestLocationSelection();
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 3 * 60 * 1000,
+        maximumAge: 0,
+      }
+    );
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(fallbackTimer);
+    };
+  }, [isOpen, locationPhase]);
+
+  const moveToPlaceSelection = (position) => {
+    const latitudeDelta = 0.0009;
+    const longitudeDelta = 0.0011;
+    setCurrentPosition(position);
+    setMapBounds({
+      southwestLatitude: position.latitude - latitudeDelta,
+      southwestLongitude: position.longitude - longitudeDelta,
+      northeastLatitude: position.latitude + latitudeDelta,
+      northeastLongitude: position.longitude + longitudeDelta,
+    });
+    setLocationPhase('ready');
+    setStep(2);
+  };
+
+  const handleSelectTestPosition = (location) => {
+    setSelectedTestLocation(location);
+    moveToPlaceSelection({
+      latitude: Number(location.latitude),
+      longitude: Number(location.longitude),
+    });
+  };
+
+  const handleConfirmPosition = () => {
+    if (!currentPosition) return;
+    moveToPlaceSelection(currentPosition);
+  };
+
+  useEffect(() => {
+    if (!isOpen || locationPhase !== 'ready' || !mapBounds) return;
 
     const fetchLocations = async () => {
       try {
         setIsLoading(true);
-
         const result = await VerifyService.getLocationsWithinBounds(mapBounds);
-
         setLocations(result ?? []);
       } catch (error) {
         console.error('지도 범위 관광지 조회 실패:', error);
-
         setLocations([]);
-
-        showErrorNotification(
-          getErrorMessage(error, '관광지 조회에 실패했습니다.')
-        );
+        showErrorNotification(getErrorMessage(error, '관광지 조회에 실패했습니다.'));
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchLocations();
-  }, [isOpen, mapBounds]);
+  }, [isOpen, locationPhase, mapBounds]);
+
 
   const handleSelectLocation = (location) => {
     if (!location?.id) {
@@ -308,6 +421,40 @@ function VerifyModal({ isOpen, onClose }) {
       artistPictureUrl: artist.pictureUrl,
       alias: artist.alias,
     };
+  };
+
+  const handleSubmitLocationOnly = async () => {
+    if (!selectedLocation?.id) {
+      showWarningNotification('방문 인증할 장소를 선택해주세요.');
+      return;
+    }
+
+    if (
+      currentPosition?.latitude == null ||
+      currentPosition?.longitude == null
+    ) {
+      showErrorNotification('현재 위치 정보를 확인할 수 없습니다.');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      await VerifyService.createVisitVerification({
+        locationId: selectedLocation.id,
+        latitude: currentPosition.latitude,
+        longitude: currentPosition.longitude,
+      });
+
+      setIsComplete(true);
+    } catch (error) {
+      console.error('장소 방문 인증 실패:', error);
+      showErrorNotification(
+        getErrorMessage(error, '방문 인증에 실패했습니다.')
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = async () => {
@@ -484,12 +631,80 @@ function VerifyModal({ isOpen, onClose }) {
           </div>
         )}
 
-        {step === 2 && (
+        {locationPhase === 'loading' && (
+          <section className="location-loading">
+            <div className="location-spinner" />
+            <p>현재 위치를 확인하고 있습니다.<br />잠시만 기다려주세요.</p>
+          </section>
+        )}
+
+        {locationPhase === 'test-select' && (
+          <PlaceSelectStep
+            locations={testLocations}
+            selectedLocation={selectedTestLocation}
+            onSelectLocation={handleSelectTestPosition}
+            title="테스트할 위치를 선택해주세요."
+            mapPosition={
+              selectedTestLocation
+                ? {
+                    latitude: Number(selectedTestLocation.latitude),
+                    longitude: Number(selectedTestLocation.longitude),
+                  }
+                : testLocations[0]
+                  ? {
+                      latitude: Number(testLocations[0].latitude),
+                      longitude: Number(testLocations[0].longitude),
+                    }
+                  : null
+            }
+            onMapOutOfRange={() =>
+              showWarningNotification('100m 안에서만 방문 인증 가능합니다!')
+            }
+          />
+        )}
+
+        {locationPhase === 'position' && currentPosition && (
+          <>
+          <PlaceSelectStep
+            locations={[]}
+            selectedLocation={null}
+            onSelectLocation={() => {}}
+            title="현재 위치를 확인해주세요."
+            mapPosition={currentPosition}
+            onMapOutOfRange={() =>
+              showWarningNotification('100m 안에서만 방문 인증 가능합니다!')
+            }
+          />
+          <div className="position-confirm-wrap">
+            <button type="button" className="position-confirm" onClick={handleConfirmPosition}>
+              이 위치에서 방문 인증하기
+            </button>
+          </div>
+          </>
+        )}
+
+        {locationPhase === 'ready' && step === 2 && (
+          <>
           <PlaceSelectStep
             locations={locations}
             selectedLocation={selectedLocation}
             onSelectLocation={handleSelectLocation}
+            mapPosition={currentPosition}
+            onMapOutOfRange={() =>
+              showWarningNotification('100m 안에서만 방문 인증 가능합니다!')
+            }
           />
+          <div className="location-only-action">
+            <button
+              type="button"
+              className={selectedLocation ? 'active' : 'disabled'}
+              disabled={!selectedLocation || isLoading}
+              onClick={handleSubmitLocationOnly}
+            >
+              장소만 선택하고 넘어가기
+            </button>
+          </div>
+          </>
         )}
 
         {step === 3 && (
@@ -530,7 +745,7 @@ function VerifyModal({ isOpen, onClose }) {
           />
         )}
 
-        <div className="actions">
+        {locationPhase === 'ready' && <div className="actions">
           {isComplete ? (
             <button type="button" className="active" onClick={onClose}>
               닫기
@@ -555,7 +770,7 @@ function VerifyModal({ isOpen, onClose }) {
               </button>
             </>
           )}
-        </div>
+        </div>}
       </div>
     </main>
   );
