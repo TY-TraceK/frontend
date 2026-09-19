@@ -759,40 +759,35 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-32);
+  gap: 32px;
   text-align: center;
 }
 .verify-modal .location-spinner {
   width: 88px;
   height: 88px;
-  border: 12px solid var(--interact-subtle);
-  border-top-color: var(--text-main);
+  border: 12px solid #e5e7eb;
+  border-top-color: #242a33;
   border-radius: 50%;
   animation: verification-spin 0.9s linear infinite;
 }
 @keyframes verification-spin { to { transform: rotate(360deg); } }
-.verify-modal .position-step .container { padding-top: var(--spacing-32); }
-.verify-modal .test-location-list { display: flex; flex-direction: column; gap: var(--spacing-8); }
+.verify-modal .verification-map { width: 100%; height: 420px; background: #f3f4f6; }
+.verify-modal .position-step .container { padding-top: 24px; }
+.verify-modal .test-location-list { display: flex; flex-direction: column; gap: 8px; }
 .verify-modal .test-location-list button {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: var(--spacing-12);
+  gap: 12px;
   padding: 12px;
-  background: var(--bg-elevated);
-  border-radius: var(--radius-16);
+  background: transparent;
 }
 .verify-modal .test-location-list .image {
   width: 56px;
   height: 56px;
   overflow: hidden;
-  border-radius: var(--radius-16);
+  border-radius: 8px;
   flex-shrink: 0;
 }
 .verify-modal .test-location-list img { width: 100%; height: 100%; object-fit: cover; }
-.verify-modal .position-confirm {
-  width: 100%;
-  padding: 14px 16px;
-  background: var(--interact-primary);
-  border-radius: var(--radius-16);
-}
+.verify-modal .position-confirm { width: 100%; padding: 14px 16px; }
