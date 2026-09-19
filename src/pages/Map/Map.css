@@ -189,7 +189,7 @@
     height: 14px;
     border-radius: 50%;
     background-color: var(--interact-active);
-    border: 3px solid var(--gl-text-white);
+    border: 3px solid var(--gl-border-map);
     box-shadow: var(--shadow-card);
   }
 
