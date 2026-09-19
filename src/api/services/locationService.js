@@ -82,6 +82,54 @@ const LocationService = {
 
     return result.data;
   },
+
+  async getLocationsInBounds({
+    southwestLatitude,
+    southwestLongitude,
+    northeastLatitude,
+    northeastLongitude,
+    category,
+    archivedOnly,
+  } = {}) {
+    const params = {
+      ...(southwestLatitude != null && { southwestLatitude }),
+      ...(southwestLongitude != null && { southwestLongitude }),
+      ...(northeastLatitude != null && { northeastLatitude }),
+      ...(northeastLongitude != null && { northeastLongitude }),
+      ...(category && { category }),
+      ...(archivedOnly != null && { archivedOnly }),
+    };
+
+    const response = await apiClient.get('/locations/bounds', { params });
+
+    const result = response.data;
+
+    if (!result.isSuccess) {
+      throw new Error(result.message);
+    }
+
+    return result.data;
+  },
+
+  async searchRegion({ keyword, lastLocationId, size } = {}) {
+    const params = {
+      ...(keyword && { keyword }),
+      ...(lastLocationId != null && { lastLocationId }),
+      ...(size != null && { size }),
+    };
+
+    const response = await apiClient.get('/locations/search-region', {
+      params,
+    });
+
+    const result = response.data;
+
+    if (!result.isSuccess) {
+      throw new Error(result.message);
+    }
+
+    return result.data;
+  },
 };
 
 export default LocationService;

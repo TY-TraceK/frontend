@@ -1,172 +1,252 @@
-@font-face {
-  font-family: 'Pretendard';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Light.woff2')
-    format('woff2');
-  font-weight: 300;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Pretendard';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2')
-    format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Pretendard';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Medium.woff2')
-    format('woff2');
-  font-weight: 500;
-  font-display: swap;
-}
-
 .map-marker {
-  position: relative;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
 
-  border: 2px solid var(--gl-border-map);
-  font-family: Pretendard, sans-serif;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 1.4;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
   color: var(--gl-text-white);
 
-  &.default {
-    min-width: 32px;
-    min-height: 40px;
-    padding: 6px 8px;
+  .icon {
+    padding: 2px;
 
+    border: 2px solid var(--gl-border-map);
     border-radius: 50% 50% 50% 0;
+    aspect-ratio: 1 / 1;
+
     transform: rotate(-45deg);
 
-    .icon {
+    svg {
       display: flex;
       align-items: center;
       justify-content: center;
-
-      width: 20px;
-      height: 20px;
-
-      transform: rotate(45deg);
-    }
-
-    .name {
-      max-width: 120px;
-      margin-left: 4px;
 
       transform: rotate(45deg);
     }
   }
 
-  &.bookmark {
-    width: 32px;
-    height: 40px;
+  &.default {
+    position: absolute;
+    bottom: 21px;
+    left: -30px;
+    .name {
+      flex-shrink: 0;
+      max-width: 120px;
 
-    border-radius: 50% 50% 50% 0;
-    transform: rotate(-45deg);
+      font-size: var(--font-size-caption);
+      font-weight: 400;
+      white-space: normal;
+      word-break: keep-all;
 
+      text-shadow:
+        -2px -2px 0 #fff,
+        0 -2px 0 #fff,
+        2px -2px 0 #fff,
+        -2px 0 0 #fff,
+        2px 0 0 #fff,
+        -2px 2px 0 #fff,
+        0 2px 0 #fff,
+        2px 2px 0 #fff;
+    }
+  }
+
+  &.active {
     .icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      width: 20px;
-      height: 20px;
-
-      transform: rotate(45deg);
+      box-shadow: var(--shadow-pressed);
     }
   }
 
   &.compact {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    aspect-ratio: 1 / 1;
+
+    border: 2px solid var(--gl-border-map);
+    border-radius: 50%;
+    box-shadow: var(--shadow-card);
 
     background-color: #0dd3e2;
-    border-radius: 50%;
+    position: absolute;
+    bottom: 7px;
+    left: -7px;
   }
 
   &.ATTRACTION {
-    background-color: var(--loc-attraction);
+    .icon {
+      background-color: var(--loc-attraction);
+    }
+
+    .name {
+      color: var(--loc-attraction);
+    }
 
     &.active {
-      background-color: var(--loc-attraction-pressed);
-      box-shadow: var(--shadow-pressed);
+      .icon {
+        background-color: var(--loc-attraction-pressed);
+      }
+
+      .name {
+        color: var(--loc-attraction-pressed);
+      }
     }
   }
 
-  &.CULTURAL_FACILITY {
-    background-color: var(--loc-culture);
+  &.CULTURE {
+    .icon {
+      background-color: var(--loc-culture);
+    }
+
+    .name {
+      color: var(--loc-culture);
+    }
 
     &.active {
-      background-color: var(--loc-culture-pressed);
-      box-shadow: var(--shadow-pressed);
+      .icon {
+        background-color: var(--loc-culture-pressed);
+      }
+
+      .name {
+        color: var(--loc-culture-pressed);
+      }
     }
   }
 
   &.FESTIVAL {
-    background-color: var(--loc-event);
+    .icon {
+      background-color: var(--loc-event);
+    }
+
+    .name {
+      color: var(--loc-event);
+    }
 
     &.active {
-      background-color: var(--loc-event-pressed);
-      box-shadow: var(--shadow-pressed);
+      .icon {
+        background-color: var(--loc-event-pressed);
+      }
+
+      .name {
+        color: var(--loc-event-pressed);
+      }
     }
   }
 
   &.FILMING_LOCATION {
-    background-color: var(--loc-filming);
+    .icon {
+      background-color: var(--loc-filming);
+    }
+
+    .name {
+      color: var(--loc-filming);
+    }
 
     &.active {
-      background-color: var(--loc-filming-pressed);
-      box-shadow: var(--shadow-pressed);
+      .icon {
+        background-color: var(--loc-filming-pressed);
+      }
+
+      .name {
+        color: var(--loc-filming-pressed);
+      }
     }
   }
 
   &.RESTAURANT {
-    background-color: var(--loc-restaurant);
+    .icon {
+      background-color: var(--loc-restaurant);
+    }
+
+    .name {
+      color: var(--loc-restaurant);
+    }
 
     &.active {
-      background-color: var(--loc-restaurant-pressed);
-      box-shadow: var(--shadow-pressed);
+      .icon {
+        background-color: var(--loc-restaurant-pressed);
+      }
+
+      .name {
+        color: var(--loc-restaurant-pressed);
+      }
     }
   }
 
   &.CAFE {
-    background-color: var(--loc-cafe);
+    .icon {
+      background-color: var(--loc-cafe);
+    }
+
+    .name {
+      color: var(--loc-cafe);
+    }
 
     &.active {
-      background-color: var(--loc-cafe-pressed);
-      box-shadow: var(--shadow-pressed);
+      .icon {
+        background-color: var(--loc-cafe-pressed);
+      }
+
+      .name {
+        color: var(--loc-cafe-pressed);
+      }
     }
   }
 
   &.ACCOMMODATION {
-    background-color: var(--loc-accommodation);
+    .icon {
+      background-color: var(--loc-accommodation);
+    }
+
+    .name {
+      color: var(--loc-accommodation);
+    }
 
     &.active {
-      background-color: var(--loc-accommodation-pressed);
-      box-shadow: var(--shadow-pressed);
+      .icon {
+        background-color: var(--loc-accommodation-pressed);
+      }
+
+      .name {
+        color: var(--loc-accommodation-pressed);
+      }
     }
   }
 
   &.SHOPPING {
-    background-color: var(--loc-shopping);
+    .icon {
+      background-color: var(--loc-shopping);
+    }
+
+    .name {
+      color: var(--loc-shopping);
+    }
 
     &.active {
-      background-color: var(--loc-shopping-pressed);
-      box-shadow: var(--shadow-pressed);
+      .icon {
+        background-color: var(--loc-shopping-pressed);
+      }
+
+      .name {
+        color: var(--loc-shopping-pressed);
+      }
     }
   }
 
   &.ETC {
-    background-color: var(--loc-other);
+    .icon {
+      background-color: var(--loc-other);
+    }
+
+    .name {
+      color: var(--loc-other);
+    }
 
     &.active {
-      background-color: var(--loc-other-pressed);
-      box-shadow: var(--shadow-pressed);
+      .icon {
+        background-color: var(--loc-other-pressed);
+      }
+
+      .name {
+        color: var(--loc-other-pressed);
+      }
     }
   }
 }

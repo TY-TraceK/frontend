@@ -72,7 +72,7 @@ h3 {
 /* icon */
 /* phosphor */
 
-.icon svg {
+svg {
   font-size: var(--font-size-title);
   color: inherit;
 }

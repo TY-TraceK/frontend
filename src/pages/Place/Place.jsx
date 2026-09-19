@@ -39,6 +39,17 @@ const CATEGORY_ICON = {
 
 const formatCount = (count) => new Intl.NumberFormat("ko-KR").format(count ?? 0);
 
+const buildMapLink = (geoLocation) => {
+  const lat = geoLocation?.latitude;
+  const lng = geoLocation?.longitude;
+
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    return "/map";
+  }
+
+  return `/map?lat=${lat}&lng=${lng}`;
+};
+
 const getCategoryLabel = (category) =>
   LOCATION_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ??
   category;
@@ -276,7 +287,7 @@ function Place() {
             </span>
             <p className="info">
               <span className="address">{locationInfo.address?.address}</span>
-              <Link to="/map" className="additional accent-text">
+              <Link to={buildMapLink(locationInfo.geoLocation)} className="additional accent-text">
                 지도
               </Link>
             </p>
@@ -359,8 +370,7 @@ function Place() {
           </div>
         </section>
         <section className="travel-cta">
-          {/* MEMO: 지도로 이동하되 현재 위치 인근의 여행지 전체 로드 가능할까요? */}
-          <Link to="/map">
+          <Link to={buildMapLink(locationInfo.geoLocation)}>
             <span>여기로도 가볼까요?</span>
             <span className="accent-text">인근 여행지 보기</span>
           </Link>
