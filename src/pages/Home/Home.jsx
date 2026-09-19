@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import {
   BookmarkSimpleIcon,
+  CaretLeftIcon,
   CaretRightIcon,
   MapPinIcon,
   MapPinSimpleAreaIcon,
@@ -23,7 +24,8 @@ function Home() {
   const [updatingArchiveLocationId, setUpdatingArchiveLocationId] =
     useState(null);
   const [topRankings, setTopRankings] = useState([]);
-  const [selectedContentCategory, setSelectedContentCategory] = useState('DRAMA');
+  const [selectedContentCategory, setSelectedContentCategory] =
+    useState('DRAMA');
   const [categoryContents, setCategoryContents] = useState([]);
   const [contentCuration, setContentCuration] = useState(null);
   const categoryTabsRef = useRef(null);
@@ -103,10 +105,7 @@ function Home() {
     event.preventDefault();
     event.stopPropagation();
 
-    if (
-      location?.id == null ||
-      updatingArchiveLocationId != null
-    ) {
+    if (location?.id == null || updatingArchiveLocationId != null) {
       return;
     }
 
@@ -115,9 +114,7 @@ function Home() {
 
     setTopSavedLocations((previous) =>
       previous.map((item) =>
-        item.id === location.id
-          ? { ...item, isArchived: nextArchived }
-          : item
+        item.id === location.id ? { ...item, isArchived: nextArchived } : item
       )
     );
 
@@ -196,26 +193,16 @@ function Home() {
               </p>
               <p>오늘은 어떤 화면 속으로 여행 가볼까요?</p>
             </div>
-            <div className="banner">
-              <Link>
-                {/* MEMO: 팬인 아티스트/미디어 콘텐츠 중 여행지가 추가된 내역이 있다면,
-                아티스트/미디어 콘텐츠 홈으로 이동 */}
-                팬인 콘텐츠에 새로운 여행지가 추가됐어요.
-                <span className="icon">
-                  <CaretRightIcon />
-                </span>
-              </Link>
-            </div>
           </section>
         )}
         <section className="new-contents">
-          <h2>새로운 콘텐츠를 통해 여행지를 찾아보세요!</h2>
+          <h2>신규 미디어로 여행지를 찾아보세요!</h2>
 
           <div className="tabs-wrapper">
             {canScrollCategoriesLeft && (
               <button
                 type="button"
-                className="tabs-scroll tabs-prev"
+                className="tabs-scroll tabs-prev icon"
                 aria-label="이전 카테고리 보기"
                 onClick={() =>
                   categoryTabsRef.current?.scrollBy({
@@ -224,7 +211,7 @@ function Home() {
                   })
                 }
               >
-                <CaretRightIcon />
+                <CaretLeftIcon />
               </button>
             )}
 
@@ -249,7 +236,7 @@ function Home() {
             {canScrollCategoriesRight && (
               <button
                 type="button"
-                className="tabs-scroll tabs-next"
+                className="tabs-scroll tabs-next icon"
                 aria-label="다음 카테고리 보기"
                 onClick={() =>
                   categoryTabsRef.current?.scrollBy({
