@@ -54,6 +54,7 @@ function VerifyModal({ isOpen, onClose }) {
   const [mapBounds, setMapBounds] = useState(null);
   const [locationPhase, setLocationPhase] = useState('loading');
   const [testLocations, setTestLocations] = useState([]);
+  const [selectedTestLocation, setSelectedTestLocation] = useState(null);
 
   const [locations, setLocations] = useState([]);
   const [relatedContents, setRelatedContents] = useState([]);
@@ -114,6 +115,7 @@ function VerifyModal({ isOpen, onClose }) {
     setCurrentPosition(null);
     setMapBounds(null);
     setTestLocations([]);
+    setSelectedTestLocation(null);
     setLocationPhase('loading');
   }, [isOpen]);
 
@@ -155,26 +157,31 @@ function VerifyModal({ isOpen, onClose }) {
     );
   }, [isOpen, locationPhase]);
 
+  const moveToPlaceSelection = (position) => {
+    const latitudeDelta = 0.0009;
+    const longitudeDelta = 0.0011;
+    setCurrentPosition(position);
+    setMapBounds({
+      southwestLatitude: position.latitude - latitudeDelta,
+      southwestLongitude: position.longitude - longitudeDelta,
+      northeastLatitude: position.latitude + latitudeDelta,
+      northeastLongitude: position.longitude + longitudeDelta,
+    });
+    setLocationPhase('ready');
+    setStep(2);
+  };
+
   const handleSelectTestPosition = (location) => {
-    setCurrentPosition({
+    setSelectedTestLocation(location);
+    moveToPlaceSelection({
       latitude: Number(location.latitude),
       longitude: Number(location.longitude),
     });
-    setLocationPhase('position');
   };
 
   const handleConfirmPosition = () => {
     if (!currentPosition) return;
-
-    const latitudeDelta = 0.0009;
-    const longitudeDelta = 0.0011;
-    setMapBounds({
-      southwestLatitude: currentPosition.latitude - latitudeDelta,
-      southwestLongitude: currentPosition.longitude - longitudeDelta,
-      northeastLatitude: currentPosition.latitude + latitudeDelta,
-      northeastLongitude: currentPosition.longitude + longitudeDelta,
-    });
-    setLocationPhase('ready');
+    moveToPlaceSelection(currentPosition);
   };
 
   useEffect(() => {
@@ -542,25 +549,13 @@ function VerifyModal({ isOpen, onClose }) {
         )}
 
         {locationPhase === 'test-select' && (
-          <section className="position-step">
-            <div className="container">
-              <h2>테스트할 위치를 선택해주세요.</h2>
-              <ul className="test-location-list">
-                {testLocations.map((location) => (
-                  <li key={location.name}>
-                    <button type="button" onClick={() => handleSelectTestPosition(location)}>
-                      {location.imageUrl && (
-                        <div className="image">
-                          <img src={location.imageUrl} alt="" />
-                        </div>
-                      )}
-                      <span>{location.name}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
+          <PlaceSelectStep
+            locations={testLocations}
+            selectedLocation={selectedTestLocation}
+            onSelectLocation={handleSelectTestPosition}
+            title="테스트할 위치를 선택해주세요."
+            showMap={false}
+          />
         )}
 
         {locationPhase === 'position' && currentPosition && (
