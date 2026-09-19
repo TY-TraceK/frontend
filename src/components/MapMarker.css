@@ -14,7 +14,6 @@
     border-radius: 50% 50% 50% 0;
     aspect-ratio: 1 / 1;
 
-    background-color: #000;
     transform: rotate(-45deg);
 
     svg {
@@ -27,13 +26,15 @@
   }
 
   &.default {
+    position: absolute;
+    bottom: 21px;
+    left: -30px;
     .name {
       flex-shrink: 0;
       max-width: 120px;
 
       font-size: var(--font-size-caption);
       font-weight: 400;
-      color: #000;
       white-space: normal;
       word-break: keep-all;
 
@@ -64,11 +65,9 @@
     box-shadow: var(--shadow-card);
 
     background-color: #0dd3e2;
-
-    .icon,
-    .name {
-      display: none;
-    }
+    position: absolute;
+    bottom: 7px;
+    left: -7px;
   }
 
   &.ATTRACTION {

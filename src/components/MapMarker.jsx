@@ -32,21 +32,30 @@ const MapMarker = ({
   isActive = false,
 }) => {
   const CategoryIcon = CATEGORY_ICONS[category];
+  const displayVariant = isActive ? 'default' : variant;
 
-  // variant: {default: 기본형으로 이름 + 마커, compact: 축약형으로 점만 제공, bookmark: 점 대신 마커}
-  // default 기준: 1. 한 페이지 10개 이내일 때 전체 표시, 2. 11개 이상일 때 방문 인증 수 상위 5개만 표시
+  // variant:
+  // default: 기본형으로 이름 + 마커
+  // compact: 축약형으로 점만 제공
+  // bookmark: 점 대신 마커
+  //
+  // default 기준:
+  // 1. 한 페이지 10개 이내일 때 전체 표시
+  // 2. 11개 이상일 때 방문 인증 수 상위 5개만 표시
 
-  if (variant === 'compact') {
+  if (displayVariant === 'compact') {
     return <span className="map-marker compact" />;
   }
 
   return (
     <div
-      className={`map-marker ${variant} ${category} ${isActive ? 'active' : ''}`}
+      className={`map-marker ${displayVariant} ${category} ${
+        isActive ? 'active' : ''
+      }`}
     >
       <span className="icon">{CategoryIcon && <CategoryIcon />}</span>
 
-      {variant === 'default' && name && (
+      {displayVariant === 'default' && name && (
         <span className="name ellipsis-2">
           {name}
           {count > 0 && ` +${count}`}
