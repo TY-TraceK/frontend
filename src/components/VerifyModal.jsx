@@ -8,7 +8,6 @@ import PlaceSelectStep from './steps/PlaceSelectStep';
 import ContentSelectStep from './steps/ContentSelectStep';
 import ArtistSelectStep from './steps/ArtistSelectStep';
 import VerifyConfirmStep from './steps/VerifyConfirmStep';
-import VerificationMap from './VerificationMap';
 import VerifyService from '@/api/services/verifyService.js';
 
 const getErrorMessage = (error, fallbackMessage) => {
@@ -554,23 +553,43 @@ function VerifyModal({ isOpen, onClose }) {
             selectedLocation={selectedTestLocation}
             onSelectLocation={handleSelectTestPosition}
             title="테스트할 위치를 선택해주세요."
-            showMap={false}
+            mapPosition={
+              selectedTestLocation
+                ? {
+                    latitude: Number(selectedTestLocation.latitude),
+                    longitude: Number(selectedTestLocation.longitude),
+                  }
+                : testLocations[0]
+                  ? {
+                      latitude: Number(testLocations[0].latitude),
+                      longitude: Number(testLocations[0].longitude),
+                    }
+                  : null
+            }
+            onMapOutOfRange={() =>
+              showWarningNotification('100m 안에서만 방문 인증 가능합니다!')
+            }
           />
         )}
 
         {locationPhase === 'position' && currentPosition && (
-          <section className="position-step">
-            <VerificationMap
-              latitude={currentPosition.latitude}
-              longitude={currentPosition.longitude}
-              initialZoom={2}
-            />
-            <div className="container">
-              <button type="button" className="position-confirm" onClick={handleConfirmPosition}>
-                이 위치에서 방문 인증하기
-              </button>
-            </div>
-          </section>
+          <>
+          <PlaceSelectStep
+            locations={[]}
+            selectedLocation={null}
+            onSelectLocation={() => {}}
+            title="현재 위치를 확인해주세요."
+            mapPosition={currentPosition}
+            onMapOutOfRange={() =>
+              showWarningNotification('100m 안에서만 방문 인증 가능합니다!')
+            }
+          />
+          <div className="position-confirm-wrap">
+            <button type="button" className="position-confirm" onClick={handleConfirmPosition}>
+              이 위치에서 방문 인증하기
+            </button>
+          </div>
+          </>
         )}
 
         {locationPhase === 'ready' && step === 2 && (
@@ -578,6 +597,10 @@ function VerifyModal({ isOpen, onClose }) {
             locations={locations}
             selectedLocation={selectedLocation}
             onSelectLocation={handleSelectLocation}
+            mapPosition={currentPosition}
+            onMapOutOfRange={() =>
+              showWarningNotification('100m 안에서만 방문 인증 가능합니다!')
+            }
           />
         )}
 

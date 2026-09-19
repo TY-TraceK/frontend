@@ -1,4 +1,5 @@
 import PlaceCard from '../PlaceCard';
+import VerificationMap from '../VerificationMap';
 import { LOCATION_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
 
 const getLocationCategoryLabel = (category) =>
@@ -11,10 +12,20 @@ function PlaceSelectStep({
   onSelectLocation,
   title = '방문 인증할 장소를 선택해주세요.',
   showMap = true,
+  mapPosition,
+  onMapOutOfRange,
 }) {
   return (
     <section className="step-2">
-      {showMap && <div className="map">지도 위치</div>}
+      {showMap && mapPosition && (
+        <VerificationMap
+          latitude={mapPosition.latitude}
+          longitude={mapPosition.longitude}
+          locations={locations}
+          initialZoom={3}
+          onOutOfRange={onMapOutOfRange}
+        />
+      )}
 
       <div className="container">
         <h2>{title}</h2>

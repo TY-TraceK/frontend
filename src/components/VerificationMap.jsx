@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 const KAKAO_MAP_APP_KEY = import.meta.env.VITE_KAKAO_MAP_APP_KEY;
+const VERIFICATION_RADIUS_METER = 100;
 
 const loadKakaoMapsSdk = () => {
   if (window.kakao?.maps) return Promise.resolve(window.kakao);
@@ -17,8 +18,15 @@ const loadKakaoMapsSdk = () => {
   return window.__kakaoMapsSdkPromise;
 };
 
-function VerificationMap({ latitude, longitude, initialZoom = 2 }) {
+function VerificationMap({
+  latitude,
+  longitude,
+  locations = [],
+  initialZoom = 3,
+  onOutOfRange,
+}) {
   const mapRef = useRef(null);
+  const warnedRef = useRef(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -28,20 +36,61 @@ function VerificationMap({ latitude, longitude, initialZoom = 2 }) {
     loadKakaoMapsSdk()
       .then((kakao) => {
         if (cancelled || !mapRef.current) return;
+
         const position = new kakao.maps.LatLng(latitude, longitude);
         const map = new kakao.maps.Map(mapRef.current, {
           center: position,
           level: initialZoom,
         });
-        const marker = new kakao.maps.Marker({ position });
-        marker.setMap(map);
+
+        new kakao.maps.Marker({ map, position });
+
+        new kakao.maps.Circle({
+          map,
+          center: position,
+          radius: VERIFICATION_RADIUS_METER,
+          strokeWeight: 2,
+          strokeOpacity: 0.8,
+          fillOpacity: 0.08,
+        });
+
+        locations.forEach((location) => {
+          if (location.latitude == null || location.longitude == null) return;
+          new kakao.maps.Marker({
+            map,
+            position: new kakao.maps.LatLng(
+              Number(location.latitude),
+              Number(location.longitude)
+            ),
+            title: location.name,
+          });
+        });
+
+        const checkCenter = () => {
+          const center = map.getCenter();
+          const distance = Math.hypot(
+            (center.getLat() - latitude) * 111320,
+            (center.getLng() - longitude) *
+              111320 *
+              Math.cos((latitude * Math.PI) / 180)
+          );
+
+          if (distance > VERIFICATION_RADIUS_METER && !warnedRef.current) {
+            warnedRef.current = true;
+            onOutOfRange?.();
+          }
+          if (distance <= VERIFICATION_RADIUS_METER) warnedRef.current = false;
+        };
+
+        kakao.maps.event.addListener(map, 'dragend', checkCenter);
+        kakao.maps.event.addListener(map, 'zoom_changed', checkCenter);
       })
       .catch(() => !cancelled && setError('지도를 불러오지 못했습니다.'));
 
     return () => {
       cancelled = true;
     };
-  }, [latitude, longitude, initialZoom]);
+  }, [latitude, longitude, locations, initialZoom, onOutOfRange]);
 
   return <div className="verification-map" ref={mapRef}>{error}</div>;
 }
