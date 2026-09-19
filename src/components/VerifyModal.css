@@ -752,3 +752,63 @@
     transform: rotate(360deg);
   }
 }
+
+.verify-modal .location-loading {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-32);
+  text-align: center;
+}
+.verify-modal .location-spinner {
+  width: 88px;
+  height: 88px;
+  border: 12px solid var(--interact-subtle);
+  border-top-color: var(--text-main);
+  border-radius: 50%;
+  animation: verification-spin 0.9s linear infinite;
+}
+@keyframes verification-spin { to { transform: rotate(360deg); } }
+.verify-modal .verification-map {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--interact-subtle);
+}
+.verify-modal .verification-location-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+.verify-modal .verification-location-list button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  padding: 12px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-16);
+}
+.verify-modal .verification-location-list button.selected {
+  background: var(--interact-subtle);
+}
+.verify-modal .verification-location-list .image {
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  border-radius: var(--radius-16);
+  flex-shrink: 0;
+}
+.verify-modal .verification-location-list img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.verify-modal .skip-detail-link {
+  display: block;
+  margin: var(--spacing-24) auto 0;
+  background: transparent;
+  text-decoration: underline;
+  color: var(--text-sub);
+}

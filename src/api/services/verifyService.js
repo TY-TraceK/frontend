@@ -1,6 +1,13 @@
 import apiClient from '@/api/apiClient.js';
 
 const VerifyService = {
+  async getVerificationLocationCandidates({ latitude, longitude }) {
+    const response = await apiClient.get('/visit-verifications/location-candidates', {
+      params: { latitude, longitude },
+    });
+
+    return response.data?.data ?? { isInBusan: false, locations: [] };
+  },
   async getLocationsWithinBounds({
     southwestLatitude,
     southwestLongitude,
