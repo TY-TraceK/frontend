@@ -138,7 +138,9 @@
         .list {
           display: flex;
           gap: 16px;
-          overflow: hidden;
+          overflow-x: auto;
+          overflow-y: hidden;
+          scrollbar-width: none;
           .item {
             flex: 0 0 calc((100% - 48px) / 4);
             text-align: center;

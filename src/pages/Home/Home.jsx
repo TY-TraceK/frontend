@@ -14,10 +14,12 @@ import RankingService from '@/api/services/rankingService.js';
 import ContentService from '@/api/services/contentService.js';
 import { CONTENT_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
 
+import ScrollButton from '../../components/common/ScrollButton';
+import ImagePlaceholder from '../../components/common/ImagePlaceholder';
+
 import './Home.css';
 import { useProfile } from '@/hooks/userContext.jsx';
 import LocationService from '@/api/services/locationService.js';
-import ImagePlaceholder from '../../components/common/ImagePlaceholder';
 
 function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -201,19 +203,16 @@ function Home() {
 
           <div className="tabs-wrapper">
             {canScrollCategoriesLeft && (
-              <button
-                type="button"
-                className="tabs-scroll tabs-prev icon"
-                aria-label="이전 카테고리 보기"
+              <ScrollButton
+                direction="prev"
+                ariaLabel="이전 카테고리 보기"
                 onClick={() =>
                   categoryTabsRef.current?.scrollBy({
                     left: -160,
                     behavior: 'smooth',
                   })
                 }
-              >
-                <CaretLeftIcon />
-              </button>
+              />
             )}
 
             <ul className="tabs" ref={categoryTabsRef}>
@@ -235,19 +234,16 @@ function Home() {
             </ul>
 
             {canScrollCategoriesRight && (
-              <button
-                type="button"
-                className="tabs-scroll tabs-next icon"
-                aria-label="다음 카테고리 보기"
+              <ScrollButton
+                direction="next"
+                ariaLabel="다음 카테고리 보기"
                 onClick={() =>
                   categoryTabsRef.current?.scrollBy({
                     left: 160,
                     behavior: 'smooth',
                   })
                 }
-              >
-                <CaretRightIcon />
-              </button>
+              />
             )}
           </div>
 
