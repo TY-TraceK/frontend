@@ -58,13 +58,21 @@ const VerifyService = {
     latitude,
     longitude,
   }) {
-    const response = await apiClient.post('/visit-verifications', {
+    const payload = {
       locationId,
-      contentId,
-      artistIds,
       latitude,
       longitude,
-    });
+    };
+
+    if (contentId != null) {
+      payload.contentId = contentId;
+    }
+
+    if (artistIds != null) {
+      payload.artistIds = artistIds;
+    }
+
+    const response = await apiClient.post('/visit-verifications', payload);
 
     return response.data;
   },

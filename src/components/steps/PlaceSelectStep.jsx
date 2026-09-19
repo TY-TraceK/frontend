@@ -22,7 +22,9 @@ function PlaceSelectStep({
           latitude={mapPosition.latitude}
           longitude={mapPosition.longitude}
           locations={locations}
+          selectedLocation={selectedLocation}
           initialZoom={3}
+          onSelectLocation={onSelectLocation}
           onOutOfRange={onMapOutOfRange}
         />
       )}
@@ -34,10 +36,21 @@ function PlaceSelectStep({
           {locations.map((location) => (
             <PlaceCard
               key={location.id ?? location.name}
-              className={(selectedLocation?.id ?? selectedLocation?.name) === (location.id ?? location.name) ? 'selected' : ''}
-              tag={location.category ? getLocationCategoryLabel(location.category) : undefined}
+              className={
+                (selectedLocation?.id ?? selectedLocation?.name) ===
+                (location.id ?? location.name)
+                  ? 'selected'
+                  : ''
+              }
+              tag={
+                location.category
+                  ? getLocationCategoryLabel(location.category)
+                  : undefined
+              }
               title={location.name}
-              description={location.address ?? `${location.latitude}, ${location.longitude}`}
+              description={
+                location.address ?? `${location.latitude}, ${location.longitude}`
+              }
               imageUrl={location.mainImageUrl ?? location.imageUrl}
               onClick={() => onSelectLocation(location)}
             />

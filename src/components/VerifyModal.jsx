@@ -366,6 +366,40 @@ function VerifyModal({ isOpen, onClose }) {
     };
   };
 
+  const handleSubmitLocationOnly = async () => {
+    if (!selectedLocation?.id) {
+      showWarningNotification('방문 인증할 장소를 선택해주세요.');
+      return;
+    }
+
+    if (
+      currentPosition?.latitude == null ||
+      currentPosition?.longitude == null
+    ) {
+      showErrorNotification('현재 위치 정보를 확인할 수 없습니다.');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      await VerifyService.createVisitVerification({
+        locationId: selectedLocation.id,
+        latitude: currentPosition.latitude,
+        longitude: currentPosition.longitude,
+      });
+
+      setIsComplete(true);
+    } catch (error) {
+      console.error('장소 방문 인증 실패:', error);
+      showErrorNotification(
+        getErrorMessage(error, '방문 인증에 실패했습니다.')
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!selectedLocation?.id) {
       showWarningNotification('방문 인증할 장소를 선택해주세요.');
@@ -593,6 +627,7 @@ function VerifyModal({ isOpen, onClose }) {
         )}
 
         {locationPhase === 'ready' && step === 2 && (
+          <>
           <PlaceSelectStep
             locations={locations}
             selectedLocation={selectedLocation}
@@ -602,6 +637,17 @@ function VerifyModal({ isOpen, onClose }) {
               showWarningNotification('100m 안에서만 방문 인증 가능합니다!')
             }
           />
+          <div className="location-only-action">
+            <button
+              type="button"
+              className={selectedLocation ? 'active' : 'disabled'}
+              disabled={!selectedLocation || isLoading}
+              onClick={handleSubmitLocationOnly}
+            >
+              장소만 선택하고 넘어가기
+            </button>
+          </div>
+          </>
         )}
 
         {step === 3 && (

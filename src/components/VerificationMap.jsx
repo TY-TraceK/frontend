@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import MapMarker from './MapMarker';
 
 const KAKAO_MAP_APP_KEY = import.meta.env.VITE_KAKAO_MAP_APP_KEY;
 const VERIFICATION_RADIUS_METER = 100;
 
 const loadKakaoMapsSdk = () => {
   if (window.kakao?.maps) return Promise.resolve(window.kakao);
+
   if (!window.__kakaoMapsSdkPromise) {
     window.__kakaoMapsSdkPromise = new Promise((resolve, reject) => {
       const script = document.createElement('script');
@@ -15,6 +18,7 @@ const loadKakaoMapsSdk = () => {
       document.head.appendChild(script);
     });
   }
+
   return window.__kakaoMapsSdkPromise;
 };
 
@@ -22,7 +26,9 @@ function VerificationMap({
   latitude,
   longitude,
   locations = [],
+  selectedLocation,
   initialZoom = 3,
+  onSelectLocation,
   onOutOfRange,
 }) {
   const mapRef = useRef(null);
@@ -31,7 +37,9 @@ function VerificationMap({
 
   useEffect(() => {
     if (latitude == null || longitude == null || !mapRef.current) return;
+
     let cancelled = false;
+    const overlays = [];
 
     loadKakaoMapsSdk()
       .then((kakao) => {
@@ -42,8 +50,6 @@ function VerificationMap({
           center: position,
           level: initialZoom,
         });
-
-        new kakao.maps.Marker({ map, position });
 
         new kakao.maps.Circle({
           map,
@@ -56,14 +62,37 @@ function VerificationMap({
 
         locations.forEach((location) => {
           if (location.latitude == null || location.longitude == null) return;
-          new kakao.maps.Marker({
-            map,
+
+          const container = document.createElement('div');
+          const root = createRoot(container);
+          const locationKey = location.id ?? location.name;
+          const selectedKey = selectedLocation?.id ?? selectedLocation?.name;
+
+          root.render(
+            <MapMarker
+              category={location.category ?? 'ETC'}
+              name={location.name}
+              count={0}
+              isActive={locationKey === selectedKey}
+            />
+          );
+
+          if (onSelectLocation) {
+            container.addEventListener('click', () => onSelectLocation(location));
+          }
+
+          const overlay = new kakao.maps.CustomOverlay({
             position: new kakao.maps.LatLng(
               Number(location.latitude),
               Number(location.longitude)
             ),
-            title: location.name,
+            content: container,
+            yAnchor: 1,
+            clickable: Boolean(onSelectLocation),
           });
+
+          overlay.setMap(map);
+          overlays.push({ overlay, root });
         });
 
         const checkCenter = () => {
@@ -79,7 +108,10 @@ function VerificationMap({
             warnedRef.current = true;
             onOutOfRange?.();
           }
-          if (distance <= VERIFICATION_RADIUS_METER) warnedRef.current = false;
+
+          if (distance <= VERIFICATION_RADIUS_METER) {
+            warnedRef.current = false;
+          }
         };
 
         kakao.maps.event.addListener(map, 'dragend', checkCenter);
@@ -89,10 +121,26 @@ function VerificationMap({
 
     return () => {
       cancelled = true;
+      overlays.forEach(({ overlay, root }) => {
+        overlay.setMap(null);
+        root.unmount();
+      });
     };
-  }, [latitude, longitude, locations, initialZoom, onOutOfRange]);
+  }, [
+    latitude,
+    longitude,
+    locations,
+    selectedLocation,
+    initialZoom,
+    onSelectLocation,
+    onOutOfRange,
+  ]);
 
-  return <div className="verification-map" ref={mapRef}>{error}</div>;
+  return (
+    <div className="verification-map" ref={mapRef}>
+      {error}
+    </div>
+  );
 }
 
 export default VerificationMap;
