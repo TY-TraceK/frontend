@@ -24,7 +24,13 @@ const CATEGORY_ICONS = {
   ETC: AsteriskIcon,
 };
 
-const MapMarker = ({ variant = 'default', category, name, count, isActive = false }) => {
+const MapMarker = ({
+  variant = 'default',
+  category,
+  name,
+  count,
+  isActive = false,
+}) => {
   const CategoryIcon = CATEGORY_ICONS[category];
 
   // variant: {default: 기본형으로 이름 + 마커, compact: 축약형으로 점만 제공, bookmark: 점 대신 마커}
@@ -35,7 +41,9 @@ const MapMarker = ({ variant = 'default', category, name, count, isActive = fals
   }
 
   return (
-    <div className={`map-marker ${variant} ${category} ${isActive ? 'active' : ''}`}>
+    <div
+      className={`map-marker ${variant} ${category} ${isActive ? 'active' : ''}`}
+    >
       <span className="icon">{CategoryIcon && <CategoryIcon />}</span>
 
       {variant === 'default' && name && (

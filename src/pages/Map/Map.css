@@ -165,7 +165,7 @@
     box-shadow: var(--shadow-card);
 
     &.active {
-      background-color: var(--interact-active);
+      background-color: var(--feat-bookmark);
       color: var(--gl-text-white);
     }
   }
