@@ -9,22 +9,6 @@ header {
   padding: var(--spacing-16) 0;
   z-index: 99;
 
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    mask-image: linear-gradient(
-      to bottom,
-      black 0%,
-      black 80%,
-      transparent 100%
-    );
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-    z-index: -1;
-  }
-
   &.home {
     .container {
       .icon {
