@@ -46,11 +46,13 @@ const showInfoNotification = (description) => {
 };
 
 function VerifyModal({ isOpen, onClose }) {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
 
   const [currentPosition, setCurrentPosition] = useState(null);
-  const [isPositionReady, setIsPositionReady] = useState(false);
+  const [testLocations, setTestLocations] = useState([]);
+  const [isTestLocationSelection, setIsTestLocationSelection] = useState(false);
+  const [mapBounds, setMapBounds] = useState(null);
 
   const [locations, setLocations] = useState([]);
   const [relatedContents, setRelatedContents] = useState([]);
@@ -96,7 +98,7 @@ function VerifyModal({ isOpen, onClose }) {
   useEffect(() => {
     if (!isOpen) return;
 
-    setStep(1);
+    setStep(0);
     setIsComplete(false);
 
     setSelectedLocation(null);
@@ -112,35 +114,39 @@ function VerifyModal({ isOpen, onClose }) {
 
   useEffect(() => {
     if (!isOpen) return;
+
+    setCurrentPosition(null);
+    setTestLocations([]);
+    setIsTestLocationSelection(false);
+    setMapBounds(null);
+
     if (!navigator.geolocation) {
       showErrorNotification('이 브라우저에서는 위치 정보를 사용할 수 없습니다.');
       return;
     }
 
-    setIsPositionReady(false);
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
-        const actualPosition = {
+        const position = {
           latitude: coords.latitude,
           longitude: coords.longitude,
         };
 
         try {
-          const result = await VerifyService.getVerificationLocationCandidates(actualPosition);
+          const result = await VerifyService.getVerificationLocationCandidates(position);
+
           if (result.isInBusan) {
-            setCurrentPosition(actualPosition);
-            setLocations([]);
-            setIsPositionReady(true);
-            setStep(2);
+            setCurrentPosition(position);
+            setStep(1);
             return;
           }
 
-          setLocations(result.locations ?? []);
-          setIsPositionReady(true);
-          setStep(2);
+          setTestLocations(result.locations ?? []);
+          setIsTestLocationSelection(true);
           showInfoNotification(
             '방문 인증은 부산 지역에서만 가능합니다. 테스트 기간 동안 임의의 부산 GPS를 선택해주세요.'
           );
+          setStep(1);
         } catch (error) {
           showErrorNotification(getErrorMessage(error, '현재 위치 확인에 실패했습니다.'));
         }
@@ -150,15 +156,48 @@ function VerifyModal({ isOpen, onClose }) {
     );
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen || step !== 2 || !mapBounds) return;
+
+    const fetchLocations = async () => {
+      try {
+        setIsLoading(true);
+        const result = await VerifyService.getLocationsWithinBounds(mapBounds);
+        setLocations(result ?? []);
+      } catch (error) {
+        console.error('지도 범위 관광지 조회 실패:', error);
+        setLocations([]);
+        showErrorNotification(getErrorMessage(error, '관광지 조회에 실패했습니다.'));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLocations();
+  }, [isOpen, step, mapBounds]);
+
+  const handleConfirmPosition = (position) => {
+    setCurrentPosition(position);
+    const latitudeDelta = 0.001;
+    const longitudeDelta = 0.0011;
+    setMapBounds({
+      southwestLatitude: position.latitude - latitudeDelta,
+      southwestLongitude: position.longitude - longitudeDelta,
+      northeastLatitude: position.latitude + latitudeDelta,
+      northeastLongitude: position.longitude + longitudeDelta,
+    });
+    setIsTestLocationSelection(false);
+    setStep(2);
+  };
+
 
   const handleSelectLocation = (location) => {
-    setSelectedLocation(location);
-    if (location?.latitude != null && location?.longitude != null) {
-      setCurrentPosition({
-        latitude: location.latitude,
-        longitude: location.longitude,
-      });
+    if (!location?.id) {
+      showErrorNotification('장소 정보를 불러올 수 없습니다.');
+      return;
     }
+
+    setSelectedLocation(location);
     setSelectedContent(null);
     setSelectedArtists([]);
     setRelatedContents([]);
@@ -320,6 +359,15 @@ function VerifyModal({ isOpen, onClose }) {
       return;
     }
 
+    if (!selectedContent?.contentId) {
+      showWarningNotification('방문 인증할 콘텐츠를 선택해주세요.');
+      return;
+    }
+
+    if (selectedArtists.length === 0) {
+      showWarningNotification('방문 인증할 아티스트를 선택해주세요.');
+      return;
+    }
 
     if (
       currentPosition?.latitude == null ||
@@ -334,7 +382,7 @@ function VerifyModal({ isOpen, onClose }) {
 
       await VerifyService.createVisitVerification({
         locationId: selectedLocation.id,
-        contentId: selectedContent?.contentId ?? null,
+        contentId: selectedContent.contentId,
         artistIds: selectedArtists.map((artist) => artist.artistId),
         latitude: currentPosition.latitude,
         longitude: currentPosition.longitude,
@@ -350,13 +398,6 @@ function VerifyModal({ isOpen, onClose }) {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleSkipDetails = () => {
-    if (!selectedLocation) return;
-    setSelectedContent(null);
-    setSelectedArtists([]);
-    setStep(5);
   };
 
   const handleNext = async () => {
@@ -486,20 +527,67 @@ function VerifyModal({ isOpen, onClose }) {
           </div>
         )}
 
-        {step === 1 && (
+        {step === 0 && (
           <section className="location-loading">
             <div className="location-spinner" />
-            <p>현재 위치를 확인하고 있습니다.<br />잠시만 기다려주세요.</p>
+            <p>
+              현재 위치를 확인하고 있습니다.
+              <br />
+              잠시만 기다려주세요.
+            </p>
           </section>
         )}
 
-        {step === 2 && isPositionReady && (
+        {step === 1 && (
+          <section className="position-step">
+            <div className="container">
+              {isTestLocationSelection ? (
+                <>
+                  <h2>테스트할 위치를 선택해주세요.</h2>
+                  <ul className="test-location-list">
+                    {testLocations.map((location) => (
+                      <li key={location.name}>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleConfirmPosition({
+                              latitude: location.latitude,
+                              longitude: location.longitude,
+                            })
+                          }
+                        >
+                          {location.imageUrl && (
+                            <div className="image">
+                              <img src={location.imageUrl} alt="" />
+                            </div>
+                          )}
+                          <span>{location.name}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <>
+                  <h2>현재 위치를 확인했습니다.</h2>
+                  <button
+                    type="button"
+                    className="position-confirm"
+                    onClick={() => handleConfirmPosition(currentPosition)}
+                  >
+                    이 위치에서 방문 인증하기
+                  </button>
+                </>
+              )}
+            </div>
+          </section>
+        )}
+
+        {step === 2 && (
           <PlaceSelectStep
             locations={locations}
             selectedLocation={selectedLocation}
-            selectedPosition={currentPosition}
             onSelectLocation={handleSelectLocation}
-            onSkipDetails={handleSkipDetails}
           />
         )}
 
@@ -541,7 +629,7 @@ function VerifyModal({ isOpen, onClose }) {
           />
         )}
 
-        {step !== 1 && <div className="actions">
+        {step >= 2 && <div className="actions">
           {isComplete ? (
             <button type="button" className="active" onClick={onClose}>
               닫기

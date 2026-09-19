@@ -771,17 +771,9 @@
   animation: verification-spin 0.9s linear infinite;
 }
 @keyframes verification-spin { to { transform: rotate(360deg); } }
-.verify-modal .verification-map {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  background: var(--interact-subtle);
-}
-.verify-modal .verification-location-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-8);
-}
-.verify-modal .verification-location-list button {
+.verify-modal .position-step .container { padding-top: var(--spacing-32); }
+.verify-modal .test-location-list { display: flex; flex-direction: column; gap: var(--spacing-8); }
+.verify-modal .test-location-list button {
   width: 100%;
   display: flex;
   align-items: center;
@@ -790,25 +782,17 @@
   background: var(--bg-elevated);
   border-radius: var(--radius-16);
 }
-.verify-modal .verification-location-list button.selected {
-  background: var(--interact-subtle);
-}
-.verify-modal .verification-location-list .image {
+.verify-modal .test-location-list .image {
   width: 56px;
   height: 56px;
   overflow: hidden;
   border-radius: var(--radius-16);
   flex-shrink: 0;
 }
-.verify-modal .verification-location-list img {
+.verify-modal .test-location-list img { width: 100%; height: 100%; object-fit: cover; }
+.verify-modal .position-confirm {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.verify-modal .skip-detail-link {
-  display: block;
-  margin: var(--spacing-24) auto 0;
-  background: transparent;
-  text-decoration: underline;
-  color: var(--text-sub);
+  padding: 14px 16px;
+  background: var(--interact-primary);
+  border-radius: var(--radius-16);
 }

@@ -1,53 +1,31 @@
-import VerificationMap from '../VerificationMap';
+import PlaceCard from '../PlaceCard';
+import { LOCATION_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
 
-function PlaceSelectStep({
-  locations,
-  selectedLocation,
-  selectedPosition,
-  onSelectLocation,
-  onSkipDetails,
-}) {
+const getLocationCategoryLabel = (category) =>
+  LOCATION_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ??
+  category;
+
+function PlaceSelectStep({ locations, selectedLocation, onSelectLocation }) {
   return (
     <section className="step-2">
-      {selectedPosition && (
-        <VerificationMap
-          latitude={selectedPosition.latitude}
-          longitude={selectedPosition.longitude}
-          initialZoom={2}
-        />
-      )}
+      <div className="map">지도 위치</div>
 
       <div className="container">
-        <h2>
-          {locations.length > 0
-            ? '테스트할 위치를 선택해주세요.'
-            : '현재 위치에서 방문 인증할 장소를 선택해주세요.'}
-        </h2>
+        <h2>방문 인증할 장소를 선택해주세요.</h2>
 
-        {locations.length > 0 && (
-          <ul className="verification-location-list">
-            {locations.map((location) => (
-              <li key={location.name}>
-                <button
-                  type="button"
-                  className={selectedLocation?.name === location.name ? 'selected' : ''}
-                  onClick={() => onSelectLocation(location)}
-                >
-                  <div className="image">
-                    {location.imageUrl && <img src={location.imageUrl} alt="" />}
-                  </div>
-                  <span>{location.name}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {selectedLocation && (
-          <button type="button" className="skip-detail-link" onClick={onSkipDetails}>
-            장소만 선택하고 바로 제출하기
-          </button>
-        )}
+        <ul className="card-list">
+          {locations.map((location) => (
+            <PlaceCard
+              key={location.id}
+              className={selectedLocation?.id === location.id ? 'selected' : ''}
+              tag={getLocationCategoryLabel(location.category)}
+              title={location.name}
+              description={location.address}
+              imageUrl={location.mainImageUrl}
+              onClick={() => onSelectLocation(location)}
+            />
+          ))}
+        </ul>
       </div>
     </section>
   );
