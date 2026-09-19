@@ -121,20 +121,60 @@ function VerifyModal({ isOpen, onClose }) {
   useEffect(() => {
     if (!isOpen || locationPhase !== 'loading') return;
 
+    let cancelled = false;
+
+    const showTestLocationSelection = async () => {
+      try {
+        const result = await VerifyService.getVerificationLocationCandidates({
+          latitude: 0,
+          longitude: 0,
+        });
+
+        if (cancelled) return;
+
+        setTestLocations(result.locations ?? []);
+        setLocationPhase('test-select');
+        showInfoNotification(
+          '현재 위치를 확인할 수 없어 테스트 위치를 선택해주세요.'
+        );
+      } catch (error) {
+        if (cancelled) return;
+
+        console.error('테스트 위치 조회 실패:', error);
+        showErrorNotification(
+          getErrorMessage(error, '테스트 위치를 불러오지 못했습니다.')
+        );
+      }
+    };
+
     if (!navigator.geolocation) {
-      showErrorNotification('이 브라우저에서는 위치 정보를 사용할 수 없습니다.');
-      return;
+      showTestLocationSelection();
+      return () => {
+        cancelled = true;
+      };
     }
+
+    const fallbackTimer = window.setTimeout(
+      showTestLocationSelection,
+      3 * 60 * 1000
+    );
 
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
+        if (cancelled) return;
+
+        window.clearTimeout(fallbackTimer);
+
         const position = {
           latitude: coords.latitude,
           longitude: coords.longitude,
         };
 
         try {
-          const result = await VerifyService.getVerificationLocationCandidates(position);
+          const result =
+            await VerifyService.getVerificationLocationCandidates(position);
+
+          if (cancelled) return;
 
           if (result.isInBusan) {
             setCurrentPosition(position);
@@ -148,12 +188,29 @@ function VerifyModal({ isOpen, onClose }) {
             '방문 인증은 부산 지역에서만 가능합니다. 테스트 기간 동안 임의의 부산 GPS를 선택해주세요.'
           );
         } catch (error) {
-          showErrorNotification(getErrorMessage(error, '현재 위치 확인에 실패했습니다.'));
+          if (cancelled) return;
+
+          console.error('현재 위치 확인 실패:', error);
+          await showTestLocationSelection();
         }
       },
-      () => showErrorNotification('현재 위치를 가져올 수 없습니다. 위치 권한을 확인해주세요.'),
-      { enableHighAccuracy: true, timeout: 10000 }
+      async () => {
+        if (cancelled) return;
+
+        window.clearTimeout(fallbackTimer);
+        await showTestLocationSelection();
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 3 * 60 * 1000,
+        maximumAge: 0,
+      }
     );
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(fallbackTimer);
+    };
   }, [isOpen, locationPhase]);
 
   const moveToPlaceSelection = (position) => {
