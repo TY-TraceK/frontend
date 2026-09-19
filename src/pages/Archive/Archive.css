@@ -2,12 +2,37 @@
   .container {
     .archive-filter {
       display: flex;
-      gap: var(--spacing-16);
-      margin-bottom: var(--spacing-24);
+      flex-direction: column;
+
+      .archive-filter-types {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-8);
+      }
+
+      .archive-period-filter {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-4);
+        input {
+          outline: none;
+          border: none;
+          padding: 6px 8px;
+          border-radius: var(--radius-16);
+          width: 135px;
+          font-size: var(--font-size-caption);
+        }
+      }
     }
 
     .archive-list {
       margin-bottom: var(--spacing-32);
+      &.empty,
+      &.loading {
+        margin-bottom: 0;
+        text-align: center;
+        margin-top: 60%;
+      }
       .archive-header {
         display: flex;
         align-items: center;
