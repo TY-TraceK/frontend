@@ -71,7 +71,7 @@ function loadKakaoMapsSdk() {
 }
 
 function Map() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const keyword = searchParams.get('keyword');
   // Place 상세 등에서 특정 위치(lat/lng)를 지정해 들어오면 그 지점을 중심으로 지도를 띄웁니다.
   const focusLat = parseFloat(searchParams.get('lat'));
@@ -339,18 +339,27 @@ function Map() {
         if (cancelled) return;
 
         const first = data?.locations?.[0];
-        if (!first) {
+        if (first) {
+          const kakao = window.kakao;
+          const map = mapInstanceRef.current;
+          if (kakao?.maps && map) {
+            map.setCenter(new kakao.maps.LatLng(first.latitude, first.longitude));
+            map.setLevel(SEARCH_RESULT_ZOOM_LEVEL);
+          }
+          handleSelectLocation(first.id, { lat: first.latitude, lng: first.longitude });
+        } else {
           window.alert('검색 결과가 없습니다.');
-          return;
         }
 
-        const kakao = window.kakao;
-        const map = mapInstanceRef.current;
-        if (kakao?.maps && map) {
-          map.setCenter(new kakao.maps.LatLng(first.latitude, first.longitude));
-          map.setLevel(SEARCH_RESULT_ZOOM_LEVEL);
-        }
-        handleSelectLocation(first.id, { lat: first.latitude, lng: first.longitude });
+        // 처리된 검색어는 URL에서 지워, 이후 액션에서 계속 재검색되지 않게 합니다.
+        setSearchParams(
+          (prev) => {
+            const next = new URLSearchParams(prev);
+            next.delete('keyword');
+            return next;
+          },
+          { replace: true }
+        );
       })
       .catch((e) => {
         console.error(e);
@@ -362,7 +371,7 @@ function Map() {
     return () => {
       cancelled = true;
     };
-  }, [keyword, mapReady]);
+  }, [keyword, mapReady, setSearchParams]);
 
   // 현재 위치로 이동: 지도를 그 위치로 옮기고 파란 점 마커를 그립니다.
   useEffect(() => {
