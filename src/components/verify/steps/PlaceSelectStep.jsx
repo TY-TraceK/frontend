@@ -1,4 +1,4 @@
-import PlaceCard from '../PlaceCard';
+import PlaceCard from '../../card/PlaceCard';
 import VerificationMap from '../VerificationMap';
 import { LOCATION_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
 
