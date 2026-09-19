@@ -8,6 +8,7 @@ import {
   StarIcon,
   XIcon,
 } from '@phosphor-icons/react';
+import ImagePlaceholder from '../../components/common/ImagePlaceholder';
 import './Profile.css';
 import { Link } from 'react-router-dom';
 import { useProfile } from '@/hooks/userContext.jsx';
@@ -244,11 +245,13 @@ function Profile() {
                 <li className="item" key={location.id}>
                   <Link to={`/place?id=${location.id}`}>
                     <div className="image">
-                      {location.mainImageUrl && (
+                      {location.mainImageUrl ? (
                         <img src={location.mainImageUrl} alt={location.name} />
+                      ) : (
+                        <ImagePlaceholder type="card" />
                       )}
                     </div>
-                    <span className="location">{location.city}</span>
+                    <span className="location ellipsis-1">{location.city}</span>
                     <p className="name ellipsis-1">{location.name}</p>
                   </Link>
                 </li>
