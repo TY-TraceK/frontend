@@ -18,11 +18,11 @@ import Map from './pages/Map/Map';
 import Search from './pages/Search/Search';
 import Archive from './pages/Archive/Archive';
 import Profile from './pages/Profile/Profile';
-import Header from './components/Header';
-import GNB from './components/GNB';
-import VerifyFab from './components/VerifyFab';
-import VerifyModal from './components/VerifyModal';
-import ListTemplate from './components/ListTemplate';
+import Header from './components/layout/Header';
+import GNB from './components/layout/GNB';
+import VerifyFab from './components/verify/VerifyFab';
+import VerifyModal from './components/verify/VerifyModal';
+import ListTemplate from './components/common/ListTemplate';
 import RecentLocationStorage from '@/api/recentLocationStorage.js';
 import { KakaoCallback, Login } from '@/pages/Login';
 import TokenStorage from '@/api/tokenStorage.js';
@@ -71,13 +71,13 @@ function App() {
     },
     '/list': {
       title:
-      listType === 'artist'
-        ? '아티스트'
-        : listType === 'media'
-          ? '콘텐츠'
-          : listType === 'place'
-            ? '관광지'
-            : '리스트',
+        listType === 'artist'
+          ? '아티스트'
+          : listType === 'media'
+            ? '콘텐츠'
+            : listType === 'place'
+              ? '관광지'
+              : '리스트',
     },
     '/profile/recent-locations': {
       title: '최근 본 여행지',
@@ -109,9 +109,7 @@ function App() {
           const data = await UserService.getMyFans();
 
           setListItems(
-            listType === 'artist'
-              ? data.artist ?? []
-              : data.content ?? []
+            listType === 'artist' ? (data.artist ?? []) : (data.content ?? [])
           );
         }
       } catch (e) {
@@ -160,9 +158,7 @@ function App() {
               filterItems={(items, selectedFilters) =>
                 selectedFilters.region === '전체'
                   ? items
-                  : items.filter(
-                      (item) => item.city === selectedFilters.region
-                    )
+                  : items.filter((item) => item.city === selectedFilters.region)
               }
               emptyMessage="최근 본 여행지가 없습니다."
               getItemLink={(item) => `/place?id=${item.id}`}

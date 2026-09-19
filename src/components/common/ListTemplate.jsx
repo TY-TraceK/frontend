@@ -52,10 +52,7 @@ function ListTemplate({
                 <Link to={getItemLink(item)}>
                   <div className="image">
                     {getImageUrl(item) && (
-                      <img
-                        src={getImageUrl(item)}
-                        alt={getImageAlt(item)}
-                      />
+                      <img src={getImageUrl(item)} alt={getImageAlt(item)} />
                     )}
                   </div>
                   <div className="title">{getItemTitle(item)}</div>

@@ -1,7 +1,7 @@
 import { CaretDownIcon, MagnifyingGlassIcon } from '@phosphor-icons/react';
 
-import MediaCard from '../MediaCard';
-import ArtistSearch from '../ArtistSearch';
+import MediaCard from '../../card/MediaCard';
+import ArtistSearch from '../../ArtistSearch';
 import { CONTENT_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
 
 const getContentCategoryLabel = (category) =>

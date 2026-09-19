@@ -56,14 +56,6 @@ header {
     .logo {
       flex-shrink: 0;
       width: 40px;
-      line-height: 40px;
-      background-color: var(--brand);
-      border-radius: var(--radius-12);
-      color: var(--gl-text-white);
-      font-size: 24px;
-      font-weight: 900;
-      text-align: center;
-
       a {
         display: block;
       }
@@ -73,6 +65,52 @@ header {
       flex-shrink: 0;
       font-size: var(--font-size-title);
       font-weight: 500;
+    }
+
+    .search {
+      position: relative;
+
+      .search-input {
+        position: relative;
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        width: 100%;
+
+        input {
+          width: 100%;
+          min-width: 0;
+        }
+
+        .icon {
+          flex-shrink: 0;
+        }
+
+        .clear {
+          background-color: transparent;
+          box-shadow: none;
+          border-radius: 0;
+        }
+
+        .search-button {
+          &.disabled {
+            opacity: 0.4;
+          }
+        }
+
+        .search-hint {
+          position: absolute;
+          top: calc(100% + var(--spacing-8));
+          right: 0;
+          padding: var(--spacing-8) var(--spacing-12);
+          background-color: var(--bg-elevated);
+          border-radius: var(--radius-8);
+          box-shadow: var(--shadow-card);
+          font-size: var(--font-size-caption);
+          white-space: nowrap;
+          z-index: 1;
+        }
+      }
     }
   }
 

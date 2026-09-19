@@ -8,6 +8,7 @@ import {
 } from '@phosphor-icons/react';
 import './Header.css';
 import AuthService from '@/api/services/authSerivce.js';
+import logo from '../../assets/img/logo.png';
 
 function Header({ type = 'default', title }) {
   const navigate = useNavigate();
@@ -18,13 +19,20 @@ function Header({ type = 'default', title }) {
     window.location.href = '/';
     AuthService.logout();
   };
+
   const [searchActive, setSearchActive] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [showSearchHint, setShowSearchHint] = useState(false);
 
   const handleSearchSubmit = () => {
     const trimmedKeyword = searchKeyword.trim();
 
-    if (!trimmedKeyword) return;
+    if (trimmedKeyword.length < 2) {
+      if (trimmedKeyword.length === 1) {
+        setShowSearchHint(true);
+      }
+      return;
+    }
 
     // 지도 페이지에서는 관광지 검색만 가능한 별도 API로 처리하고, 지도 화면 안에서 결과를 보여줍니다.
     const targetPath = location.pathname === '/map' ? '/map' : '/search';
@@ -37,13 +45,68 @@ function Header({ type = 'default', title }) {
     }
   };
 
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+
+    setSearchKeyword(value);
+
+    if (value.trim().length >= 2) {
+      setShowSearchHint(false);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchKeyword('');
+    setShowSearchHint(false);
+  };
+
+  const renderSearchInput = () => (
+    <div className="search-input">
+      <input
+        type="text"
+        placeholder="검색어를 입력하세요."
+        value={searchKeyword}
+        onChange={handleSearchChange}
+        onKeyDown={handleSearchKeyDown}
+      />
+
+      {searchKeyword && (
+        <button
+          type="button"
+          className="icon clear"
+          aria-label="검색어 지우기"
+          onClick={handleClearSearch}
+        >
+          <XIcon />
+        </button>
+      )}
+
+      <button
+        type="button"
+        className={`icon search-button ${
+          searchKeyword.trim().length === 1 ? 'disabled' : ''
+        }`}
+        aria-label="검색"
+        aria-disabled={searchKeyword.trim().length === 1}
+        onClick={handleSearchSubmit}
+      >
+        <MagnifyingGlassIcon />
+      </button>
+
+      {showSearchHint && (
+        <div className="search-hint">두 글자 이상부터 검색이 가능합니다.</div>
+      )}
+    </div>
+  );
+
   return (
     <header className={type}>
       <div className="container">
         {type === 'home' && (
           <h1 className="logo">
-            {/* TODO: 로고 변경 */}
-            <Link to="/">K</Link>
+            <Link to="/">
+              <img src={logo} alt="KRoute" />
+            </Link>
           </h1>
         )}
 
@@ -72,59 +135,18 @@ function Header({ type = 'default', title }) {
                   <MagnifyingGlassIcon />
                 </button>
               ) : (
-                <div className="search-input">
-                  <input
-                    type="text"
-                    placeholder="검색어를 입력하세요."
-                    value={searchKeyword}
-                    onChange={(event) => setSearchKeyword(event.target.value)}
-                    onKeyDown={handleSearchKeyDown}
-                  />
-                  <button
-                    type="button"
-                    className="icon"
-                    onClick={() => setSearchActive(false)}
-                  >
-                    <XIcon />
-                  </button>
-                </div>
+                renderSearchInput()
               )}
             </section>
           </>
         )}
 
         {type === 'expanded' && (
-          <section className="search">
-            <div className="search-input">
-              <input
-                type="text"
-                placeholder="검색어를 입력하세요."
-                value={searchKeyword}
-                onChange={(event) => setSearchKeyword(event.target.value)}
-                onKeyDown={handleSearchKeyDown}
-              />
-              <button type="button" className="icon" onClick={handleSearchSubmit}>
-                <MagnifyingGlassIcon />
-              </button>
-            </div>
-          </section>
+          <section className="search">{renderSearchInput()}</section>
         )}
 
         {type === 'home' && (
-          <section className="search">
-            <div className="search-input">
-              <input
-                type="text"
-                placeholder="검색어를 입력하세요."
-                value={searchKeyword}
-                onChange={(event) => setSearchKeyword(event.target.value)}
-                onKeyDown={handleSearchKeyDown}
-              />
-              <button type="button" className="icon" onClick={handleSearchSubmit}>
-                <MagnifyingGlassIcon />
-              </button>
-            </div>
-          </section>
+          <section className="search">{renderSearchInput()}</section>
         )}
 
         {type === 'mypage' && (

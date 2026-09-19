@@ -1,9 +1,9 @@
-import PlaceCard from '../PlaceCard';
+import PlaceCard from '../../card/PlaceCard';
 import { LOCATION_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
 
 const getLocationCategoryLabel = (category) =>
-  LOCATION_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ??
-  category;
+  LOCATION_CATEGORY_OPTIONS.find((option) => option.value === category)
+    ?.label ?? category;
 
 function PlaceSelectStep({ locations, selectedLocation, onSelectLocation }) {
   return (

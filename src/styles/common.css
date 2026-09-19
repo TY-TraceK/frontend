@@ -180,6 +180,7 @@ svg {
     outline: none;
     background: transparent;
     color: var(--text-sub);
+    text-indent: var(--spacing-4);
 
     &::placeholder {
       color: var(--text-sub);
