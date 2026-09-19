@@ -90,7 +90,10 @@ function Map() {
   const [mapReady, setMapReady] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
 
-  const [selectedCategory, setSelectedCategory] = useState('ATTRACTION');
+  // 특정 장소 인근으로 들어온 경우, 카테고리 필터 없이 전체 여행지를 보여줍니다.
+  const [selectedCategory, setSelectedCategory] = useState(
+    hasFocusPoint ? null : 'ATTRACTION'
+  );
   const selectedCategoryRef = useRef(selectedCategory);
 
   const [archivedOnly, setArchivedOnly] = useState(false);
