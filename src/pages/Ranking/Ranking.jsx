@@ -22,6 +22,8 @@ import rank1 from '@/assets/ranking/rank-1.svg';
 import rank2 from '@/assets/ranking/rank-2.svg';
 import rank3 from '@/assets/ranking/rank-3.svg';
 
+import Select from '../../components/Select';
+import ImagePlaceholder from '../../components/ImagePlaceholder';
 import './Ranking.css';
 
 const RANK_IMAGES = {
@@ -120,37 +122,14 @@ function Ranking() {
   return (
     <main className="ranking">
       <div className="container">
-        {/* 랭킹 전용 헤더 */}
-        <header className="ranking-page-header">
-          <button
-            type="button"
-            className="header-button"
-            aria-label="뒤로가기"
-            onClick={() => navigate(-1)}
-          >
-            <CaretLeftIcon />
-          </button>
-
-          <h1>실시간 순위 Top {RANKING_LIMIT}</h1>
-
-          <button
-            type="button"
-            className="header-button"
-            aria-label="검색"
-            onClick={() => navigate('/search')}
-          >
-            <MagnifyingGlassIcon />
-          </button>
-        </header>
-
         <section className="ranking-filter">
           {/* 지역 / 여행지 */}
-          <div className="ranking-type-tabs">
+          <div className="tabs region-tabs">
             {RANKING_TYPE_OPTIONS.map((type) => (
               <button
                 key={type.value}
                 type="button"
-                className={`tab ${rankingType === type.value ? 'active' : ''}`}
+                className={`tab ${rankingType === type.value ? 'selected' : ''}`}
                 onClick={() => setRankingType(type.value)}
               >
                 {type.label}
@@ -163,16 +142,11 @@ function Ranking() {
               {/* 지역 */}
               {regionRankings.length > 0 && (
                 <div className="region-filter">
-                  <select
+                  <Select
                     value={selectedCity ?? ''}
-                    onChange={(e) => setSelectedCity(e.target.value)}
-                  >
-                    {regionRankings.map((region) => (
-                      <option key={region.region} value={region.region}>
-                        {region.region}
-                      </option>
-                    ))}
-                  </select>
+                    options={regionRankings.map((region) => region.region)}
+                    onChange={setSelectedCity}
+                  />
                 </div>
               )}
 
@@ -182,13 +156,13 @@ function Ranking() {
                   categoryExpanded ? 'expanded' : ''
                 }`}
               >
-                <div className="category-list">
+                <div className="category-list tabs">
                   {LOCATION_CATEGORY_OPTIONS.map((category) => (
                     <button
                       type="button"
                       key={category.value}
                       className={`tab ${
-                        selectedCategory === category.value ? 'active' : ''
+                        selectedCategory === category.value ? 'selected' : ''
                       }`}
                       onClick={() => setSelectedCategory(category.value)}
                     >
@@ -199,15 +173,13 @@ function Ranking() {
 
                 <button
                   type="button"
-                  className="toggle"
+                  className="toggle icon"
                   aria-label={
                     categoryExpanded ? '카테고리 접기' : '카테고리 펼치기'
                   }
                   onClick={() => setCategoryExpanded((prev) => !prev)}
                 >
-                  <span className="icon">
-                    {categoryExpanded ? <CaretUpIcon /> : <CaretDownIcon />}
-                  </span>
+                  {categoryExpanded ? <CaretUpIcon /> : <CaretDownIcon />}
                 </button>
               </div>
             </>
@@ -304,7 +276,11 @@ function RankingItem({ ranking, rankingType, top = false, onRegionClick }) {
         */}
         {!isRegion && (
           <div className="image">
-            {ranking.imageUrl && <img src={ranking.imageUrl} alt={title} />}
+            {ranking.imageUrl ? (
+              <img src={ranking.imageUrl} alt={title} />
+            ) : (
+              <ImagePlaceholder type="card" />
+            )}
           </div>
         )}
 
@@ -313,7 +289,7 @@ function RankingItem({ ranking, rankingType, top = false, onRegionClick }) {
           <div className="place">
             {tag && <span className="tag">{tag}</span>}
 
-            <span className="title">{title}</span>
+            <span className="title ellipsis-1">{title}</span>
           </div>
 
           <span className="verify-count accent-text">

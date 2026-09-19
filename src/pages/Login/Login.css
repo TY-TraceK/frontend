@@ -1,0 +1,120 @@
+.login {
+  margin: 0;
+
+  .container {
+    margin-top: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .image {
+        width: 80px;
+        aspect-ratio: 1/1;
+        margin-bottom: var(--spacing-16);
+      }
+
+      .slogun {
+        font-size: var(--font-size-heading);
+        font-weight: 500;
+
+        .accent-text {
+          font-weight: 700;
+        }
+      }
+      margin-bottom: var(--spacing-32);
+    }
+
+    .login-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      button {
+        display: flex;
+        align-items: center;
+        border-radius: var(--radius-12);
+        overflow: hidden;
+        .description {
+          margin-top: var(--spacing-12);
+          color: var(--text-sub);
+        }
+      }
+    }
+  }
+}
+
+.callback {
+  &.error,
+  &.loading {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-8);
+  }
+
+  &.error {
+    button {
+      padding: 10px 16px;
+      cursor: pointer;
+      background-color: var(--interact-active);
+      color: var(--gl-text-white);
+    }
+  }
+
+  &.success {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 150px;
+
+    .logo {
+      width: 100px;
+      aspect-ratio: 1 / 1;
+      margin-bottom: var(--spacing-24);
+    }
+
+    h2 {
+      font-size: var(--font-size-heading);
+      margin-bottom: var(--spacing-24);
+      color: var(--text-sub);
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-16);
+      margin: var(--spacing-8) 0 var(--spacing-32);
+      background-color: var(--bg-elevated);
+      box-shadow: var(--shadow-card);
+      border-radius: var(--radius-32);
+      padding: 16px 30px;
+
+      .image {
+        width: 50px;
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+    }
+    .emphasis {
+      font-size: var(--font-size-heading);
+      margin-bottom: var(--spacing-16);
+    }
+
+    .active {
+      font-weight: 500;
+      padding: 12px 24px;
+      background-color: var(--interact-active);
+      color: var(--gl-text-white);
+      border-radius: var(--radius-16);
+    }
+  }
+}

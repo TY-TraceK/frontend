@@ -1,31 +1,34 @@
-import { useEffect, useRef, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   CaretRightIcon,
   PlayCircleIcon,
   SignpostIcon,
   StarIcon,
-} from "@phosphor-icons/react";
-import ArtistService from "@/api/services/artistService.js";
-import ContentService from "@/api/services/contentService.js";
-import TokenStorage from "@/api/tokenStorage.js";
+} from '@phosphor-icons/react';
+import ArtistService from '@/api/services/artistService.js';
+import ContentService from '@/api/services/contentService.js';
+import TokenStorage from '@/api/tokenStorage.js';
 import {
   CONTENT_CATEGORY_OPTIONS,
   LOCATION_CATEGORY_OPTIONS,
-} from "@/constants/rankingConstants.js";
-import MediaCard from "../../components/MediaCard";
-import PlaceCard from "../../components/PlaceCard";
-import Select from "../../components/Select";
-import "./ContentDetail.css";
+} from '@/constants/rankingConstants.js';
+import MediaCard from '../../components/MediaCard';
+import PlaceCard from '../../components/PlaceCard';
+import Select from '../../components/Select';
+import ScrollButton from '../../components/ScrollButton';
+import ImagePlaceholder from '../../components/ImagePlaceholder';
+import './ContentDetail.css';
 
 const RELATED_LIST_SIZE = 20;
-const CITY_OPTIONS = ["부산광역시"];
+const CITY_OPTIONS = ['부산광역시'];
 
-const formatCount = (count) => new Intl.NumberFormat("ko-KR").format(count ?? 0);
+const formatCount = (count) =>
+  new Intl.NumberFormat('ko-KR').format(count ?? 0);
 
 const getLocationCategoryLabel = (category) =>
-  LOCATION_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ??
-  category;
+  LOCATION_CATEGORY_OPTIONS.find((option) => option.value === category)
+    ?.label ?? category;
 
 const getContentCategoryLabel = (category) =>
   CONTENT_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ??
@@ -33,14 +36,16 @@ const getContentCategoryLabel = (category) =>
 
 const getLocationDescription = (location) => {
   const episode = location.episodeInfo?.find(
-    (item) => item.contentTitle || item.episodeInfo,
+    (item) => item.contentTitle || item.episodeInfo
   );
 
   if (episode) {
-    return [episode.contentTitle, episode.episodeInfo].filter(Boolean).join(" ");
+    return [episode.contentTitle, episode.episodeInfo]
+      .filter(Boolean)
+      .join(' ');
   }
 
-  return location.locationAddress?.district ?? "";
+  return location.locationAddress?.district ?? '';
 };
 
 const getContentDescription = (content) =>
@@ -69,7 +74,7 @@ async function fetchArtistContentDetail({ artistId, contentId }) {
   });
 
   const matchedContent = data.contents?.find(
-    (content) => String(content.contentId) === String(contentId),
+    (content) => String(content.contentId) === String(contentId)
   );
 
   return {
@@ -83,11 +88,11 @@ async function fetchArtistContentDetail({ artistId, contentId }) {
 function ContentDetail() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const entityId = searchParams.get("id");
-  const artistIdParam = searchParams.get("artistId");
+  const entityId = searchParams.get('id');
+  const artistIdParam = searchParams.get('artistId');
   // MEMO: type이 없으면 콘텐츠(미디어) 상세로 취급합니다. 아티스트는 type=artist로 진입합니다.
-  const type = searchParams.get("type") === "artist" ? "artist" : "media";
-  const isArtist = type === "artist";
+  const type = searchParams.get('type') === 'artist' ? 'artist' : 'media';
+  const isArtist = type === 'artist';
   const isArtistContentDrilldown = !isArtist && !!artistIdParam;
 
   const currentKey = isArtistContentDrilldown
@@ -101,11 +106,15 @@ function ContentDetail() {
   const [selectedCity, setSelectedCity] = useState(CITY_OPTIONS[0]);
 
   // MEMO: 아티스트 상세만 여행지/미디어 탭을 사용합니다.
-  const [activeTab, setActiveTab] = useState("location");
+  const [activeTab, setActiveTab] = useState('location');
 
   const [fanSubmitting, setFanSubmitting] = useState(false);
 
   const affiliationListRef = useRef(null);
+  const [canScrollAffiliationLeft, setCanScrollAffiliationLeft] =
+    useState(false);
+  const [canScrollAffiliationRight, setCanScrollAffiliationRight] =
+    useState(false);
 
   useEffect(() => {
     if (!entityId) {
@@ -137,14 +146,14 @@ function ContentDetail() {
           });
         }
 
-        console.log("[ContentDetail] 상세 응답:", data);
+        console.log('[ContentDetail] 상세 응답:', data);
         setDetailData(data);
       } catch (e) {
         console.error(e);
         window.alert(
           isArtist
-            ? "현재 아티스트 정보를 확인할 수 없습니다."
-            : "현재 콘텐츠 정보를 확인할 수 없습니다.",
+            ? '현재 아티스트 정보를 확인할 수 없습니다.'
+            : '현재 콘텐츠 정보를 확인할 수 없습니다.'
         );
         navigate(-1);
       } finally {
@@ -165,20 +174,22 @@ function ContentDetail() {
 
   const patchInfo = (patch) => {
     setDetailData((prev) => {
-      const infoKey = isArtist ? "artistInfo" : "contentInfo";
+      const infoKey = isArtist ? 'artistInfo' : 'contentInfo';
       return { ...prev, [infoKey]: { ...prev[infoKey], ...patch } };
     });
   };
 
   const handleFanClick = async () => {
     if (!TokenStorage.getAccessToken()) {
-      navigate("/login");
+      navigate('/login');
       return;
     }
 
     if (fanSubmitting) return;
 
-    const currentInfo = isArtist ? detailData.artistInfo : detailData.contentInfo;
+    const currentInfo = isArtist
+      ? detailData.artistInfo
+      : detailData.contentInfo;
     const { isFan: currentIsFan, fanCount: currentFanCount } = currentInfo;
     const nextFan = !currentIsFan;
 
@@ -210,7 +221,17 @@ function ContentDetail() {
   };
 
   const scrollAffiliationList = () => {
-    affiliationListRef.current?.scrollBy({ left: 240, behavior: "smooth" });
+    affiliationListRef.current?.scrollBy({ left: 240, behavior: 'smooth' });
+  };
+
+  const updateAffiliationScrollButtons = () => {
+    const list = affiliationListRef.current;
+    if (!list) return;
+
+    setCanScrollAffiliationLeft(list.scrollLeft > 0);
+    setCanScrollAffiliationRight(
+      list.scrollLeft + list.clientWidth < list.scrollWidth - 1
+    );
   };
 
   if (!entityId) {
@@ -236,7 +257,11 @@ function ContentDetail() {
     return (
       <main className="content-detail media">
         <section className="hero image">
-          <img src={contentPictureUrl} alt={contentTitle} />
+          {contentPictureUrl ? (
+            <img src={contentPictureUrl} alt={contentTitle} />
+          ) : (
+            <ImagePlaceholder type="artist" />
+          )}
         </section>
         <div className="container">
           <section className="content-summary relative">
@@ -246,7 +271,9 @@ function ContentDetail() {
                 <span className="icon">
                   <SignpostIcon weight="fill" />
                 </span>
-                <span>관련 여행지 {formatCount(relatedLocations.length)}곳</span>
+                <span>
+                  관련 여행지 {formatCount(relatedLocations.length)}곳
+                </span>
               </div>
             </div>
           </section>
@@ -295,7 +322,11 @@ function ContentDetail() {
   return (
     <main className={`content-detail ${type}`}>
       <section className="hero image">
-        <img src={info.pictureUrl} alt={displayName} />
+        {info.pictureUrl ? (
+          <img src={info.pictureUrl} alt={displayName} />
+        ) : (
+          <ImagePlaceholder type="home" />
+        )}
       </section>
       <div className="container">
         <section className="content-summary relative">
@@ -307,12 +338,12 @@ function ContentDetail() {
             aria-pressed={info.isFan}
           >
             <span className="icon star">
-              <StarIcon weight={info.isFan ? "fill" : "regular"} />
+              <StarIcon weight={info.isFan ? 'fill' : 'regular'} />
             </span>
             <span className="fan-count">{formatCount(info.fanCount)}명</span>
           </button>
           <p className="verify-total-count accent-text">
-            {displayName} 팬들의 방문 인증 총{" "}
+            {displayName} 팬들의 방문 인증 총{' '}
             {formatCount(info.totalVerificationCount)}건
           </p>
           <h2>{displayName}</h2>
@@ -337,7 +368,11 @@ function ContentDetail() {
         {affiliationArtists.length > 0 && (
           <section className="affiliation-list relative">
             <div className="list-wrapper">
-              <ul className="list" ref={affiliationListRef}>
+              <ul
+                className="list"
+                ref={affiliationListRef}
+                onScroll={updateAffiliationScrollButtons}
+              >
                 {affiliationArtists.map((artist) => (
                   <li className="item" key={artist.id}>
                     <a
@@ -356,15 +391,30 @@ function ContentDetail() {
                   </li>
                 ))}
               </ul>
-              {affiliationArtists.length > 6 && (
-                <button
-                  type="button"
-                  className="next-button"
-                  aria-label="다음 출연진 보기"
-                  onClick={scrollAffiliationList}
-                >
-                  <CaretRightIcon />
-                </button>
+              {canScrollAffiliationLeft && (
+                <ScrollButton
+                  direction="prev"
+                  ariaLabel="이전 출연진 보기"
+                  onClick={() =>
+                    affiliationListRef.current?.scrollBy({
+                      left: -240,
+                      behavior: 'smooth',
+                    })
+                  }
+                />
+              )}
+
+              {canScrollAffiliationRight && (
+                <ScrollButton
+                  direction="next"
+                  ariaLabel="다음 출연진 보기"
+                  onClick={() =>
+                    affiliationListRef.current?.scrollBy({
+                      left: 240,
+                      behavior: 'smooth',
+                    })
+                  }
+                />
               )}
             </div>
           </section>
@@ -375,27 +425,33 @@ function ContentDetail() {
             <div className="tabs">
               <button
                 type="button"
-                className={`tab location ${activeTab === "location" ? "selected" : ""}`}
-                onClick={() => setActiveTab("location")}
+                className={`tab location ${activeTab === 'location' ? 'selected' : ''}`}
+                onClick={() => setActiveTab('location')}
               >
                 여행지
               </button>
               <button
                 type="button"
-                className={`tab media ${activeTab === "media" ? "selected" : ""}`}
-                onClick={() => setActiveTab("media")}
+                className={`tab media ${activeTab === 'media' ? 'selected' : ''}`}
+                onClick={() => setActiveTab('media')}
               >
                 미디어
               </button>
             </div>
           )}
 
-          {activeTab === "location" ? (
+          {activeTab === 'location' ? (
             <>
               <div className="filter">
-                <Select value={selectedCity} options={CITY_OPTIONS} onChange={setSelectedCity} />
+                <Select
+                  value={selectedCity}
+                  options={CITY_OPTIONS}
+                  onChange={setSelectedCity}
+                />
               </div>
-              <div className="contents-count">{formatCount(locations.length)} 건</div>
+              <div className="contents-count">
+                {formatCount(locations.length)} 건
+              </div>
               <ul className="card-list">
                 {locations.map((location) => (
                   <PlaceCard
@@ -412,7 +468,9 @@ function ContentDetail() {
             </>
           ) : (
             <>
-              <div className="contents-count">{formatCount(contents.length)} 건</div>
+              <div className="contents-count">
+                {formatCount(contents.length)} 건
+              </div>
               <ul className="card-list">
                 {contents.map((content) => (
                   <MediaCard
@@ -432,7 +490,7 @@ function ContentDetail() {
                       // MEMO: 고정 출연진이 아닌 게스트 출연은 이 아티스트가 등장한
                       // 장소만 필터링해서 보여줍니다 (장소 x 미디어 x 아티스트).
                       navigate(
-                        `/content/detail?id=${content.contentId}&artistId=${entityId}`,
+                        `/content/detail?id=${content.contentId}&artistId=${entityId}`
                       );
                     }}
                   />

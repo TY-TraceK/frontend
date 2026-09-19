@@ -11,6 +11,9 @@ import {
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { notification } from 'antd';
+import Select from '../../components/Select';
+import ImagePlaceholder from '../../components/ImagePlaceholder';
+import ArtistSearch from '../../components/ArtistSearch';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import './Archive.css';
@@ -76,10 +79,30 @@ function Archive() {
 
   const [openedDeleteMenuId, setOpenedDeleteMenuId] = useState(null);
   const [deletingVerificationId, setDeletingVerificationId] = useState(null);
+  const [selectedVerification, setSelectedVerification] = useState(null);
 
   const [updatingLikeLocationId, setUpdatingLikeLocationId] = useState(null);
   const [updatingArchiveLocationId, setUpdatingArchiveLocationId] =
     useState(null);
+
+  // MEMO: 방문 인증 수정 모달 관련 추가된 부분 9/20
+  const [modalStep, setModalStep] = useState('confirm');
+  const [relatedContents, setRelatedContents] = useState([]);
+  const [selectedSearchArtist, setSelectedSearchArtist] = useState(null);
+  const [selectedContent, setSelectedContent] = useState(null);
+
+  const searchedArtistContents = selectedSearchArtist
+    ? relatedContents.filter((content) =>
+        content.artists?.some(
+          (artist) => artist.artistId === selectedSearchArtist.id
+        )
+      )
+    : [];
+
+  const handleResetSelectedSearchArtist = () => {
+    setSelectedSearchArtist(null);
+    setSelectedContent(null);
+  };
 
   const loadMoreRef = useRef(null);
 
@@ -236,6 +259,26 @@ function Archive() {
 
     fetchHistories();
   }, [fetchHistories]);
+
+  // MEMO: 방문 인증 수정 모달 관련 추가된 부분 9/20
+  useEffect(() => {
+    if (!selectedVerification?.locationId) return;
+
+    const fetchRelatedContents = async () => {
+      try {
+        const relatedInfo = await VerifyService.getLocationRelatedInfo(
+          selectedVerification.locationId
+        );
+
+        setRelatedContents(relatedInfo?.relatedContentGroups ?? []);
+      } catch (error) {
+        console.error('관광지 연관 정보 조회 실패:', error);
+        setRelatedContents([]);
+      }
+    };
+
+    fetchRelatedContents();
+  }, [selectedVerification]);
 
   const handleLoadMore = useCallback(() => {
     if (!hasNext || !nextCursorDate || isLoading || isLoadingMore) {
@@ -575,10 +618,10 @@ function Archive() {
         </section>
 
         <section className="archive-filter">
-          <div className="archive-filter-types">
+          <div className="archive-filter-types tabs">
             <button
               type="button"
-              className={filterType === FILTER_TYPE.ALL ? 'selected' : ''}
+              className={`tab ${filterType === FILTER_TYPE.ALL ? 'selected' : ''}`}
               onClick={() => handleFilterType(FILTER_TYPE.ALL)}
             >
               전체
@@ -586,7 +629,7 @@ function Archive() {
 
             <button
               type="button"
-              className={filterType === FILTER_TYPE.MONTH ? 'selected' : ''}
+              className={`tab ${filterType === FILTER_TYPE.MONTH ? 'selected' : ''}`}
               onClick={() => handleFilterType(FILTER_TYPE.MONTH)}
             >
               월별
@@ -594,7 +637,7 @@ function Archive() {
 
             <button
               type="button"
-              className={filterType === FILTER_TYPE.PERIOD ? 'selected' : ''}
+              className={`tab ${filterType === FILTER_TYPE.PERIOD ? 'selected' : ''}`}
               onClick={() => handleFilterType(FILTER_TYPE.PERIOD)}
             >
               기간 선택
@@ -603,37 +646,31 @@ function Archive() {
 
           {filterType === FILTER_TYPE.MONTH && (
             <div className="archive-month-filter">
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(Number(e.target.value))}
-              >
-                {Array.from(
+              <Select
+                value={`${selectedYear}년`}
+                options={Array.from(
                   {
                     length: 5,
                   },
-                  (_, index) => currentYear - index
-                ).map((year) => (
-                  <option key={year} value={year}>
-                    {year}년
-                  </option>
-                ))}
-              </select>
+                  (_, index) => `${currentYear - index}년`
+                )}
+                onChange={(value) =>
+                  setSelectedYear(Number(value.replace('년', '')))
+                }
+              />
 
-              <select
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(Number(e.target.value))}
-              >
-                {Array.from(
+              <Select
+                value={`${selectedMonth}월`}
+                options={Array.from(
                   {
                     length: 12,
                   },
-                  (_, index) => index + 1
-                ).map((month) => (
-                  <option key={month} value={month}>
-                    {month}월
-                  </option>
-                ))}
-              </select>
+                  (_, index) => `${index + 1}월`
+                )}
+                onChange={(value) =>
+                  setSelectedMonth(Number(value.replace('월', '')))
+                }
+              />
             </div>
           )}
 
@@ -646,7 +683,7 @@ function Archive() {
                 onChange={(e) => setStartDate(e.target.value)}
               />
 
-              <span>~</span>
+              <span>-</span>
 
               <input
                 type="date"
@@ -659,13 +696,13 @@ function Archive() {
         </section>
 
         {isLoading && histories.length === 0 && (
-          <section className="archive-list">
+          <section className="archive-list loading">
             <p>방문 인증 내역을 불러오는 중입니다.</p>
           </section>
         )}
 
         {!isLoading && histories.length === 0 && (
-          <section className="archive-list">
+          <section className="archive-list empty">
             <p>방문 인증 내역이 없습니다.</p>
           </section>
         )}
@@ -744,10 +781,14 @@ function Archive() {
                       <SwiperSlide key={itemKey || `${date}-${index}`}>
                         <article className="archive-item">
                           <div className="image">
-                            <img
-                              src={getLocationImage(item)}
-                              alt={getLocationName(item)}
-                            />
+                            {getLocationImage(item) ? (
+                              <img
+                                src={getLocationImage(item)}
+                                alt={getLocationName(item)}
+                              />
+                            ) : (
+                              <ImagePlaceholder type="card" />
+                            )}
                           </div>
 
                           <div className="actions relative">
@@ -782,7 +823,11 @@ function Archive() {
                             </div>
 
                             <div className="right">
-                              <button type="button" className="icon edit">
+                              <button
+                                type="button"
+                                className="icon edit"
+                                onClick={() => setSelectedVerification(item)}
+                              >
                                 <PencilSimpleLineIcon />
                               </button>
 
@@ -894,6 +939,105 @@ function Archive() {
           {!hasNext && histories.length > 0 && <p>마지막 방문 인증입니다.</p>}
         </div>
       </div>
+      {selectedVerification && (
+        <div className="modal-bg">
+          <div className="modal-container">
+            <div className="modal">
+              {modalStep === 'confirm' ? (
+                <>
+                  <p className="title">해당 방문 인증을 수정할까요?</p>
+
+                  <div className="description">
+                    <p>
+                      <strong>인증 후 24시간 이내</strong>에만
+                    </p>
+                    <p>아티스트와 미디어 콘텐츠를 수정할 수 있습니다.</p>
+                  </div>
+
+                  <div className="content">
+                    <p>
+                      <span className="date">
+                        {selectedVerification.visitVerifiedTimeAt}
+                      </span>
+                      <span className="place-name">
+                        {getLocationName(selectedVerification)}
+                      </span>
+                    </p>
+
+                    <p>
+                      {getArtists(selectedVerification).map((artist) => (
+                        <span className="artist" key={artist.artistId}>
+                          {artist.artistName}
+                        </span>
+                      ))}
+                      <span className="media">
+                        {getContentTitle(selectedVerification)}
+                      </span>
+                    </p>
+                  </div>
+
+                  <div className="buttons">
+                    <button
+                      type="button"
+                      className="close"
+                      onClick={() => setSelectedVerification(null)}
+                    >
+                      닫기
+                    </button>
+
+                    <button
+                      type="button"
+                      className="edit active"
+                      onClick={() => {
+                        setSelectedSearchArtist(null);
+                        setSelectedContent(null);
+                        setModalStep('artist');
+                      }}
+                    >
+                      수정
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="title">아티스트를 검색해주세요.</p>
+
+                  <ArtistSearch
+                    selectedSearchArtist={selectedSearchArtist}
+                    onSelectSearchArtist={setSelectedSearchArtist}
+                    onResetSelectedSearchArtist={
+                      handleResetSelectedSearchArtist
+                    }
+                    searchedArtistContents={searchedArtistContents}
+                    selectedContent={selectedContent}
+                    onSelectContent={setSelectedContent}
+                  />
+                  <div className="buttons">
+                    <button
+                      type="button"
+                      className="close"
+                      onClick={() => {
+                        setSelectedSearchArtist(null);
+                        setSelectedContent(null);
+                        setModalStep('confirm');
+                      }}
+                    >
+                      닫기
+                    </button>
+                    {/* MEMO: 방문 인증 값 수정 api연결 부탁드립니다. 
+아티스트, 미디어 값 중 비어있는 값이 있다면 className에 active 말고 disabled를 넣어주시면 css 처리 해두겠습니다. 
+아티스트, 미디어 선택 후 아티스트 추가 선택은 일단 추후에 진행하겠습니다. 
+현재의 ArtistSearch로는 안 되고 components/steps/ArtistSelectStep 을 같이 활용해야 할 것 같습니다. */}
+                    <button type="button" className="edit active">
+                      수정
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

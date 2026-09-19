@@ -10,25 +10,6 @@
     }
   }
 
-  .personalized-content {
-    .banner {
-      display: none;
-      /* font-size: var(--font-size-body);
-      padding: 18px 24px;
-      margin-top: var(--spacing-16);
-      border-radius: var(--radius-32);
-      background-color: var(--bg-elevated);
-      box-shadow: var(--shadow-card);
-
-      a {
-        display: flex;
-        gap: var(--spacing-4);
-        align-items: center;
-        justify-content: space-between;
-      } */
-    }
-  }
-
   .new-contents {
     margin-bottom: var(--spacing-48);
     h2 {
@@ -41,37 +22,18 @@
     }
 
     .tabs {
-      gap: 0;
-      justify-content: space-between;
-      margin-bottom: var(--spacing-16);
-    }
-
-    .tabs-scroll {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
       display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 30px;
-      border-radius: var(--radius-16);
-      background-color: var(--bg-elevated);
-      box-shadow: var(--shadow-card);
-      font-size: 18px;
-      z-index: 2;
-    }
+      gap: var(--spacing-8);
+      justify-content: flex-start;
+      margin-bottom: var(--spacing-16);
+      overflow-x: auto;
+      overflow-y: hidden;
+      flex-wrap: nowrap;
+      scrollbar-width: none;
 
-    .tabs-prev {
-      left: 0;
-
-      svg {
-        transform: rotate(180deg);
+      li {
+        flex-shrink: 0;
       }
-    }
-
-    .tabs-next {
-      right: 0;
     }
 
     .list {
@@ -85,16 +47,20 @@
         overflow: hidden;
         cursor: pointer;
 
-        a,
-        img {
-          display: block;
-          width: 100%;
+        a {
           height: 100%;
+          img {
+            object-fit: cover;
+          }
         }
+      }
 
-        img {
-          object-fit: cover;
-        }
+      .empty {
+        grid-column: 1 / -1;
+        aspect-ratio: 2 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   }
@@ -165,7 +131,6 @@
             align-items: center;
             gap: var(--spacing-16);
             color: var(--gl-text-white);
-            margin-bottom: var(--spacing-12);
 
             .location-name {
               font-size: var(--font-size-heading);
@@ -181,6 +146,7 @@
 
           .chip-list {
             display: flex;
+            margin-top: var(--spacing-12);
             gap: var(--spacing-8);
             flex-wrap: wrap;
 

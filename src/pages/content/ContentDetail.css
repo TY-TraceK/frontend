@@ -13,7 +13,9 @@
 
   .hero {
     width: 100%;
-    aspect-ratio: 1/1.12;
+    /* 추후에 safe-area 처리후
+    aspect-ratio: 1 / 1.12; */
+    aspect-ratio: 1 / 1;
     overflow: hidden;
   }
 
@@ -33,7 +35,6 @@
         gap: 4px;
         top: -52px;
         left: 0;
-        width: 120px;
         height: 40px;
         border-radius: var(--radius-24);
         background-color: var(--interact-subtle);
@@ -52,6 +53,7 @@
         .fan-count {
           font-size: var(--font-size-caption);
           color: var(--text-default);
+          padding-right: var(--spacing-16);
         }
       }
 
@@ -119,24 +121,18 @@
           }
         }
       }
-
-      .next-button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        right: -12px;
-        bottom: 44%;
-        width: 40px;
-        aspect-ratio: 1/1;
-        background-color: var(--bg-elevated);
-        box-shadow: var(--shadow-card);
-        border-radius: var(--radius-24);
+      .scroll-button {
+        top: 10px;
       }
     }
   }
 
   .related-contents {
+    .filter {
+      .select {
+        margin-bottom: 0;
+      }
+    }
     .media-meta {
       display: flex;
       justify-content: space-between;
