@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { CaretRightIcon } from '@phosphor-icons/react';
 import RankingService from '@/api/services/rankingService.js';
 import UserService from '@/api/services/userService.js';
-import '../../components/ImagePlaceholder';
+import ImagePlaceholder from '../../components/ImagePlaceholder';
 import './ContentsHome.css';
 
 // MEMO: MVP 기간에는 지역이 부산광역시로 고정됩니다.
