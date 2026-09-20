@@ -90,6 +90,13 @@ const getCategoryLabel = (category) =>
   LOCATION_CATEGORY_OPTIONS.find((option) => option.value === category)
     ?.label ?? category;
 
+// bounds 조회 결과는 address가 { address: string } 객체이고,
+// 검색 결과(/locations/search)는 address가 문자열이라 두 형태를 모두 지원합니다.
+const getLocationAddress = (location) =>
+  typeof location?.address === 'string'
+    ? location.address
+    : (location?.address?.address ?? null);
+
 function loadKakaoMapsSdk() {
   if (window.kakao?.maps) {
     return Promise.resolve(window.kakao);
@@ -136,10 +143,8 @@ function Map() {
   const [mapReady, setMapReady] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
 
-  // 특정 장소 인근으로 들어온 경우, 카테고리 필터 없이 전체 여행지를 보여줍니다.
-  const [selectedCategory, setSelectedCategory] = useState(
-    hasFocusPoint ? null : 'ATTRACTION'
-  );
+  // 첫 진입 시에는 카테고리 필터 없이 전체 여행지를 보여줍니다.
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const selectedCategoryRef = useRef(selectedCategory);
 
   const [archivedOnly, setArchivedOnly] = useState(false);
@@ -149,6 +154,11 @@ function Map() {
   const [selectedLocationId, setSelectedLocationId] = useState(null);
   const [selectedLocationDetail, setSelectedLocationDetail] = useState(null);
   const selectedLocationCoordsRef = useRef(null);
+
+  const [isListOpen, setIsListOpen] = useState(false);
+  // 검색 결과를 보여주는 동안에는 지도 범위(bounds) 기준 재조회가 그 결과를 덮어쓰지 않게 합니다.
+  // 사용자가 지도를 직접 움직이거나 카테고리/북마크 필터, 목록 닫기를 조작하면 다시 false로 풀립니다.
+  const searchResultsActiveRef = useRef(false);
 
   const placeSheetRef = useRef(null);
   const [placeSheetHeight, setPlaceSheetHeight] = useState(0);
@@ -168,7 +178,7 @@ function Map() {
 
   const fetchLocationsInCurrentBounds = useCallback(async () => {
     const map = mapInstanceRef.current;
-    if (!map) return;
+    if (!map || searchResultsActiveRef.current) return;
 
     const bounds = map.getBounds();
     const southwest = bounds.getSouthWest();
@@ -224,6 +234,10 @@ function Map() {
           'idle',
           fetchLocationsInCurrentBounds
         );
+        // 사용자가 지도를 직접 드래그하기 시작하면 검색 결과 목록 상태를 해제합니다.
+        kakao.maps.event.addListener(map, 'dragstart', () => {
+          searchResultsActiveRef.current = false;
+        });
         fetchLocationsInCurrentBounds();
         setMapReady(true);
       })
@@ -250,6 +264,7 @@ function Map() {
       return;
     }
 
+    searchResultsActiveRef.current = false;
     setArchivedOnly((prev) => !prev);
   };
 
@@ -258,6 +273,19 @@ function Map() {
       selectedLocationCoordsRef.current = coords;
     }
     setSelectedLocationId(locationId);
+  };
+
+  const handleOpenList = () => {
+    setIsListOpen(true);
+  };
+
+  const handleReturnToMap = () => {
+    setIsListOpen(false);
+
+    if (searchResultsActiveRef.current) {
+      searchResultsActiveRef.current = false;
+      fetchLocationsInCurrentBounds();
+    }
   };
 
   useEffect(() => {
@@ -373,18 +401,24 @@ function Map() {
     });
   }, [locations, selectedLocationId]);
 
-  // 지도 검색(관광지 전용): 결과 위치로 지도를 이동하고 바텀시트를 갱신합니다.
+  // 지도 검색(관광지 전용): 검색 결과를 목록 데이터로 반영하고, 첫 번째 결과 위치로 지도를 이동합니다.
+  // 목록보기 버튼을 누르면 이 검색 결과가 바로 보이도록, bounds 기준 재조회는 잠시 멈춰둡니다.
   useEffect(() => {
     if (!keyword || !mapReady) return;
 
     let cancelled = false;
 
-    LocationService.searchRegion({ keyword })
+    LocationService.searchLocations({ keyword })
       .then((data) => {
         if (cancelled) return;
 
-        const first = data?.locations?.[0];
+        const results = data?.locations ?? [];
+        const first = results[0];
         if (first) {
+          // bounds 재조회를 막는 가드는 지도 이동으로 idle 이벤트가 발생하기 전에 먼저 켜둬야 합니다.
+          searchResultsActiveRef.current = true;
+          setLocations(results);
+
           const kakao = window.kakao;
           const map = mapInstanceRef.current;
           if (kakao?.maps && map) {
@@ -506,7 +540,12 @@ function Map() {
                 key={category}
                 type="button"
                 className={`chip ${className} ${selectedCategory === category ? 'active' : ''}`}
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => {
+                  searchResultsActiveRef.current = false;
+                  setSelectedCategory((prev) =>
+                    prev === category ? null : category
+                  );
+                }}
               >
                 <span className="icon">
                   <Icon />
@@ -540,13 +579,12 @@ function Map() {
           <CrosshairIcon />
         </button> */}
 
-        <div className="bottom-frame">
-          {/* MEMO: list-open을 클릭할 때, bottom-frame에 list-active와 같은 클래스를 추가해주실 수 있으실까요? 
-          클래스 변경 시 Map.css에서도 변경 부탁드립니다. */}
+        <div className={`bottom-frame ${isListOpen ? 'list-active' : ''}`}>
           <button
             className="list-open"
             type="button"
             aria-label="검색 결과 목록 보기"
+            onClick={handleOpenList}
           >
             목록보기
           </button>
@@ -556,24 +594,24 @@ function Map() {
             aria-label="현재 위치로 이동"
             onClick={handleLocateMe}
             style={
-              selectedLocationId != null
-                ? { bottom: `${70 + placeSheetHeight + 8}px` }
+              !isListOpen && selectedLocationId != null
+                ? { bottom: `${placeSheetHeight + 8}px` }
                 : undefined
             }
           >
             <CrosshairIcon />
           </button>
-          {selectedLocationId != null && (
+          {isListOpen ? (
             <section className="place-sheet" ref={placeSheetRef}>
-              <div className="place-list">
-                {selectedLocationDetail && (
-                  <Link to={`/place?id=${selectedLocationId}`} className="item">
+              {locations.length === 0 && (
+                <p className="empty">표시할 장소가 없습니다.</p>
+              )}
+              {locations.map((location) => (
+                <div className="place-list" key={location.id}>
+                  <Link to={`/place?id=${location.id}`} className="item">
                     <div className="image">
-                      {selectedLocationDetail.mainImageUrl ? (
-                        <img
-                          src={selectedLocationDetail.mainImageUrl}
-                          alt={selectedLocationDetail.name}
-                        />
+                      {location.mainImageUrl ? (
+                        <img src={location.mainImageUrl} alt={location.name} />
                       ) : (
                         <ImagePlaceholder type="place" />
                       )}
@@ -582,50 +620,111 @@ function Map() {
                     <div className="place-info">
                       <div className="meta">
                         <span className="category">
-                          {getCategoryLabel(selectedLocationDetail.category)}
+                          {getCategoryLabel(location.category)}
                         </span>
-                        <span className="verify-count accent-text">
-                          방문 인증{' '}
-                          {formatCount(
-                            selectedLocationDetail.totalVerificationCount
-                          )}
-                          건
-                        </span>
+                        {location.totalVerificationCount != null && (
+                          <span className="verify-count accent-text">
+                            방문 인증{' '}
+                            {formatCount(location.totalVerificationCount)}건
+                          </span>
+                        )}
                       </div>
 
-                      <h2 className="ellipsis-1">
-                        {selectedLocationDetail.name}
-                      </h2>
+                      <h2 className="ellipsis-1">{location.name}</h2>
 
-                      {selectedLocationDetail.businessHours && (
+                      {location.businessHours && (
                         <div className="business-hours-info">
                           <span className="icon">
                             <ClockIcon weight="fill" />
                           </span>
-                          <p className="info">
-                            {selectedLocationDetail.businessHours}
-                          </p>
+                          <p className="info">{location.businessHours}</p>
                         </div>
                       )}
 
-                      <div className="address-info">
-                        <span className="icon">
-                          <MapPinIcon weight="fill" />
-                        </span>
-                        <p className="info ellipsis-1">
-                          {selectedLocationDetail.address?.address}
-                        </p>
-                      </div>
+                      {getLocationAddress(location) && (
+                        <div className="address-info">
+                          <span className="icon">
+                            <MapPinIcon weight="fill" />
+                          </span>
+                          <p className="info ellipsis-1">
+                            {getLocationAddress(location)}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </Link>
-                )}
-              </div>
+                </div>
+              ))}
             </section>
+          ) : (
+            selectedLocationId != null && (
+              <section className="place-sheet" ref={placeSheetRef}>
+                <div className="place-list">
+                  {selectedLocationDetail && (
+                    <Link
+                      to={`/place?id=${selectedLocationId}`}
+                      className="item"
+                    >
+                      <div className="image">
+                        {selectedLocationDetail.mainImageUrl ? (
+                          <img
+                            src={selectedLocationDetail.mainImageUrl}
+                            alt={selectedLocationDetail.name}
+                          />
+                        ) : (
+                          <ImagePlaceholder type="place" />
+                        )}
+                      </div>
+
+                      <div className="place-info">
+                        <div className="meta">
+                          <span className="category">
+                            {getCategoryLabel(selectedLocationDetail.category)}
+                          </span>
+                          <span className="verify-count accent-text">
+                            방문 인증{' '}
+                            {formatCount(
+                              selectedLocationDetail.totalVerificationCount
+                            )}
+                            건
+                          </span>
+                        </div>
+
+                        <h2 className="ellipsis-1">
+                          {selectedLocationDetail.name}
+                        </h2>
+
+                        {selectedLocationDetail.businessHours && (
+                          <div className="business-hours-info">
+                            <span className="icon">
+                              <ClockIcon weight="fill" />
+                            </span>
+                            <p className="info">
+                              {selectedLocationDetail.businessHours}
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="address-info">
+                          <span className="icon">
+                            <MapPinIcon weight="fill" />
+                          </span>
+                          <p className="info ellipsis-1">
+                            {selectedLocationDetail.address?.address}
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  )}
+                </div>
+              </section>
+            )
           )}
           <button
             className="map-return"
             type="button"
             aria-label="지도로 돌아가기"
+            onClick={handleReturnToMap}
           >
             지도로 돌아가기
           </button>

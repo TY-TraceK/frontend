@@ -227,8 +227,9 @@
       width: 40px;
       aspect-ratio: 1;
       position: absolute;
-      bottom: 0 !important;
-      top: -10px;
+      /* 방문 인증 버튼(.verify-fab, 화면 기준 bottom: 80px)과 겹치지 않도록 띄워둔 기본값입니다.
+      바텀시트가 열리면 Map.jsx에서 시트 높이만큼 인라인 스타일로 더 밀어 올립니다. */
+      bottom: 80px;
       right: var(--spacing-16);
       border-radius: 50%;
       background-color: var(--bg-elevated);
@@ -241,6 +242,12 @@
       background-color: var(--bg-elevated);
       box-shadow: var(--shadow-card);
       padding: var(--spacing-16);
+
+      .empty {
+        padding: var(--spacing-24) 0;
+        text-align: center;
+        color: var(--text-sub);
+      }
 
       .place-list {
         .item {
