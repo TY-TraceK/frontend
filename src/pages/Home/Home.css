@@ -18,7 +18,6 @@
     .tabs-wrapper {
       position: relative;
       margin-bottom: var(--spacing-16);
-      overflow: hidden;
     }
 
     .tabs {
