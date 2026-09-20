@@ -111,14 +111,14 @@ const LocationService = {
     return result.data;
   },
 
-  async searchRegion({ keyword, lastLocationId, size } = {}) {
+  async searchLocations({ keyword, lastLocationId, size } = {}) {
     const params = {
       ...(keyword && { keyword }),
       ...(lastLocationId != null && { lastLocationId }),
       ...(size != null && { size }),
     };
 
-    const response = await apiClient.get('/locations/search-region', {
+    const response = await apiClient.get('/locations/search', {
       params,
     });
 

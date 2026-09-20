@@ -172,7 +172,7 @@
     }
   }
 
-  .floating.locate {
+  /* .floating.locate {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -184,7 +184,7 @@
     border-radius: 50%;
     background-color: var(--bg-elevated);
     box-shadow: var(--shadow-card);
-  }
+  } */
 
   .current-location-dot {
     width: 14px;
@@ -195,96 +195,157 @@
     box-shadow: var(--shadow-card);
   }
 
-  .place-sheet {
+  .bottom-frame {
     position: absolute;
     right: 0;
     bottom: 70px;
     left: 0;
-    border-radius: var(--radius-32) var(--radius-32) 0 0;
-    background-color: var(--bg-elevated);
-    box-shadow: var(--shadow-card);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 
-    .sheet-handle {
+    .list-open {
+      font-weight: 400;
+      color: var(--gl-text-black);
+      background-color: var(--gl-interact-subtle);
+      box-shadow: var(--shadow-card);
+      padding: 6px 14px;
+      border-radius: var(--radius-16);
+      margin-bottom: var(--spacing-16);
+    }
+
+    .map-return {
+      display: none;
+    }
+
+    .floating.locate {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 100%;
-      padding: var(--spacing-12) 0 var(--spacing-24);
-
-      span {
-        width: 32px;
-        height: 4px;
-        border-radius: var(--radius-2);
-        background-color: var(--text-icon);
-      }
+      width: 40px;
+      aspect-ratio: 1;
+      position: absolute;
+      /* 방문 인증 버튼(.verify-fab, 화면 기준 bottom: 80px)과 겹치지 않도록 띄워둔 기본값입니다.
+      바텀시트가 열리면 Map.jsx에서 시트 높이만큼 인라인 스타일로 더 밀어 올립니다. */
+      bottom: 80px;
+      right: var(--spacing-16);
+      border-radius: 50%;
+      background-color: var(--bg-elevated);
+      box-shadow: var(--shadow-card);
     }
 
-    .place-list {
-      padding: 0 var(--spacing-16) var(--spacing-16);
+    .place-sheet {
+      width: 100%;
+      border-radius: var(--radius-32) var(--radius-32) 0 0;
+      background-color: var(--bg-elevated);
+      box-shadow: var(--shadow-card);
+      padding: var(--spacing-16);
 
-      .item {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-16);
-        .image {
-          width: 100px;
-          aspect-ratio: 1/1;
-          overflow: hidden;
-          border-radius: var(--radius-16);
+      .empty {
+        padding: var(--spacing-24) 0;
+        text-align: center;
+        color: var(--text-sub);
+      }
 
-          img {
-            display: block;
-            width: 100%;
+      .place-list {
+        .item {
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-12);
+          .image {
+            flex-shrink: 0;
+            width: 33%;
+            max-width: 100px;
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            border-radius: var(--radius-16);
           }
-        }
 
-        .place-info {
-          .meta {
-            color: var(--text-sub);
-            font-size: var(--font-size-caption);
-            margin-bottom: var(--spacing-8);
+          .place-info {
+            flex: 1;
+            min-width: 0;
+            .meta {
+              color: var(--text-sub);
+              font-size: var(--font-size-caption);
+              margin-bottom: var(--spacing-8);
 
-            .verify-count {
-              &::before {
-                content: '·';
-                color: var(--text-sub);
-                margin: 0 var(--spacing-4);
+              .verify-count {
+                &::before {
+                  content: '·';
+                  color: var(--text-sub);
+                  margin: 0 var(--spacing-4);
+                }
+              }
+            }
+
+            h2 {
+              margin-bottom: var(--spacing-8);
+              font-size: var(--font-size-heading);
+              font-weight: 500;
+            }
+
+            .business-hours-info,
+            .address-info {
+              width: 100%;
+              display: flex;
+              align-items: center;
+              gap: var(--spacing-4);
+
+              .icon {
+                margin-right: var(--spacing-4);
+                color: var(--text-icon);
+              }
+
+              .info {
+                font-size: var(--font-size-caption);
+                flex: 1;
+                min-width: 0;
               }
             }
           }
+        }
+      }
+    }
 
-          h2 {
-            margin-bottom: var(--spacing-8);
-            font-size: var(--font-size-heading);
-            font-weight: 500;
+    &.list-active {
+      /* 목록보기 클릭 시 */
+      .list-open {
+        display: none;
+      }
+
+      .map-return {
+        display: block;
+        position: absolute;
+        bottom: var(--spacing-24);
+        left: 50%;
+        transform: translateX(-50%);
+        font-weight: 400;
+        color: var(--gl-text-black);
+        background-color: var(--gl-interact-subtle);
+        box-shadow: var(--shadow-card);
+        padding: 6px 14px;
+        border-radius: var(--radius-16);
+        z-index: 4;
+      }
+
+      .place-sheet {
+        height: calc(100vh - 68px - 73px);
+        padding-bottom: var(--spacing-24);
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+
+        .place-list {
+          padding: var(--spacing-12) 0;
+          border-bottom: solid 1px var(--divider-default);
+
+          &:first-child {
+            padding-top: 0;
           }
 
-          .business-hours-info,
-          .address-info {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-8);
-
-            .icon {
-              margin-right: var(--spacing-4);
-              color: var(--text-icon);
-            }
-
-            .info {
-              display: flex;
-              align-items: center;
-              font-size: var(--font-size-caption);
-            }
-
-            .start-time + .close-time::before {
-              content: '-';
-              margin: 0 var(--spacing-4);
-            }
-
-            .close-time + .additional::before {
-              content: '·';
-              margin: 0 var(--spacing-4);
-            }
+          &:last-child {
+            border-bottom: 0;
           }
         }
       }
