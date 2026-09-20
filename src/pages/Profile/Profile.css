@@ -69,7 +69,8 @@
             }
 
             .location {
-              width: 100%;
+              width: auto;
+              max-width: 100%;
               text-align: center;
               background-color: var(--interact-subtle);
               padding: 3px 4px;

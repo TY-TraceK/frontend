@@ -71,9 +71,14 @@ h3 {
 }
 /* icon */
 /* phosphor */
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 svg {
-  font-size: var(--font-size-title);
+  font-size: 22px;
   color: inherit;
 }
 
