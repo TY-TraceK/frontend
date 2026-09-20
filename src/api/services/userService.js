@@ -59,6 +59,17 @@ const UserService = {
 
     return result.data;
   },
+
+  async getMyArchivedLocations() {
+    const response = await apiClient.get('/users/me/archived-locations');
+    const result = response.data;
+
+    if (!result.isSuccess) {
+      throw new Error(result.message);
+    }
+
+    return result.data;
+  },
 };
 
 export default UserService;

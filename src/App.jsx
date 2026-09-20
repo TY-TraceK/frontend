@@ -82,6 +82,12 @@ function App() {
     '/profile/recent-locations': {
       title: '최근 본 여행지',
     },
+    '/archive/likes': {
+      title: '좋아요한 장소',
+    },
+    '/archive/bookmarks': {
+      title: '북마크한 장소',
+    },
   };
 
   const header = headerConfig[location.pathname] ?? {
@@ -102,7 +108,13 @@ function App() {
       setListItems([]);
 
       try {
-        if (listType === 'place') {
+        if (location.pathname === '/archive/likes') {
+          const data = await UserService.getMyLikedLocations();
+          setListItems(data ?? []);
+        } else if (location.pathname === '/archive/bookmarks') {
+          const data = await UserService.getMyArchivedLocations();
+          setListItems(data ?? []);
+        } else if (listType === 'place') {
           const data = await UserService.getMyLikedLocations();
           setListItems(data ?? []);
         } else if (listType === 'artist' || listType === 'media') {
@@ -120,7 +132,7 @@ function App() {
     };
 
     fetchList();
-  }, [listType]);
+  }, [listType, location.pathname]);
 
   return (
     <>
@@ -176,6 +188,33 @@ function App() {
         {/* 로그인 후 접근 가능한 페이지이나, 퍼블리싱 용이성을 위해 하단에 배치 */}
         <Route element={<ProtectedRoute />}>
           <Route path="/contents" element={<ContentsHome />} />
+          <Route
+            path="/archive/likes"
+            element={
+              <ListTemplate
+                items={listItems}
+                emptyMessage="아직 좋아한 장소가 없어요."
+                getItemLink={(item) => `/place?id=${item.id}`}
+                getImageUrl={(item) => item.mainImageUrl}
+                getImageAlt={(item) => item.name}
+                getItemTitle={(item) => item.name}
+              />
+            }
+          />
+          <Route
+            path="/archive/bookmarks"
+            element={
+              <ListTemplate
+                items={listItems}
+                emptyMessage="아직 북마크한 장소가 없어요."
+                getItemLink={(item) => `/place?id=${item.id}`}
+                getImageUrl={(item) => item.mainImageUrl}
+                getImageAlt={(item) => item.name}
+                getItemTitle={(item) => item.name}
+              />
+            }
+          />
+
           <Route
             path="/list"
             element={
