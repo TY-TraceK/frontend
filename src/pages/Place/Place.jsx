@@ -13,7 +13,7 @@ import {
   HeartIcon,
   MapPinIcon,
   PhoneIcon,
-  ShoppingCartIcon,
+  ShoppingBagIcon,
   SynagogueIcon,
 } from '@phosphor-icons/react';
 import LocationService from '@/api/services/locationService.js';
@@ -35,7 +35,7 @@ const CATEGORY_ICON = {
   RESTAURANT: ForkKnifeIcon,
   CAFE: CoffeeIcon,
   ACCOMMODATION: BedIcon,
-  SHOPPING: ShoppingCartIcon,
+  SHOPPING: ShoppingBagIcon,
   ETC: AsteriskIcon,
 };
 
