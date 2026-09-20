@@ -2,11 +2,12 @@
   margin: 0;
 
   .container {
-    margin-top: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    height: 100vh;
+    padding-bottom: var(--spacing-48);
     .logo {
       display: flex;
       flex-direction: column;
@@ -48,9 +49,10 @@
 }
 
 .callback {
+  margin: 0;
   &.error,
   &.loading {
-    min-height: 100vh;
+    height: calc(100vh - 70px);
     display: flex;
     flex-direction: column;
     justify-content: center;

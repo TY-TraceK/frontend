@@ -98,7 +98,9 @@ function KakaoCallback() {
         </div>
         <h3>{loginUser.nickName}</h3>
       </section>
-      <p className="emphasis">KRoute와 함께 여행지를 찾아볼까요?</p>
+      <p className="emphasis">
+        <span className="accent-text">KRoute</span>와 함께 여행지를 찾아볼까요?
+      </p>
 
       <button
         className="active"
