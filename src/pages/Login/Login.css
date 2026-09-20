@@ -2,7 +2,7 @@
   margin: 0;
 
   .container {
-    margin-top: 60%;
+    margin-top: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -38,10 +38,10 @@
         align-items: center;
         border-radius: var(--radius-12);
         overflow: hidden;
-        .description {
-          margin-top: var(--spacing-24);
-          color: var(--text-sub);
-        }
+      }
+      .description {
+        margin-top: var(--spacing-24);
+        color: var(--text-sub);
       }
     }
   }
