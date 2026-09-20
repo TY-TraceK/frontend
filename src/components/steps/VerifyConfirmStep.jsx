@@ -22,7 +22,7 @@ function VerifyConfirmStep({
               <p>{selectedLocation?.name}</p>
             </div>
 
-            <div className="selected-item">
+            {selectedContent && <div className="selected-item">
               <div className="image">
                 <img
                   src={selectedContent?.contentPictureUrl}
@@ -31,9 +31,9 @@ function VerifyConfirmStep({
               </div>
 
               <p>{selectedContent?.contentTitle}</p>
-            </div>
+            </div>}
 
-            <div className="selected-item">
+            {representativeArtist && <div className="selected-item">
               <div className="image">
                 <img
                   src={representativeArtist?.artistPictureUrl}
@@ -47,7 +47,7 @@ function VerifyConfirmStep({
                 {selectedArtists.length > 1 &&
                   ` 외 ${selectedArtists.length - 1}명`}
               </p>
-            </div>
+            </div>}
           </div>
 
           {isComplete ? (
