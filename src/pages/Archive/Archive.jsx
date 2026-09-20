@@ -22,8 +22,6 @@ import LocationService from '@/api/services/locationService';
 
 const PAGE_SIZE = 10;
 
-const DEFAULT_IMAGE_URL = 'https://picsum.photos/id/833/600/400';
-
 const FILTER_TYPE = {
   ALL: 'ALL',
   MONTH: 'MONTH',
@@ -574,12 +572,7 @@ function Archive() {
   };
 
   const getLocationImage = (item) =>
-    item?.locationImageUrl ??
-    item?.locationPictureUrl ??
-    item?.mainImageUrl ??
-    DEFAULT_IMAGE_URL;
-
-  const getContentTitle = (item) => item?.contentTitle ?? 'media name';
+    item?.locationImageUrl ?? item?.locationPictureUrl ?? item?.mainImageUrl ?? null;
 
   const getArtists = (item) => {
     if (Array.isArray(item?.artists) && item.artists.length > 0) {
@@ -876,33 +869,26 @@ function Archive() {
                             </p>
 
                             <div className="tags">
-                              {artists.map((artist, artistIndex) => (
-                                <Link
-                                  to={
-                                    artist.artistId != null
-                                      ? `/artists/${artist.artistId}`
-                                      : '#'
-                                  }
-                                  className="tag"
-                                  key={
-                                    artist.artistId ??
-                                    `${itemKey}-artist-${artistIndex}`
-                                  }
-                                >
-                                  {artist.artistName}
-                                </Link>
-                              ))}
+                              {artists.map((artist, artistIndex) =>
+                                artist.artistId != null ? (
+                                  <Link
+                                    to={`/content/detail?type=artist&id=${artist.artistId}`}
+                                    className="tag"
+                                    key={artist.artistId}
+                                  >
+                                    {artist.artistName}
+                                  </Link>
+                                ) : null
+                              )}
 
-                              <Link
-                                to={
-                                  item?.contentId != null
-                                    ? `/contents/${item.contentId}`
-                                    : '#'
-                                }
-                                className="tag"
-                              >
-                                {getContentTitle(item)}
-                              </Link>
+                              {item?.contentId != null && item?.contentTitle && (
+                                <Link
+                                  to={`/content/detail?id=${item.contentId}`}
+                                  className="tag"
+                                >
+                                  {item.contentTitle}
+                                </Link>
+                              )}
                             </div>
                           </div>
                         </article>
