@@ -251,7 +251,9 @@ function VerifyModal({ isOpen, onClose }) {
       } catch (error) {
         console.error('지도 범위 관광지 조회 실패:', error);
         setLocations([]);
-        showErrorNotification(getErrorMessage(error, '관광지 조회에 실패했습니다.'));
+        showErrorNotification(
+          getErrorMessage(error, '관광지 조회에 실패했습니다.')
+        );
       } finally {
         setIsLoading(false);
       }
@@ -259,7 +261,6 @@ function VerifyModal({ isOpen, onClose }) {
 
     fetchLocations();
   }, [isOpen, locationPhase, mapBounds]);
-
 
   const handleSelectLocation = (location) => {
     if (!location?.id) {
@@ -635,74 +636,96 @@ function VerifyModal({ isOpen, onClose }) {
         {locationPhase === 'loading' && (
           <section className="location-loading">
             <div className="location-spinner" />
-            <p>현재 위치를 확인하고 있습니다.<br />잠시만 기다려주세요.</p>
+            <p>
+              현재 위치를 확인하고 있습니다.
+              <br />
+              잠시만 기다려주세요.
+            </p>
           </section>
         )}
 
         {locationPhase === 'test-select' && (
-          <PlaceSelectStep
-            locations={testLocations}
-            selectedLocation={selectedTestLocation}
-            onSelectLocation={handleSelectTestPosition}
-            title="테스트할 위치를 선택해주세요."
-            fitMapToLocations
-            mapPosition={
-              selectedTestLocation
-                ? {
-                    latitude: Number(selectedTestLocation.latitude),
-                    longitude: Number(selectedTestLocation.longitude),
-                  }
-                : testLocations[0]
+          <section className="test-coordinate">
+            <div className="test-coordinate-info">
+              <div className="description">
+                <p>현재 위치를 확인할 수 없거나</p>
+                <p>부산과 거리가 먼 것으로 확인됩니다.</p>
+              </div>
+              <div className="emphasis">
+                <p>KRoute의 방문 인증 체험을 위해</p>
+                <p>모의 위치를 선택해주세요.</p>
+              </div>
+            </div>
+
+            <PlaceSelectStep
+              locations={testLocations}
+              selectedLocation={selectedTestLocation}
+              onSelectLocation={handleSelectTestPosition}
+              title=""
+              showMap={false}
+              fitMapToLocations
+              mapPosition={
+                selectedTestLocation
                   ? {
-                      latitude: Number(testLocations[0].latitude),
-                      longitude: Number(testLocations[0].longitude),
+                      latitude: Number(selectedTestLocation.latitude),
+                      longitude: Number(selectedTestLocation.longitude),
                     }
-                  : null
-            }
-          />
+                  : testLocations[0]
+                    ? {
+                        latitude: Number(testLocations[0].latitude),
+                        longitude: Number(testLocations[0].longitude),
+                      }
+                    : null
+              }
+            />
+          </section>
         )}
 
         {locationPhase === 'position' && currentPosition && (
           <>
-          <PlaceSelectStep
-            locations={[]}
-            selectedLocation={null}
-            onSelectLocation={() => {}}
-            title="현재 위치를 확인해주세요."
-            mapPosition={currentPosition}
-            onMapOutOfRange={() =>
-              showWarningNotification('100m 안에서만 방문 인증 가능합니다!')
-            }
-          />
-          <div className="position-confirm-wrap">
-            <button type="button" className="position-confirm" onClick={handleConfirmPosition}>
-              이 위치에서 방문 인증하기
-            </button>
-          </div>
+            <PlaceSelectStep
+              locations={[]}
+              selectedLocation={null}
+              onSelectLocation={() => {}}
+              title="현재 위치를 확인해주세요."
+              mapPosition={currentPosition}
+              onMapOutOfRange={() =>
+                showWarningNotification('100m 안에서만 방문 인증 가능합니다!')
+              }
+            />
+            <div className="position-confirm-wrap">
+              <button
+                type="button"
+                className="position-confirm"
+                onClick={handleConfirmPosition}
+              >
+                이 위치에서 방문 인증하기
+              </button>
+            </div>
           </>
         )}
 
         {locationPhase === 'ready' && step === 2 && (
           <>
-          <PlaceSelectStep
-            locations={locations}
-            selectedLocation={selectedLocation}
-            onSelectLocation={handleSelectLocation}
-            mapPosition={currentPosition}
-            onMapOutOfRange={() =>
-              showWarningNotification('100m 안에서만 방문 인증 가능합니다!')
-            }
-          />
-          <div className="location-only-action">
-            <button
-              type="button"
-              className={selectedLocation ? 'active' : 'disabled'}
-              disabled={!selectedLocation || isLoading}
-              onClick={handleSubmitLocationOnly}
-            >
-              장소만 선택하고 넘어가기
-            </button>
-          </div>
+            <PlaceSelectStep
+              locations={locations}
+              selectedLocation={selectedLocation}
+              onSelectLocation={handleSelectLocation}
+              mapPosition={currentPosition}
+              onMapOutOfRange={() =>
+                showWarningNotification('100m 안에서만 방문 인증 가능합니다!')
+              }
+            />
+            <div className="location-only-action">
+              <button
+                type="button"
+                className={selectedLocation ? 'active' : 'disabled'}
+                disabled={!selectedLocation || isLoading}
+                onClick={handleSubmitLocationOnly}
+              >
+                장소만 선택하고 넘어가기
+              </button>
+            </div>
           </>
         )}
 
@@ -744,32 +767,34 @@ function VerifyModal({ isOpen, onClose }) {
           />
         )}
 
-        {locationPhase === 'ready' && <div className="actions">
-          {isComplete ? (
-            <button type="button" className="active" onClick={onClose}>
-              닫기
-            </button>
-          ) : (
-            <>
-              <button
-                type="button"
-                className="neutral"
-                onClick={handlePrevious}
-              >
-                이전
+        {locationPhase === 'ready' && (
+          <div className="actions">
+            {isComplete ? (
+              <button type="button" className="active" onClick={onClose}>
+                닫기
               </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="neutral"
+                  onClick={handlePrevious}
+                >
+                  이전
+                </button>
 
-              <button
-                type="button"
-                className={isNextDisabled ? 'disabled' : 'active'}
-                onClick={handleNext}
-                disabled={isNextDisabled}
-              >
-                {step === 5 ? '제출' : '다음'}
-              </button>
-            </>
-          )}
-        </div>}
+                <button
+                  type="button"
+                  className={isNextDisabled ? 'disabled' : 'active'}
+                  onClick={handleNext}
+                  disabled={isNextDisabled}
+                >
+                  {step === 5 ? '제출' : '다음'}
+                </button>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </main>
   );
