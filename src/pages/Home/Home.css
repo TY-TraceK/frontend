@@ -244,6 +244,7 @@
             align-items: center;
             font-weight: 500;
             font-size: var(--font-size-heading);
+            color: var(--gl-text-black);
             background-color: var(--gl-interact-subtle);
             width: 30px;
             aspect-ratio: 1/1;
@@ -254,16 +255,15 @@
             right: var(--spacing-12);
             bottom: var(--spacing-12);
             color: var(--gl-text-white);
+            width: calc(100% - 11px);
+            text-align: right;
 
             .location-name {
               font-size: var(--font-size-heading);
               margin-bottom: var(--spacing-4);
-              /* 추후에 클래스로 빼기 */
-              display: -webkit-box;
-              -webkit-line-clamp: 1;
-              -webkit-box-orient: vertical;
-              overflow: hidden;
+              padding: 0 var(--spacing-4);
             }
+
             .count {
               display: flex;
               align-items: center;

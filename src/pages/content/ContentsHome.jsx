@@ -92,7 +92,7 @@ function ContentsHome() {
                       />
                     )}
                   </div>
-                  <p className="name">{ranking.locationName}</p>
+                  <p className="name ellipsis-1">{ranking.locationName}</p>
                 </Link>
               </li>
             ))}
@@ -125,7 +125,7 @@ function ContentsHome() {
                         <ImagePlaceholder type="artist" />
                       )}
                     </div>
-                    <div className="title">{artist.name}</div>
+                    <div className="title ellipsis-2">{artist.name}</div>
                   </Link>
                 </li>
               ))}
@@ -159,7 +159,7 @@ function ContentsHome() {
                         <ImagePlaceholder type="contents" />
                       )}
                     </div>
-                    <div className="title">{content.name}</div>
+                    <div className="title ellipsis-2">{content.name}</div>
                   </Link>
                 </li>
               ))}
@@ -193,7 +193,7 @@ function ContentsHome() {
                         <ImagePlaceholder type="place" />
                       )}
                     </div>
-                    <div className="title">{place.name}</div>
+                    <div className="title ellipsis-2">{place.name}</div>
                   </Link>
                 </li>
               ))}

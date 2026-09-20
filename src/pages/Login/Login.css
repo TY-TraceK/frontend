@@ -2,11 +2,12 @@
   margin: 0;
 
   .container {
-    margin-top: 60%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    height: 100vh;
+    padding-bottom: var(--spacing-48);
     .logo {
       display: flex;
       flex-direction: column;
@@ -38,19 +39,20 @@
         align-items: center;
         border-radius: var(--radius-12);
         overflow: hidden;
-        .description {
-          margin-top: var(--spacing-12);
-          color: var(--text-sub);
-        }
+      }
+      .description {
+        margin-top: var(--spacing-24);
+        color: var(--text-sub);
       }
     }
   }
 }
 
 .callback {
+  margin: 0;
   &.error,
   &.loading {
-    min-height: 100vh;
+    height: calc(100vh - 70px);
     display: flex;
     flex-direction: column;
     justify-content: center;

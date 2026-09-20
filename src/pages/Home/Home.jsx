@@ -395,7 +395,7 @@ function Home() {
                   <span className="number">{ranking.rank}</span>
 
                   <div className="info">
-                    <p className="location-name emphasis">
+                    <p className="location-name emphasis ellipsis-1">
                       {ranking.locationName}
                     </p>
 

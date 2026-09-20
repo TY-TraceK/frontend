@@ -163,6 +163,7 @@
 
               gap: var(--spacing-4);
 
+              width: 100%;
               min-width: 0;
 
               .tag {
@@ -306,6 +307,7 @@
 
                 .title {
                   font-size: var(--font-size-body);
+                  color: var(--text-default);
                 }
               }
 
