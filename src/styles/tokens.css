@@ -146,11 +146,11 @@
   /* typography */
   --font-family: 'Paperozi', sans-serif;
 
-  --font-size-display: 1.875rem; /* 30px */
-  --font-size-title: 1.375rem; /* 22px */
+  --font-size-display: 1.5rem; /* 24px */
+  --font-size-title: 1.25rem; /* 20px */
   --font-size-heading: 1.125rem; /* 18px */
-  --font-size-body: 1rem; /* 16px */
-  --font-size-caption: 0.875rem; /* 14px */
+  --font-size-body: 0.9375rem; /* 15px */
+  --font-size-caption: 0.8125rem; /* 13px */
   --font-size-number: 0.75rem; /* 12px */
 
   /* spacing */
