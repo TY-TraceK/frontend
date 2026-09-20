@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
 import './Map.css';
@@ -19,6 +25,7 @@ import {
 } from '@phosphor-icons/react';
 import LocationService from '@/api/services/locationService.js';
 import TokenStorage from '@/api/tokenStorage.js';
+import ImagePlaceholder from '@/components/ImagePlaceholder';
 import MapMarker from '@/components/MapMarker.jsx';
 import { LOCATION_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
 
@@ -30,21 +37,58 @@ const DEFAULT_ZOOM_LEVEL = 6;
 const SEARCH_RESULT_ZOOM_LEVEL = 4;
 
 const CATEGORY_CHIPS = [
-  { category: 'ATTRACTION', className: 'attraction', label: '관광지/명소', Icon: SynagogueIcon },
-  { category: 'CULTURE', className: 'culture', label: '문화시설', Icon: BankIcon },
-  { category: 'FESTIVAL', className: 'event', label: '축제/행사', Icon: ConfettiIcon },
-  { category: 'FILMING_LOCATION', className: 'filming', label: '촬영지', Icon: FilmSlateIcon },
-  { category: 'RESTAURANT', className: 'restaurant', label: '음식점', Icon: ForkKnifeIcon },
+  {
+    category: 'ATTRACTION',
+    className: 'attraction',
+    label: '관광지/명소',
+    Icon: SynagogueIcon,
+  },
+  {
+    category: 'CULTURE',
+    className: 'culture',
+    label: '문화시설',
+    Icon: BankIcon,
+  },
+  {
+    category: 'FESTIVAL',
+    className: 'event',
+    label: '축제/행사',
+    Icon: ConfettiIcon,
+  },
+  {
+    category: 'FILMING_LOCATION',
+    className: 'filming',
+    label: '촬영지',
+    Icon: FilmSlateIcon,
+  },
+  {
+    category: 'RESTAURANT',
+    className: 'restaurant',
+    label: '음식점',
+    Icon: ForkKnifeIcon,
+  },
   { category: 'CAFE', className: 'cafe', label: '카페', Icon: CoffeeIcon },
-  { category: 'ACCOMMODATION', className: 'accommodation', label: '숙박', Icon: BedIcon },
-  { category: 'SHOPPING', className: 'shopping', label: '쇼핑', Icon: ShoppingBagOpenIcon },
+  {
+    category: 'ACCOMMODATION',
+    className: 'accommodation',
+    label: '숙박',
+    Icon: BedIcon,
+  },
+  {
+    category: 'SHOPPING',
+    className: 'shopping',
+    label: '쇼핑',
+    Icon: ShoppingBagOpenIcon,
+  },
   { category: 'ETC', className: 'other', label: '기타', Icon: AsteriskIcon },
 ];
 
-const formatCount = (count) => new Intl.NumberFormat('ko-KR').format(count ?? 0);
+const formatCount = (count) =>
+  new Intl.NumberFormat('ko-KR').format(count ?? 0);
 
 const getCategoryLabel = (category) =>
-  LOCATION_CATEGORY_OPTIONS.find((option) => option.value === category)?.label ?? category;
+  LOCATION_CATEGORY_OPTIONS.find((option) => option.value === category)
+    ?.label ?? category;
 
 function loadKakaoMapsSdk() {
   if (window.kakao?.maps) {
@@ -80,7 +124,9 @@ function Map() {
   const initialCenterRef = useRef(
     hasFocusPoint ? { lat: focusLat, lng: focusLng } : DEFAULT_CENTER
   );
-  const initialZoomRef = useRef(hasFocusPoint ? SEARCH_RESULT_ZOOM_LEVEL : DEFAULT_ZOOM_LEVEL);
+  const initialZoomRef = useRef(
+    hasFocusPoint ? SEARCH_RESULT_ZOOM_LEVEL : DEFAULT_ZOOM_LEVEL
+  );
 
   const mapAreaRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -173,7 +219,11 @@ function Map() {
         });
         mapInstanceRef.current = map;
 
-        kakao.maps.event.addListener(map, 'idle', fetchLocationsInCurrentBounds);
+        kakao.maps.event.addListener(
+          map,
+          'idle',
+          fetchLocationsInCurrentBounds
+        );
         fetchLocationsInCurrentBounds();
         setMapReady(true);
       })
@@ -300,7 +350,9 @@ function Map() {
   // 나머지는 compact(점) 마커로 표시합니다. 정렬 기준(방문 인증 수 등)은 백엔드 응답 순서를
   // 그대로 따르므로, 백엔드가 정렬 기준을 바꿔도 이 로직은 그대로 유지됩니다.
   useEffect(() => {
-    const defaultIds = new Set(locations.slice(0, 10).map((location) => location.id));
+    const defaultIds = new Set(
+      locations.slice(0, 10).map((location) => location.id)
+    );
 
     overlaysRef.current.forEach(({ root, overlay, location }) => {
       const isActive = location.id === selectedLocationId;
@@ -336,10 +388,15 @@ function Map() {
           const kakao = window.kakao;
           const map = mapInstanceRef.current;
           if (kakao?.maps && map) {
-            map.setCenter(new kakao.maps.LatLng(first.latitude, first.longitude));
+            map.setCenter(
+              new kakao.maps.LatLng(first.latitude, first.longitude)
+            );
             map.setLevel(SEARCH_RESULT_ZOOM_LEVEL);
           }
-          handleSelectLocation(first.id, { lat: first.latitude, lng: first.longitude });
+          handleSelectLocation(first.id, {
+            lat: first.latitude,
+            lng: first.longitude,
+          });
         } else {
           window.alert('검색 결과가 없습니다.');
         }
@@ -372,7 +429,10 @@ function Map() {
     const map = mapInstanceRef.current;
     if (!currentLocation || !kakao?.maps || !map) return;
 
-    const position = new kakao.maps.LatLng(currentLocation.lat, currentLocation.lng);
+    const position = new kakao.maps.LatLng(
+      currentLocation.lat,
+      currentLocation.lng
+    );
     map.setCenter(position);
 
     if (currentLocationOverlayRef.current) {
@@ -402,7 +462,9 @@ function Map() {
         setCurrentLocation({ lat: coords.latitude, lng: coords.longitude });
       },
       () => {
-        window.alert('현재 위치를 가져올 수 없습니다. 위치 권한을 확인해주세요.');
+        window.alert(
+          '현재 위치를 가져올 수 없습니다. 위치 권한을 확인해주세요.'
+        );
       }
     );
   };
@@ -464,7 +526,7 @@ function Map() {
           <BookmarkSimpleIcon weight={archivedOnly ? 'fill' : 'regular'} />
         </button>
 
-        <button
+        {/* <button
           type="button"
           className="floating locate icon"
           aria-label="현재 위치로 이동"
@@ -476,62 +538,98 @@ function Map() {
           }
         >
           <CrosshairIcon />
-        </button>
+        </button> */}
 
-        {selectedLocationId != null && (
-          <section className="place-sheet" ref={placeSheetRef}>
-            <div className="place-list">
-              <button className="sheet-handle" aria-label="바텀시트 조절">
-                <span></span>
-              </button>
-
-              {selectedLocationDetail && (
-                <Link to={`/place?id=${selectedLocationId}`} className="item">
-                  <div className="image">
-                    <img src={selectedLocationDetail.mainImageUrl} alt="" />
-                  </div>
-
-                  <div className="place-info">
-                    <div className="meta">
-                      <span className="category">
-                        {getCategoryLabel(selectedLocationDetail.category)}
-                      </span>
-                      <span className="verify-count accent-text">
-                        방문 인증 {formatCount(selectedLocationDetail.totalVerificationCount)}건
-                      </span>
+        <div className="bottom-frame">
+          {/* MEMO: list-open을 클릭할 때, bottom-frame에 list-active와 같은 클래스를 추가해주실 수 있으실까요? 
+          클래스 변경 시 Map.css에서도 변경 부탁드립니다. */}
+          <button
+            className="list-open"
+            type="button"
+            aria-label="검색 결과 목록 보기"
+          >
+            목록보기
+          </button>
+          <button
+            type="button"
+            className="floating locate icon"
+            aria-label="현재 위치로 이동"
+            onClick={handleLocateMe}
+            style={
+              selectedLocationId != null
+                ? { bottom: `${70 + placeSheetHeight + 8}px` }
+                : undefined
+            }
+          >
+            <CrosshairIcon />
+          </button>
+          {selectedLocationId != null && (
+            <section className="place-sheet" ref={placeSheetRef}>
+              <div className="place-list">
+                {selectedLocationDetail && (
+                  <Link to={`/place?id=${selectedLocationId}`} className="item">
+                    <div className="image">
+                      {selectedLocationDetail.mainImageUrl ? (
+                        <img
+                          src={selectedLocationDetail.mainImageUrl}
+                          alt={selectedLocationDetail.name}
+                        />
+                      ) : (
+                        <ImagePlaceholder type="place" />
+                      )}
                     </div>
 
-                    <h2>{selectedLocationDetail.name}</h2>
-
-                    {selectedLocationDetail.businessHours && (
-                      <div className="business-hours-info">
-                        <span className="icon">
-                          <ClockIcon weight="fill" />
+                    <div className="place-info">
+                      <div className="meta">
+                        <span className="category">
+                          {getCategoryLabel(selectedLocationDetail.category)}
                         </span>
-                        <p className="info">
-                          <span className="start-time">
-                            {selectedLocationDetail.businessHours}
+                        <span className="verify-count accent-text">
+                          방문 인증{' '}
+                          {formatCount(
+                            selectedLocationDetail.totalVerificationCount
+                          )}
+                          건
+                        </span>
+                      </div>
+
+                      <h2 className="ellipsis-1">
+                        {selectedLocationDetail.name}
+                      </h2>
+
+                      {selectedLocationDetail.businessHours && (
+                        <div className="business-hours-info">
+                          <span className="icon">
+                            <ClockIcon weight="fill" />
                           </span>
+                          <p className="info">
+                            {selectedLocationDetail.businessHours}
+                          </p>
+                        </div>
+                      )}
+
+                      <div className="address-info">
+                        <span className="icon">
+                          <MapPinIcon weight="fill" />
+                        </span>
+                        <p className="info ellipsis-1">
+                          {selectedLocationDetail.address?.address}
                         </p>
                       </div>
-                    )}
-
-                    <div className="address-info">
-                      <span className="icon">
-                        <MapPinIcon weight="fill" />
-                      </span>
-                      <p className="info">
-                        <span className="address">
-                          {selectedLocationDetail.address?.address}
-                        </span>
-                      </p>
                     </div>
-                  </div>
-                </Link>
-              )}
-            </div>
-          </section>
-        )}
+                  </Link>
+                )}
+              </div>
+            </section>
+          )}
+          <button
+            className="map-return"
+            type="button"
+            aria-label="지도로 돌아가기"
+          >
+            지도로 돌아가기
+          </button>
+        </div>
       </div>
     </main>
   );
