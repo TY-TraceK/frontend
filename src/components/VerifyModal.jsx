@@ -446,6 +446,7 @@ function VerifyModal({ isOpen, onClose }) {
         longitude: currentPosition.longitude,
       });
 
+      setStep(5);
       setIsComplete(true);
     } catch (error) {
       console.error('장소 방문 인증 실패:', error);
