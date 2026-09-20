@@ -1,3 +1,5 @@
+import ImagePlaceholder from '../ImagePlaceholder';
+
 function VerifyConfirmStep({
   selectedLocation,
   selectedContent,
@@ -13,10 +15,11 @@ function VerifyConfirmStep({
           <div className="selected-list">
             <div className="selected-item">
               <div className="image">
-                <img
-                  src={selectedLocation?.mainImageUrl}
-                  alt={selectedLocation?.name ?? ''}
-                />
+                {selectedLocation?.mainImageUrl ? (
+                  <img src={selectedLocation.mainImageUrl} alt="" />
+                ) : (
+                  <ImagePlaceholder type="card" />
+                )}
               </div>
 
               <p>{selectedLocation?.name}</p>
@@ -24,10 +27,11 @@ function VerifyConfirmStep({
 
             {selectedContent && <div className="selected-item">
               <div className="image">
-                <img
-                  src={selectedContent?.contentPictureUrl}
-                  alt={selectedContent?.contentTitle ?? ''}
-                />
+                {selectedContent?.contentPictureUrl ? (
+                  <img src={selectedContent.contentPictureUrl} alt="" />
+                ) : (
+                  <ImagePlaceholder type="card" />
+                )}
               </div>
 
               <p>{selectedContent?.contentTitle}</p>
@@ -35,10 +39,11 @@ function VerifyConfirmStep({
 
             {representativeArtist && <div className="selected-item">
               <div className="image">
-                <img
-                  src={representativeArtist?.artistPictureUrl}
-                  alt={representativeArtist?.artistName ?? ''}
-                />
+                {representativeArtist?.artistPictureUrl ? (
+                  <img src={representativeArtist.artistPictureUrl} alt="" />
+                ) : (
+                  <ImagePlaceholder type="card" />
+                )}
               </div>
 
               <p>

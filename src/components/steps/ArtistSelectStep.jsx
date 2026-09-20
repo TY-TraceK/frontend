@@ -1,3 +1,4 @@
+import ImagePlaceholder from '../ImagePlaceholder';
 import { CheckCircleIcon } from '@phosphor-icons/react';
 
 function ArtistSelectStep({
@@ -19,10 +20,11 @@ function ArtistSelectStep({
         <div className="verify-selected">
           <div className="place row">
             <div className="image">
-              <img
-                src={selectedLocation?.mainImageUrl}
-                alt={selectedLocation?.name ?? ''}
-              />
+              {selectedLocation?.mainImageUrl ? (
+                <img src={selectedLocation.mainImageUrl} alt="" />
+              ) : (
+                <ImagePlaceholder type="card" />
+              )}
             </div>
 
             <p>{selectedLocation?.name}</p>
@@ -30,10 +32,11 @@ function ArtistSelectStep({
 
           <div className="media row">
             <div className="image">
-              <img
-                src={selectedContent?.contentPictureUrl}
-                alt={selectedContent?.contentTitle ?? ''}
-              />
+              {selectedContent?.contentPictureUrl ? (
+                <img src={selectedContent.contentPictureUrl} alt="" />
+              ) : (
+                <ImagePlaceholder type="card" />
+              )}
             </div>
 
             <p>{selectedContent?.contentTitle}</p>
@@ -80,10 +83,11 @@ function ArtistSelectStep({
                       onClick={() => onSelectArtist(artist)}
                     >
                       <div className="image">
-                        <img
-                          src={artist.artistPictureUrl}
-                          alt={artist.artistName}
-                        />
+                        {artist.artistPictureUrl ? (
+                          <img src={artist.artistPictureUrl} alt="" />
+                        ) : (
+                          <ImagePlaceholder type="card" />
+                        )}
                       </div>
 
                       <span className="name">{artist.artistName}</span>
@@ -111,10 +115,11 @@ function ArtistSelectStep({
                       onClick={() => onSelectArtist(artist)}
                     >
                       <div className="image">
-                        <img
-                          src={artist.artistPictureUrl}
-                          alt={artist.artistName}
-                        />
+                        {artist.artistPictureUrl ? (
+                          <img src={artist.artistPictureUrl} alt="" />
+                        ) : (
+                          <ImagePlaceholder type="card" />
+                        )}
                       </div>
 
                       <span className="name">{artist.artistName}</span>

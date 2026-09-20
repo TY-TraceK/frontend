@@ -3,6 +3,7 @@ import { MagnifyingGlassIcon } from '@phosphor-icons/react';
 import { notification } from 'antd';
 
 import VerifyService from '@/api/services/verifyService';
+import ImagePlaceholder from './ImagePlaceholder';
 import { CONTENT_CATEGORY_OPTIONS } from '@/constants/rankingConstants.js';
 
 const getContentCategoryLabel = (category) =>
@@ -132,7 +133,11 @@ function ArtistSearch({
                       onClick={() => onSelectSearchArtist(artist)}
                     >
                       <div className="image">
-                        <img src={artist.pictureUrl} alt={artist.name} />
+                        {artist.pictureUrl ? (
+                          <img src={artist.pictureUrl} alt="" />
+                        ) : (
+                          <ImagePlaceholder type="card" />
+                        )}
                       </div>
 
                       <p className="name">{artist.name}</p>
@@ -161,10 +166,11 @@ function ArtistSearch({
             onClick={onResetSelectedSearchArtist}
           >
             <div className="image">
-              <img
-                src={selectedSearchArtist.pictureUrl}
-                alt={selectedSearchArtist.name}
-              />
+              {selectedSearchArtist.pictureUrl ? (
+                <img src={selectedSearchArtist.pictureUrl} alt="" />
+              ) : (
+                <ImagePlaceholder type="card" />
+              )}
             </div>
 
             <div className="info">
@@ -205,10 +211,11 @@ function ArtistSearch({
                     >
                       <div className="content-main">
                         <div className="image">
-                          <img
-                            src={content.contentPictureUrl}
-                            alt={content.contentTitle}
-                          />
+                          {content.contentPictureUrl ? (
+                            <img src={content.contentPictureUrl} alt="" />
+                          ) : (
+                            <ImagePlaceholder type="card" />
+                          )}
                         </div>
 
                         <div className="content-info">

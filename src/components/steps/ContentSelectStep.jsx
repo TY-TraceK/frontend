@@ -1,3 +1,4 @@
+import ImagePlaceholder from '../ImagePlaceholder';
 import { CaretDownIcon, MagnifyingGlassIcon } from '@phosphor-icons/react';
 
 import MediaCard from '../MediaCard';
@@ -30,10 +31,11 @@ function ContentSelectStep({
         <div className="verify-selected">
           <div className="place row">
             <div className="image">
-              <img
-                src={selectedLocation?.mainImageUrl}
-                alt={selectedLocation?.name ?? ''}
-              />
+              {selectedLocation?.mainImageUrl ? (
+                <img src={selectedLocation.mainImageUrl} alt="" />
+              ) : (
+                <ImagePlaceholder type="card" />
+              )}
             </div>
 
             <p>장소: {selectedLocation?.name}</p>
