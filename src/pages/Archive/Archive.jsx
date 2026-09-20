@@ -601,13 +601,13 @@ function Archive() {
             아카이브
           </button>
 
-          <button type="button" className="tab">
+          <Link to="/archive/bookmarks" className="tab">
             북마크
-          </button>
+          </Link>
 
-          <button type="button" className="tab">
+          <Link to="/archive/likes" className="tab">
             좋아요
-          </button>
+          </Link>
         </section>
 
         <section className="archive-filter">

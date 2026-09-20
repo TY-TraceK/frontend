@@ -268,27 +268,27 @@ function Profile() {
             <p className="number">{userActivity?.fanCount}</p>
             <p className="description">아티스트 & 미디어</p>
           </Link>
-          <div className="verify-stat stat-box">
+          <Link to="/archive" className="verify-stat stat-box">
             <span className="icon accent-text">
               <MapPinSimpleAreaIcon weight="fill" />
             </span>
             <p className="number">{userActivity?.visitVerificationCount}</p>
             <p className="description">방문 인증한 장소</p>
-          </div>
-          <div className="haert-stat stat-box">
+          </Link>
+          <Link to="/archive/likes" className="haert-stat stat-box">
             <span className="icon heart">
               <HeartIcon weight="fill" />
             </span>
             <p className="number">{userActivity?.likedCount}</p>
             <p className="description">좋아한 장소</p>
-          </div>
-          <div className="bookmark-stat stat-box">
+          </Link>
+          <Link to="/archive/bookmarks" className="bookmark-stat stat-box">
             <span className="icon bookmark">
               <BookmarkSimpleIcon weight="fill" />
             </span>
             <p className="number">{userActivity?.bookMarkCount}</p>
             <p className="description">북마크한 장소</p>
-          </div>
+          </Link>
         </section>
 
         <section className="recent-verify-place">
