@@ -261,13 +261,13 @@ function Profile() {
         </section>
 
         <section className="statistics">
-          <div className="fan-stat stat-box">
+          <Link to="/contents" className="fan-stat stat-box">
             <span className="icon star">
               <StarIcon weight="fill" />
             </span>
             <p className="number">{userActivity?.fanCount}</p>
             <p className="description">아티스트 & 미디어</p>
-          </div>
+          </Link>
           <div className="verify-stat stat-box">
             <span className="icon accent-text">
               <MapPinSimpleAreaIcon weight="fill" />
@@ -308,16 +308,30 @@ function Profile() {
               <div className="info">
                 <span className="tag">{lastVerificationData.city}</span>
                 <h4>{lastVerificationData.locationName}</h4>
-                <p className="verify-content">
-                  <span className="artist">
-                    {lastVerificationData.artists[0].artistName}
-                    {lastVerificationData?.artists?.length > 1 &&
-                      `외 ${lastVerificationData?.artists?.length - 1} 명`}
-                  </span>
-                  <span className="media">
-                    {lastVerificationData.contentTitle}
-                  </span>
-                </p>
+                {((lastVerificationData?.artists?.length ?? 0) > 0 ||
+                  lastVerificationData?.contentId != null) && (
+                  <p className="verify-content">
+                    {(lastVerificationData?.artists?.length ?? 0) > 0 && (
+                      <Link
+                        to={`/content/detail?type=artist&id=${lastVerificationData.artists[0].artistId}`}
+                        className="artist"
+                      >
+                        {lastVerificationData.artists[0].artistName}
+                        {lastVerificationData.artists.length > 1 &&
+                          `외 ${lastVerificationData.artists.length - 1} 명`}
+                      </Link>
+                    )}
+                    {lastVerificationData?.contentId != null &&
+                      lastVerificationData?.contentTitle && (
+                        <Link
+                          to={`/content/detail?id=${lastVerificationData.contentId}`}
+                          className="media"
+                        >
+                          {lastVerificationData.contentTitle}
+                        </Link>
+                      )}
+                  </p>
+                )}
               </div>
             </div>
           )}
