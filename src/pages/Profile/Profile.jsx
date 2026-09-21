@@ -158,10 +158,10 @@ function Profile() {
       <div className="container">
         <section className="user-info">
           <div className="image">
-            <img src={user.profileImageUrl} alt="프로필 이미지" />
+            <img src={previewUrl} alt="프로필 이미지" />
           </div>
 
-          <h2>{user.nickName}</h2>
+          <h2>{nickName}</h2>
 
           <button
             type="button"
@@ -296,7 +296,10 @@ function Profile() {
                 <div className="profile-image image">
                   <img src={previewUrl} alt="프로필 이미지" />
 
-                  <div className="image-edit-overlay">
+                  <div
+                    className="image-edit-overlay"
+                    onClick={handleImageClick}
+                  >
                     <PencilSimpleLineIcon />
                   </div>
 
@@ -323,21 +326,20 @@ function Profile() {
                 <button
                   type="button"
                   className="icon"
-                  onClick={updateProfile}
-                  disabled={isSaving}
-                  aria-label="프로필 저장"
-                >
-                  <CheckIcon />
-                </button>
-
-                <button
-                  type="button"
-                  className="icon"
                   onClick={cancelEditing}
                   disabled={isSaving}
                   aria-label="수정 취소"
                 >
-                  <XIcon />
+                  취소
+                </button>
+                <button
+                  type="button"
+                  className="icon save-profile"
+                  onClick={updateProfile}
+                  disabled={isSaving}
+                  aria-label="프로필 저장"
+                >
+                  저장
                 </button>
               </div>
             </div>
