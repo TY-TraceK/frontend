@@ -157,72 +157,20 @@ function Profile() {
     <main className="profile">
       <div className="container">
         <section className="user-info">
-          <div
-            className={`image ${isEditing ? 'editable' : ''}`}
-            onClick={handleImageClick}
-          >
-            <img src={previewUrl} alt="프로필 이미지" />
-
-            {isEditing && (
-              <div className="image-edit-overlay">
-                <PencilSimpleLineIcon />
-              </div>
-            )}
-
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              hidden
-            />
+          <div className="image">
+            <img src={user.profileImageUrl} alt="프로필 이미지" />
           </div>
 
-          {isEditing ? (
-            <input
-              className="nickname-input"
-              type="text"
-              value={nickName}
-              onChange={(event) => setNickName(event.target.value)}
-              maxLength={20}
-              autoFocus
-            />
-          ) : (
-            <h2>{user.nickName}</h2>
-          )}
+          <h2>{user.nickName}</h2>
 
-          {isEditing ? (
-            <div className="profile-edit-actions">
-              <button
-                type="button"
-                className="icon profile-edit"
-                onClick={updateProfile}
-                disabled={isSaving}
-                aria-label="프로필 저장"
-              >
-                <CheckIcon />
-              </button>
-
-              <button
-                type="button"
-                className="icon profile-edit"
-                onClick={cancelEditing}
-                disabled={isSaving}
-                aria-label="수정 취소"
-              >
-                <XIcon />
-              </button>
-            </div>
-          ) : (
-            <button
-              type="button"
-              className="icon profile-edit"
-              onClick={startEditing}
-              aria-label="프로필 수정"
-            >
-              <PencilSimpleLineIcon />
-            </button>
-          )}
+          <button
+            type="button"
+            className="icon profile-edit"
+            onClick={startEditing}
+            aria-label="프로필 수정"
+          >
+            <PencilSimpleLineIcon />
+          </button>
         </section>
 
         <section className="recent-place">
@@ -340,6 +288,62 @@ function Profile() {
           )}
         </section>
       </div>
+      {isEditing && (
+        <div className="modal-bg">
+          <div className="modal-container">
+            <div className="modal">
+              <div className="content">
+                <div className="profile-image image">
+                  <img src={previewUrl} alt="프로필 이미지" />
+
+                  <div className="image-edit-overlay">
+                    <PencilSimpleLineIcon />
+                  </div>
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    hidden
+                  />
+                </div>
+
+                <input
+                  className="profile-nickname"
+                  type="text"
+                  value={nickName}
+                  onChange={(event) => setNickName(event.target.value)}
+                  maxLength={20}
+                  autoFocus
+                />
+              </div>
+
+              <div className="buttons">
+                <button
+                  type="button"
+                  className="icon"
+                  onClick={updateProfile}
+                  disabled={isSaving}
+                  aria-label="프로필 저장"
+                >
+                  <CheckIcon />
+                </button>
+
+                <button
+                  type="button"
+                  className="icon"
+                  onClick={cancelEditing}
+                  disabled={isSaving}
+                  aria-label="수정 취소"
+                >
+                  <XIcon />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

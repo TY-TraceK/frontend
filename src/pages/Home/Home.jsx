@@ -447,6 +447,29 @@ function Home() {
             </Link>
           </section>
         )}
+        <footer>
+          <p>
+            본 서비스의 아래의 Open API를 활용하여 콘텐츠 및 여행지 정보를
+            제공합니다.
+          </p>
+          <div className="kto">
+            <p className="">ⓒ한국관광공사</p>
+          </div>
+          <div className="tmdb">
+            <a href="https://www.themoviedb.org">
+              <div className="image">
+                <img
+                  src="https://www.themoviedb.org/assets/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg"
+                  alt="TMDB 로고"
+                />
+              </div>
+            </a>
+            <p className="description">
+              This product uses the TMDB API but is not endorsed or certified by
+              TMDB
+            </p>
+          </div>
+        </footer>
       </div>
     </main>
   );

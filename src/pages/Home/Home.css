@@ -320,4 +320,31 @@
       align-items: center;
     }
   }
+
+  footer {
+    margin-top: 60px;
+    background-color: var(--gl-text-black);
+    color: var(--gl-text-white);
+    padding: 10px 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+
+    > p {
+      font-size: var(--font-size-caption);
+    }
+
+    .tmdb {
+      a {
+        .image {
+          width: 100px;
+        }
+      }
+      .description {
+        margin-top: var(--spacing-4);
+        font-size: var(--font-size-caption);
+      }
+    }
+  }
 }
