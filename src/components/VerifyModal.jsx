@@ -229,9 +229,17 @@ function VerifyModal({ isOpen, onClose }) {
 
   const handleSelectTestPosition = (location) => {
     setSelectedTestLocation(location);
+  };
+
+  const handleConfirmTestPosition = () => {
+    if (!selectedTestLocation) {
+      showWarningNotification('테스트할 위치를 선택해주세요.');
+      return;
+    }
+
     moveToPlaceSelection({
-      latitude: Number(location.latitude),
-      longitude: Number(location.longitude),
+      latitude: Number(selectedTestLocation.latitude),
+      longitude: Number(selectedTestLocation.longitude),
     });
   };
 
@@ -614,7 +622,7 @@ function VerifyModal({ isOpen, onClose }) {
   const isNextDisabled =
     isLoading ||
     (step === 2 && !selectedLocation) ||
-    (step === 3 && !selectedContent) ||
+    (step === 3 && relatedContents.length > 0 && !selectedContent) ||
     (step === 4 && selectedArtists.length === 0);
 
   if (!isOpen) {
@@ -640,7 +648,8 @@ function VerifyModal({ isOpen, onClose }) {
         )}
 
         {locationPhase === 'test-select' && (
-          <PlaceSelectStep
+          <>
+            <PlaceSelectStep
             locations={testLocations}
             selectedLocation={selectedTestLocation}
             onSelectLocation={handleSelectTestPosition}
@@ -659,7 +668,21 @@ function VerifyModal({ isOpen, onClose }) {
                     }
                   : null
             }
-          />
+            />
+            <div className="actions">
+              <button type="button" className="neutral" onClick={onClose}>
+                닫기
+              </button>
+              <button
+                type="button"
+                className={selectedTestLocation ? 'active' : 'disabled'}
+                disabled={!selectedTestLocation}
+                onClick={handleConfirmTestPosition}
+              >
+                다음
+              </button>
+            </div>
+          </>
         )}
 
         {locationPhase === 'position' && currentPosition && (
@@ -683,7 +706,6 @@ function VerifyModal({ isOpen, onClose }) {
         )}
 
         {locationPhase === 'ready' && step === 2 && (
-          <>
           <PlaceSelectStep
             locations={locations}
             selectedLocation={selectedLocation}
@@ -693,17 +715,6 @@ function VerifyModal({ isOpen, onClose }) {
               showWarningNotification('100m 안에서만 방문 인증 가능합니다!')
             }
           />
-          <div className="location-only-action">
-            <button
-              type="button"
-              className={selectedLocation ? 'active' : 'disabled'}
-              disabled={!selectedLocation || isLoading}
-              onClick={handleSubmitLocationOnly}
-            >
-              장소만 선택하고 넘어가기
-            </button>
-          </div>
-          </>
         )}
 
         {step === 3 && (
@@ -719,6 +730,8 @@ function VerifyModal({ isOpen, onClose }) {
             onSelectSearchArtist={handleSelectSearchArtist}
             onResetSelectedSearchArtist={handleResetSelectedSearchArtist}
             searchedArtistContents={searchedArtistContents}
+            onSubmitLocationOnly={handleSubmitLocationOnly}
+            isLoading={isLoading}
           />
         )}
 
@@ -754,9 +767,9 @@ function VerifyModal({ isOpen, onClose }) {
               <button
                 type="button"
                 className="neutral"
-                onClick={handlePrevious}
+                onClick={step === 2 ? onClose : handlePrevious}
               >
-                이전
+                {step === 2 ? '닫기' : '이전'}
               </button>
 
               <button

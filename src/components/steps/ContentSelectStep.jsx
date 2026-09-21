@@ -24,6 +24,8 @@ function ContentSelectStep({
   onResetSelectedSearchArtist,
 
   searchedArtistContents,
+  onSubmitLocationOnly,
+  isLoading,
 }) {
   return (
     <section className="step-3">
@@ -61,22 +63,36 @@ function ContentSelectStep({
             <div className="media-selection">
               <h2>방문 인증할 미디어를 선택해주세요.</h2>
 
-              <ul className="card-list">
-                {relatedContents.map((content) => (
-                  <MediaCard
-                    key={content.contentId}
-                    className={
-                      selectedContent?.contentId === content.contentId
-                        ? 'selected'
-                        : ''
-                    }
-                    tag={getContentCategoryLabel(content.contentCategory)}
-                    title={content.contentTitle}
-                    imageUrl={content.contentPictureUrl}
-                    onClick={() => onSelectContent(content)}
-                  />
-                ))}
-              </ul>
+              {relatedContents.length === 0 ? (
+                <div className="empty-content-result">
+                  <p>등록된 콘텐츠가 없습니다.</p>
+                  <button
+                    type="button"
+                    className="location-only-link"
+                    onClick={onSubmitLocationOnly}
+                    disabled={isLoading}
+                  >
+                    장소만 선택하고 넘어가기
+                  </button>
+                </div>
+              ) : (
+                <ul className="card-list">
+                  {relatedContents.map((content) => (
+                    <MediaCard
+                      key={content.contentId}
+                      className={
+                        selectedContent?.contentId === content.contentId
+                          ? 'selected'
+                          : ''
+                      }
+                      tag={getContentCategoryLabel(content.contentCategory)}
+                      title={content.contentTitle}
+                      imageUrl={content.contentPictureUrl}
+                      onClick={() => onSelectContent(content)}
+                    />
+                  ))}
+                </ul>
+              )}
             </div>
           </>
         )}
