@@ -184,9 +184,11 @@ function ArtistSearch({
 
           <hr />
 
-          <p className="artist-content-description">
-            선택하신 아티스트와 장소에 해당하는 콘텐츠예요.
-          </p>
+          {searchedArtistContents.length > 0 && (
+            <p className="artist-content-description">
+              선택하신 아티스트와 장소에 해당하는 콘텐츠예요.
+            </p>
+          )}
 
           {isArtistSearchLoading && (
             <div className="artist-content-loading">

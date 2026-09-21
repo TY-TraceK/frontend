@@ -572,7 +572,10 @@ function Archive() {
   };
 
   const getLocationImage = (item) =>
-    item?.locationImageUrl ?? item?.locationPictureUrl ?? item?.mainImageUrl ?? null;
+    item?.locationImageUrl ??
+    item?.locationPictureUrl ??
+    item?.mainImageUrl ??
+    null;
 
   const getArtists = (item) => {
     if (Array.isArray(item?.artists) && item.artists.length > 0) {
@@ -592,6 +595,13 @@ function Archive() {
 
     return [];
   };
+
+  const hasEditableContent =
+    selectedVerification &&
+    (getArtists(selectedVerification).some(
+      (artist) => artist.artistId != null
+    ) ||
+      Boolean(selectedVerification.contentId));
 
   return (
     <main className="archive">
@@ -881,14 +891,15 @@ function Archive() {
                                 ) : null
                               )}
 
-                              {item?.contentId != null && item?.contentTitle && (
-                                <Link
-                                  to={`/content/detail?id=${item.contentId}`}
-                                  className="tag"
-                                >
-                                  {item.contentTitle}
-                                </Link>
-                              )}
+                              {item?.contentId != null &&
+                                item?.contentTitle && (
+                                  <Link
+                                    to={`/content/detail?id=${item.contentId}`}
+                                    className="tag"
+                                  >
+                                    {item.contentTitle}
+                                  </Link>
+                                )}
                             </div>
                           </div>
                         </article>
@@ -931,58 +942,80 @@ function Archive() {
             <div className="modal">
               {modalStep === 'confirm' ? (
                 <>
-                  <p className="title">해당 방문 인증을 수정할까요?</p>
+                  {hasEditableContent ? (
+                    <>
+                      <p className="title">해당 방문 인증을 수정할까요?</p>
 
-                  <div className="description">
-                    <p>
-                      <strong>인증 후 24시간 이내</strong>에만
-                    </p>
-                    <p>아티스트와 미디어 콘텐츠를 수정할 수 있습니다.</p>
-                  </div>
+                      <div className="description">
+                        <p>
+                          <strong>인증 후 24시간 이내</strong>에만
+                        </p>
+                        <p>아티스트와 미디어 콘텐츠를 수정할 수 있습니다.</p>
+                      </div>
 
-                  <div className="content">
-                    <p>
-                      <span className="date">
-                        {selectedVerification.visitVerifiedTimeAt}
-                      </span>
-                      <span className="place-name">
-                        {getLocationName(selectedVerification)}
-                      </span>
-                    </p>
+                      <div className="content">
+                        <p>
+                          <span className="date">
+                            {selectedVerification.visitVerifiedTimeAt}
+                          </span>
 
-                    <p>
-                      {getArtists(selectedVerification).map((artist) => (
-                        <span className="artist" key={artist.artistId}>
-                          {artist.artistName}
-                        </span>
-                      ))}
-                      <span className="media">
-                        {getContentTitle(selectedVerification)}
-                      </span>
-                    </p>
-                  </div>
+                          <span className="place-name">
+                            {getLocationName(selectedVerification)}
+                          </span>
+                        </p>
 
-                  <div className="buttons">
-                    <button
-                      type="button"
-                      className="close"
-                      onClick={() => setSelectedVerification(null)}
-                    >
-                      닫기
-                    </button>
+                        <p>
+                          {getArtists(selectedVerification).map((artist) => (
+                            <span className="artist" key={artist.artistId}>
+                              {artist.artistName}
+                            </span>
+                          ))}
 
-                    <button
-                      type="button"
-                      className="edit active"
-                      onClick={() => {
-                        setSelectedSearchArtist(null);
-                        setSelectedContent(null);
-                        setModalStep('artist');
-                      }}
-                    >
-                      수정
-                    </button>
-                  </div>
+                          {selectedVerification.contentTitle && (
+                            <span className="media">
+                              {selectedVerification.contentTitle}
+                            </span>
+                          )}
+                        </p>
+                      </div>
+
+                      <div className="buttons">
+                        <button
+                          type="button"
+                          className="close"
+                          onClick={() => setSelectedVerification(null)}
+                        >
+                          닫기
+                        </button>
+
+                        <button
+                          type="button"
+                          className="edit active"
+                          onClick={() => {
+                            setSelectedSearchArtist(null);
+                            setSelectedContent(null);
+                            setModalStep('artist');
+                          }}
+                        >
+                          수정
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p className="title">변경 가능한 사항이 없습니다.</p>
+
+                      <div className="buttons">
+                        <button
+                          type="button"
+                          className="close"
+                          onClick={() => setSelectedVerification(null)}
+                        >
+                          닫기
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </>
               ) : (
                 <>
@@ -998,6 +1031,7 @@ function Archive() {
                     selectedContent={selectedContent}
                     onSelectContent={setSelectedContent}
                   />
+
                   <div className="buttons">
                     <button
                       type="button"
@@ -1010,10 +1044,14 @@ function Archive() {
                     >
                       닫기
                     </button>
-                    {/* MEMO: 방문 인증 값 수정 api연결 부탁드립니다. 
-아티스트, 미디어 값 중 비어있는 값이 있다면 className에 active 말고 disabled를 넣어주시면 css 처리 해두겠습니다. 
-아티스트, 미디어 선택 후 아티스트 추가 선택은 일단 추후에 진행하겠습니다. 
-현재의 ArtistSearch로는 안 되고 components/steps/ArtistSelectStep 을 같이 활용해야 할 것 같습니다. */}
+
+                    {/* MEMO: 방문 인증 값 수정 api연결 부탁드립니다.
+                  아티스트, 미디어 값 중 비어있는 값이 있다면
+                  className에 active 말고 disabled를 넣어주시면 css 처리 해두겠습니다.
+                  아티스트, 미디어 선택 후 아티스트 추가 선택은 일단 추후에 진행하겠습니다.
+                  현재의 ArtistSearch로는 안 되고
+                  components/steps/ArtistSelectStep 을 같이 활용해야 할 것 같습니다. */}
+
                     <button type="button" className="edit active">
                       수정
                     </button>

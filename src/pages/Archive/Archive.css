@@ -190,6 +190,8 @@
     position: fixed;
     inset: 0;
     z-index: 999;
+    width: 100%;
+    height: 100vh;
 
     .modal-container {
       width: 100%;
@@ -204,6 +206,7 @@
       background: #0000005a;
 
       .modal {
+        width: calc(100% - 32px);
         background-color: var(--bg-elevated);
         box-shadow: var(--shadow-card);
         padding: var(--spacing-16);
@@ -222,11 +225,209 @@
           margin: var(--spacing-16) 0 var(--spacing-24);
         }
 
+        .artist-search {
+          margin: var(--spacing-16) 0 var(--spacing-8);
+
+          .search-input {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-8);
+            padding: 8px 12px;
+            background-color: var(--interact-subtle);
+            border-radius: var(--radius-24);
+            box-shadow: var(--shadow-card);
+
+            input {
+              flex: 1;
+              min-width: 0;
+              padding: 4px 0;
+              border: 0;
+              outline: 0;
+              background-color: transparent;
+              color: var(--text-main);
+              font: inherit;
+
+              &::placeholder {
+                color: var(--text-sub);
+              }
+            }
+
+            button {
+              flex-shrink: 0;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background-color: transparent;
+            }
+
+            .icon {
+              display: flex;
+            }
+          }
+        }
+
+        /*
+       * 검색 결과
+       *
+       * 최지우 검색
+       * ↓
+       * 여러 최지우가 카드 형태로 표시되는 영역
+       */
+
+        .artist-search-results {
+          padding: 12px;
+          background-color: var(--bg-elevated);
+          border-radius: var(--radius-24);
+          box-shadow: var(--shadow-card);
+
+          .artist-search-loading,
+          .empty-result {
+            padding: var(--spacing-16) 0;
+            text-align: center;
+            color: var(--text-sub);
+            font-size: var(--font-size-caption);
+          }
+
+          .artist-list {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: var(--spacing-8);
+
+            .artist {
+              min-width: 0;
+              text-align: center;
+
+              button {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: var(--spacing-4);
+                background-color: transparent;
+              }
+
+              .image {
+                width: 100%;
+                aspect-ratio: 1 / 1;
+                overflow: hidden;
+                border-radius: var(--radius-24);
+
+                img {
+                  width: 100%;
+                  height: 100%;
+                  display: block;
+                  object-fit: cover;
+                }
+              }
+
+              .name {
+                width: 100%;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+              }
+
+              .group {
+                width: 100%;
+                color: var(--text-sub);
+                font-size: var(--font-size-caption);
+              }
+
+              .ellipsis-2 {
+                display: -webkit-box;
+                overflow: hidden;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                white-space: normal;
+              }
+            }
+          }
+        }
+
+        /*
+       * 검색 결과에서 아티스트 선택 후
+       *
+       * [최지우]
+       * ----------------
+       * 선택하신 아티스트와 장소에 해당하는 콘텐츠예요.
+       *
+       * [런닝맨]          선택
+       * [콘텐츠2]         선택
+       */
+
+        .artist-content-search-result {
+          padding: 12px;
+          background-color: var(--bg-elevated);
+          border-radius: var(--radius-24);
+          box-shadow: var(--shadow-card);
+
+          /*
+         * 선택한 아티스트
+         */
+
+          .selected-search-artist {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-8);
+            padding: 0;
+            text-align: left;
+            background-color: transparent;
+
+            .image {
+              width: 54px;
+              aspect-ratio: 1 / 1;
+              flex-shrink: 0;
+              overflow: hidden;
+              border-radius: var(--radius-16);
+
+              img {
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+              }
+            }
+
+            .info {
+              min-width: 0;
+              flex: 1;
+
+              .name {
+                width: 100%;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                font-size: var(--font-size-body);
+                font-weight: 500;
+                color: var(--text-main);
+              }
+
+              .alias {
+                width: 100%;
+                margin-top: 2px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                color: var(--text-sub);
+                font-size: var(--font-size-caption);
+              }
+            }
+          }
+
+          .empty-content-result {
+            margin: 32px 0;
+            text-align: center;
+          }
+        }
+
         .buttons {
           display: flex;
           align-items: center;
           justify-content: space-between;
           gap: var(--spacing-8);
+          margin-top: var(--spacing-16);
 
           button {
             flex: 1;
