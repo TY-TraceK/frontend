@@ -622,7 +622,7 @@ function VerifyModal({ isOpen, onClose }) {
   const isNextDisabled =
     isLoading ||
     (step === 2 && !selectedLocation) ||
-    (step === 3 && !selectedContent) ||
+    (step === 3 && relatedContents.length > 0 && !selectedContent) ||
     (step === 4 && selectedArtists.length === 0);
 
   if (!isOpen) {
@@ -706,7 +706,6 @@ function VerifyModal({ isOpen, onClose }) {
         )}
 
         {locationPhase === 'ready' && step === 2 && (
-          <>
           <PlaceSelectStep
             locations={locations}
             selectedLocation={selectedLocation}
@@ -716,17 +715,6 @@ function VerifyModal({ isOpen, onClose }) {
               showWarningNotification('100m 안에서만 방문 인증 가능합니다!')
             }
           />
-          <div className="location-only-action">
-            <button
-              type="button"
-              className={selectedLocation ? 'active' : 'disabled'}
-              disabled={!selectedLocation || isLoading}
-              onClick={handleSubmitLocationOnly}
-            >
-              장소만 선택하고 넘어가기
-            </button>
-          </div>
-          </>
         )}
 
         {step === 3 && (
@@ -742,6 +730,8 @@ function VerifyModal({ isOpen, onClose }) {
             onSelectSearchArtist={handleSelectSearchArtist}
             onResetSelectedSearchArtist={handleResetSelectedSearchArtist}
             searchedArtistContents={searchedArtistContents}
+            onSubmitLocationOnly={handleSubmitLocationOnly}
+            isLoading={isLoading}
           />
         )}
 
