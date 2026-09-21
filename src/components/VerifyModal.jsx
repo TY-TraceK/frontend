@@ -229,9 +229,17 @@ function VerifyModal({ isOpen, onClose }) {
 
   const handleSelectTestPosition = (location) => {
     setSelectedTestLocation(location);
+  };
+
+  const handleConfirmTestPosition = () => {
+    if (!selectedTestLocation) {
+      showWarningNotification('테스트할 위치를 선택해주세요.');
+      return;
+    }
+
     moveToPlaceSelection({
-      latitude: Number(location.latitude),
-      longitude: Number(location.longitude),
+      latitude: Number(selectedTestLocation.latitude),
+      longitude: Number(selectedTestLocation.longitude),
     });
   };
 
@@ -640,7 +648,8 @@ function VerifyModal({ isOpen, onClose }) {
         )}
 
         {locationPhase === 'test-select' && (
-          <PlaceSelectStep
+          <>
+            <PlaceSelectStep
             locations={testLocations}
             selectedLocation={selectedTestLocation}
             onSelectLocation={handleSelectTestPosition}
@@ -659,7 +668,21 @@ function VerifyModal({ isOpen, onClose }) {
                     }
                   : null
             }
-          />
+            />
+            <div className="actions">
+              <button type="button" className="neutral" onClick={onClose}>
+                닫기
+              </button>
+              <button
+                type="button"
+                className={selectedTestLocation ? 'active' : 'disabled'}
+                disabled={!selectedTestLocation}
+                onClick={handleConfirmTestPosition}
+              >
+                다음
+              </button>
+            </div>
+          </>
         )}
 
         {locationPhase === 'position' && currentPosition && (
@@ -754,9 +777,9 @@ function VerifyModal({ isOpen, onClose }) {
               <button
                 type="button"
                 className="neutral"
-                onClick={handlePrevious}
+                onClick={step === 2 ? onClose : handlePrevious}
               >
-                이전
+                {step === 2 ? '닫기' : '이전'}
               </button>
 
               <button

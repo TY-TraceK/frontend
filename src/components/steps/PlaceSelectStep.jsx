@@ -51,7 +51,9 @@ function PlaceSelectStep({
               }
               title={location.name}
               description={
-                location.address ?? `${location.latitude}, ${location.longitude}`
+                location.description ??
+                location.address ??
+                `${location.latitude}, ${location.longitude}`
               }
               imageUrl={location.mainImageUrl ?? location.imageUrl}
               onClick={() => onSelectLocation(location)}
