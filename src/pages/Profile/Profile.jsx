@@ -296,7 +296,10 @@ function Profile() {
           {lastVerificationData == null ? (
             <div>방문 인증 내역이 없습니다.</div>
           ) : (
-            <div className="verify">
+            <Link
+              to={`/place?id=${lastVerificationData.locationId}`}
+              className="verify"
+            >
               <div className="image">
                 {lastVerificationData.locationImageUrl ? (
                   <img src={lastVerificationData.locationImageUrl} alt="" />
@@ -333,7 +336,7 @@ function Profile() {
                   </p>
                 )}
               </div>
-            </div>
+            </Link>
           )}
         </section>
       </div>
