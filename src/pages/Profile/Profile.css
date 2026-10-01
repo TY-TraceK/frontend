@@ -61,6 +61,7 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
+            text-align: center;
 
             .image {
               aspect-ratio: 1/1;
@@ -71,7 +72,6 @@
             .location {
               width: auto;
               max-width: 100%;
-              text-align: center;
               background-color: var(--interact-subtle);
               padding: 3px 4px;
               border-radius: var(--radius-8);

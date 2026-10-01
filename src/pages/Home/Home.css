@@ -1,4 +1,6 @@
-.home {
+main.home {
+  margin: 80px 0 67px;
+
   .login-prompt,
   .personalized-content {
     font-size: var(--font-size-body);
