@@ -27,8 +27,9 @@
 
   &.default {
     position: absolute;
-    bottom: 21px;
-    left: -30px;
+    bottom: 0;
+    left: 0;
+
     .name {
       flex-shrink: 0;
       max-width: 120px;
@@ -66,8 +67,8 @@
 
     background-color: #0dd3e2;
     position: absolute;
-    bottom: 7px;
-    left: -7px;
+    bottom: 0;
+    left: 0;
   }
 
   &.ATTRACTION {
